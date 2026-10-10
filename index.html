@@ -282,6 +282,42 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .credits{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0}
 .credits a{color:var(--lapis)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:30;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:500;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+/* Mushaf pages */
+#r-scroll.paged{overflow:hidden}
+#r-scroll.paged #r-body{height:100%}
+.pager{height:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pager::-webkit-scrollbar{display:none}
+.mp{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow-y:auto;display:flex;justify-content:center;padding-inline:12px;padding-block:6px}
+.mpg{width:100%;max-width:560px;display:flex;flex-direction:column;font-size:var(--mfs,20px)}
+.mhead{display:flex;justify-content:space-between;align-items:center;font:500 12px/1.2 var(--f-ui);color:var(--muted);padding-inline:6px;padding-block:0 6px}
+.mhead .ar{font-family:var(--f-quran);font-size:17px;color:var(--ink)}
+.mframe{border:1.5px solid var(--gold);outline:1px solid var(--gold);outline-offset:3px;border-radius:4px;padding-inline:10px;padding-block:4px;background:var(--surface);display:flex;flex-direction:column;font-family:var(--f-quran);color:var(--ink);direction:rtl}
+.mpg.open .mframe{min-height:calc(15 * var(--mlh,2em) + 10px);justify-content:center}
+.ml{height:var(--mlh,2em);line-height:var(--mlh,2em);white-space:nowrap;text-align:right}
+.ml.mc{text-align:center}
+.lt{display:inline-block;white-space:nowrap;transform-origin:right center}
+.ml.mc > .lt{transform-origin:center}
+.ml .w{padding-inline:0}
+.mt-frame{display:inline-block;border:1.5px solid var(--gold);border-radius:999px;padding-inline:1.6em;line-height:1.55;background:var(--gold-soft);font-size:.92em}
+.ml.mb{font-size:.95em}
+.vs{border-radius:6px;cursor:pointer;transition:background .25s}
+.vs.playing{background:var(--lapis-soft)}
+.vs.flash{background:var(--gold-soft)}
+.dec{color:var(--gold)}
+.mfoot{display:flex;justify-content:space-between;align-items:center;padding-block:6px 0}
+.mnum{font-family:var(--f-quran);font-size:17px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pnav{width:48px;height:36px;border-radius:10px;color:var(--lapis);display:grid;place-items:center}
+.pnav svg{width:22px;height:22px}
+.pnav:disabled{opacity:.25}
+/* Past mistakes fade with each correct reading: m5 is fresh, m1 nearly gone */
+.w.m5{color:var(--err);background:var(--err-soft)}
+.w.m4{color:color-mix(in srgb,var(--err) 80%,var(--ink));background:color-mix(in srgb,var(--err-soft) 75%,transparent)}
+.w.m3{color:color-mix(in srgb,var(--err) 60%,var(--ink));background:color-mix(in srgb,var(--err-soft) 50%,transparent)}
+.w.m2{color:color-mix(in srgb,var(--err) 40%,var(--ink));background:color-mix(in srgb,var(--err-soft) 30%,transparent)}
+.w.m1{color:color-mix(in srgb,var(--err) 22%,var(--ink));background:color-mix(in srgb,var(--err-soft) 14%,transparent)}
+.fade{display:inline-flex;gap:3px}
+.fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
+.fade i.on{background:var(--err)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (min-width:560px){.pad{padding-inline:24px}.mushaf{padding-inline:8px}}
 </style>
@@ -463,11 +499,11 @@ function runMatch(items, start, toks, final){
 //#matcher-end
 
 /* ---------- data ---------- */
-const cache = new Map();
+const cache = new Map(), SC = {};
 function loadSurah(s){
   if (cache.has(s)) return cache.get(s);
   const prom = (window.QDATA ? Promise.resolve(window.QDATA[s]) : fetch("s/" + pad3(s) + ".json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }))
-    .then(d => ({ a: d.a.map(x => x.split(" ")), k: d.k.map(x => x.split(" ")), t: d.t }));
+    .then(d => (SC[s] = { a: d.a.map(x => x.split(" ")), k: d.k.map(x => x.split(" ")), t: d.t }));
   cache.set(s, prom);
   prom.catch(() => cache.delete(s));
   return prom;
@@ -482,6 +518,7 @@ function normalizeState(o){
   const d = DEF(); const r = Object.assign(d, o || {}); r.set = Object.assign(DEF().set, (o && o.set) || {});
   for (const k of ["vp","mist","days"]) if (!r[k] || typeof r[k] !== "object" || Array.isArray(r[k])) r[k] = {};
   if (!Array.isArray(r.sess)) r.sess = []; if (!Array.isArray(r.bm)) r.bm = [];
+  if (r.mv !== 2){ for (const k in r.mist) r.mist[k] = 5; r.mv = 2; }
   return r;
 }
 function trimState(){
@@ -493,7 +530,6 @@ function mergeStates(a, b){
   const base = normalizeState(clone((b.upd || 0) > (a.upd || 0) ? b : a));
   for (const src of [a, b]){
     for (const [k, x] of Object.entries(src.vp || {})){ const y = base.vp[k]; base.vp[k] = y ? [Math.max(y[0], x[0]), Math.max(y[1], x[1]), Math.max(y[2] || 0, x[2] || 0)] : x.slice(); }
-    for (const [k, x] of Object.entries(src.mist || {})) base.mist[k] = Math.max(base.mist[k] || 0, x);
     for (const [k, x] of Object.entries(src.days || {})){ const y = base.days[k] || {}; base.days[k] = { v: Math.max(y.v || 0, x.v || 0), w: Math.max(y.w || 0, x.w || 0), e: Math.max(y.e || 0, x.e || 0) }; }
   }
   const seen = new Map(); for (const x of [...(a.sess || []), ...(b.sess || [])]) seen.set(x.id, x);
@@ -649,7 +685,8 @@ function pStop(){
 }
 function pToggle(){
   if (!P.s){
-    if (overlay === "reader" && R){ const v = S.last && S.last.s === R.s ? S.last.v : 1; pPlay(R.s, v, R.data.a.length, "reader"); }
+    if (overlay === "reader" && PG && S.last){ pPlay(S.last.s, S.last.v, CNT(S.last.s), "reader"); }
+    else if (overlay === "reader" && R){ const v = S.last && S.last.s === R.s ? S.last.v : 1; pPlay(R.s, v, R.data.a.length, "reader"); }
     return;
   }
   if (P.el.paused) P.el.play().catch(() => {}); else P.el.pause();
@@ -662,7 +699,12 @@ function pSkip(d){
 function pHighlight(){
   $$(".playing").forEach(el => el.classList.remove("playing"));
   if (!P.s) return;
-  if (P.ctx === "reader" && overlay === "reader" && R && R.s === P.s){
+  if (P.ctx === "reader" && overlay === "reader" && PG){
+    const p = pageOf(P.s, P.v);
+    if (PG.cur !== p) goPage(p, true);
+    $$(`#pager .vs[data-s="${P.s}"][data-v="${P.v}"]`).forEach(x => x.classList.add("playing"));
+  }
+  else if (P.ctx === "reader" && overlay === "reader" && R && R.s === P.s){
     const el = $(`#r-body [data-v="${P.v}"].ayah, #r-body [data-v="${P.v}"].vcard`);
     if (el){
       el.classList.add("playing");
@@ -797,25 +839,51 @@ function renderList(){
 function renderHome(){ renderDate(); renderToday(); renderBookmarks(); renderList(); }
 
 /* ---------- READER ---------- */
-let R = null; // {s, data}
+let R = null;   // verses-with-translation layout: {s, data}
+let PG = null;  // mushaf page layout: {cur, focus}
 const LAYOUT_ICONS = {
-  mushaf: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg>`,
+  mushaf: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.6-4.7-2-8-2v14c3.3 0 6 .4 8 2 2-1.6 4.7-2 8-2V4c-3.3 0-6 .4-8 2z"/><path d="M12 6v14"/></svg>`,
   verses: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/></svg>`
 };
+const pad2 = n => String(n).padStart(2, "0");
+function fromGid(g){ let s = 1; while (s < 114 && OFF[s] < g) s++; return [s, g - OFF[s-1]]; }
+const pageFirst = p => fromGid(PSTART[p-1]);
+const mstr = (s, v, i) => Math.min(5, S.mist[s + ":" + v + ":" + i] || 0);
+const mcls = (s, v, i) => { const m = mstr(s, v, i); return m ? " m" + m : ""; };
+const wordsHTML = (s, v, words) => words.map((w, i) => `<span class="w${mcls(s, v, i)}">${w}</span>`).join(" ");
+
+const lcache = new Map();
+function loadPage(p){
+  const f = Math.ceil(p / 20);
+  if (!lcache.has(f)){
+    const pr = (window.QLAYOUT ? Promise.resolve(window.QLAYOUT[f]) : fetch("m/" + pad2(f) + ".json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }));
+    lcache.set(f, pr); pr.catch(() => lcache.delete(f));
+  }
+  return lcache.get(f).then(d => d[p]);
+}
+function setReaderHead(s, v, p){
+  $("#r-title").textContent = sName(s) + " · " + s;
+  $("#r-sub").textContent = `стр. ${p || pageOf(s, v)} из 604 · джуз ${juzOf(s, v)}`;
+  const mush = S.set.layout === "mushaf";
+  $("#r-layout").innerHTML = mush ? LAYOUT_ICONS.verses : LAYOUT_ICONS.mushaf;
+  $("#r-layout").setAttribute("aria-label", mush ? "Аяты с переводом" : "Страницы мушафа");
+}
+function rememberPos(s, v){ if (!S.last || S.last.s !== s || S.last.v !== v){ S.last = { s, v }; S.upd = Date.now(); saveLocal(); Remote.schedule(6000); } }
+
 async function openReader(s, v = 1){
   overlay = "reader"; show("reader");
-  $("#r-title").textContent = sName(s) + " · " + s;
-  $("#r-sub").textContent = `стр. ${pageOf(s, v)} · джуз ${juzOf(s, v)}`;
-  $("#r-layout").innerHTML = S.set.layout === "mushaf" ? LAYOUT_ICONS.verses : LAYOUT_ICONS.mushaf;
-  $("#r-layout").setAttribute("aria-label", S.set.layout === "mushaf" ? "Показать перевод" : "Показать мушаф");
+  setReaderHead(s, v);
+  if (S.set.layout === "mushaf"){ R = null; openPages(s, v); pRender(); return; }
+  $("#r-scroll").classList.remove("paged"); PG = null;
   const body = $("#r-body");
   if (!R || R.s !== s) body.innerHTML = `<div class="loading">Загружаю суру…</div>`;
   try {
     const data = await loadSurah(s);
-    if (overlay !== "reader") return;
+    if (overlay !== "reader" || S.set.layout === "mushaf") return;
     R = { s, data };
     renderReader();
     jumpTo(v, v > 1);
+    rememberPos(s, v);
     pRender(); pHighlight();
   } catch (e) {
     body.innerHTML = `<div class="loading">Не удалось загрузить суру. Проверьте соединение.<br><br><button class="btn btn-soft" data-act="open" data-s="${s}" data-v="${v}">Повторить</button></div>`;
@@ -825,36 +893,133 @@ function amarker(s, v){
   const cls = isLearned(s, v) ? " learned" : inProgress(s, v) ? " prog" : "";
   return `<span class="am${cls}">${arNum(v)}</span>${SAJDA.has(gid(s, v)) ? `<span class="sajda" title="Земной поклон">۩</span>` : ""}`;
 }
+
+/* Mushaf pages: 604 snap-scrolling slots, right to left; only pages near the current one are filled. */
+function openPages(s, v){
+  const sc = $("#r-scroll"); sc.classList.add("paged"); sc.scrollTop = 0;
+  if (!PG || !$("#pager")){
+    $("#r-body").innerHTML = `<div class="pager" id="pager" dir="rtl">${Array.from({ length: 604 }, (_, i) => `<section class="mp" data-p="${i + 1}" aria-label="Страница ${i + 1}"></section>`).join("")}</div>`;
+    PG = { cur: 0, focus: null };
+    $("#pager").addEventListener("scroll", onPagerScroll, { passive: true });
+  }
+  sizePages();
+  PG.focus = { s, v, flash: v > 1 };
+  goPage(pageOf(s, v), false);
+}
+function sizePages(){
+  const pg = $("#pager"); if (!pg) return;
+  const w = Math.min(pg.clientWidth, 560) - 2 * 12 - 2 * 10 - 4;
+  const fs = Math.max(13, w / 410 * 24);
+  const lh = Math.max(fs * 1.3, Math.min(fs * 2.5, (pg.clientHeight - 156) / 15));
+  pg.style.setProperty("--mfs", fs.toFixed(2) + "px");
+  pg.style.setProperty("--mlh", lh.toFixed(2) + "px");
+}
+function goPage(p, smooth){
+  p = Math.max(1, Math.min(604, p));
+  const pg = $("#pager"); if (!pg) return;
+  const x = -(p - 1) * pg.clientWidth;
+  pg.scrollTo({ left: x, behavior: smooth ? "smooth" : "auto" });
+  if (!smooth && p > 1 && Math.abs(pg.scrollLeft - x) > 2){ const el = $(`#pager .mp[data-p="${p}"]`); if (el) el.scrollIntoView({ inline: "start", block: "nearest" }); }
+  setCurPage(p);
+}
+let pgT = 0;
+function onPagerScroll(){
+  clearTimeout(pgT);
+  pgT = setTimeout(() => {
+    const pg = $("#pager"); if (!pg || !PG) return;
+    const p = Math.round(Math.abs(pg.scrollLeft) / pg.clientWidth) + 1;
+    if (p !== PG.cur){ if (PG.focus && pageOf(PG.focus.s, PG.focus.v) !== p) PG.focus = null; setCurPage(p); }
+  }, 90);
+}
+function setCurPage(p){
+  PG.cur = p;
+  for (const q of [p, p + 1, p - 1, p + 2]) if (q >= 1 && q <= 604) fillPage(q);
+  $$("#pager .mp[data-ready]").forEach(el => { if (Math.abs(+el.dataset.p - p) > 4){ el.innerHTML = ""; delete el.dataset.ready; } });
+  const [s, v] = PG.focus && pageOf(PG.focus.s, PG.focus.v) === p ? [PG.focus.s, PG.focus.v] : pageFirst(p);
+  $("#r-title").textContent = sName(s) + " · " + s;
+  $("#r-sub").textContent = `стр. ${p} из 604 · джуз ${juzOf(s, v)}`;
+  rememberPos(s, v);
+}
+async function fillPage(p){
+  const el = $(`#pager .mp[data-p="${p}"]`); if (!el || el.dataset.ready || el.dataset.loading) return;
+  el.dataset.loading = "1";
+  try {
+    const lines = await loadPage(p);
+    if (!el.isConnected) return;
+    el.innerHTML = pageHTML(p, lines); el.dataset.ready = "1";
+    fitPage(el); markPage(el);
+  } catch (e) {
+    el.innerHTML = `<div class="loading">Не удалось загрузить страницу. Проверьте соединение.<br><br><button class="btn btn-soft" data-act="page-retry" data-p="${p}">Повторить</button></div>`;
+  } finally { delete el.dataset.loading; }
+}
+function pageHTML(p, lines){
+  const [s0, v0] = pageFirst(p);
+  const rows = lines.map(line => {
+    if (!line.length) return `<div class="ml"></div>`;
+    const sc = line[0], items = line.slice(1);
+    if (items[0][0] === "t"){ const s = items[0][1]; return `<div class="ml mt mc"><span class="lt"><span class="mt-frame">سُورَةُ ${esc(META.ch[s-1][0])}</span></span></div>`; }
+    if (items[0][0] === "b") return `<div class="ml mb mc"><span class="lt">${BISMILLAH}</span></div>`;
+    let h = "";
+    for (const [s, v, i0, text, end] of items){
+      let i = i0;
+      h += `<span class="vs" data-s="${s}" data-v="${v}">`;
+      for (const t of text.split(" ")){
+        if (!t) continue;
+        if (/^[۞۩]+$/.test(t)) h += `<span class="dec">${t}</span> `;
+        else { h += `<span class="w${mcls(s, v, i)}">${t}</span> `; i++; }
+      }
+      if (end) h += amarker(s, v);
+      h += `</span> `;
+    }
+    return `<div class="ml mw${sc < 0 ? " mc" : ""}"><span class="lt">${h.trim()}</span></div>`;
+  }).join("");
+  return `<div class="mpg${p <= 2 ? " open" : ""}">
+    <div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div>
+    <div class="mframe" lang="ar">${rows}</div>
+    <div class="mfoot"><button class="pnav" data-act="page-go" data-d="-1" aria-label="Предыдущая страница"${p === 1 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><span class="mnum">${arNum(p)}</span><button class="pnav" data-act="page-go" data-d="1" aria-label="Следующая страница"${p === 604 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+  </div>`;
+}
+/* Like the printed mushaf, each justified line is stretched or squeezed horizontally to the full width; centred lines only shrink if too long. */
+function fitPage(el){
+  el.querySelectorAll(".ml > .lt").forEach(t => {
+    const l = t.parentElement; t.style.transform = "";
+    const W = l.clientWidth, w = t.offsetWidth; if (!W || !w) return;
+    if (!l.classList.contains("mc") || w > W) t.style.transform = `scaleX(${(W / w).toFixed(4)})`;
+  });
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => $$("#pager .mp[data-ready]").forEach(fitPage));
+if (document.fonts && "onloadingdone" in document.fonts) document.fonts.addEventListener("loadingdone", () => $$("#pager .mp[data-ready]").forEach(fitPage));
+function markPage(el){
+  if (P.s && P.ctx === "reader") el.querySelectorAll(`.vs[data-s="${P.s}"][data-v="${P.v}"]`).forEach(x => x.classList.add("playing"));
+  if (PG && PG.focus && PG.focus.flash){
+    const segs = el.querySelectorAll(`.vs[data-s="${PG.focus.s}"][data-v="${PG.focus.v}"]`);
+    if (segs.length){ PG.focus.flash = false; segs.forEach(x => x.classList.add("flash")); setTimeout(() => segs.forEach(x => x.classList.remove("flash")), 1800); }
+  }
+}
+function refreshPages(){ $$("#pager .mp[data-ready]").forEach(el => { delete el.dataset.ready; fillPage(+el.dataset.p); }); }
+let rzT = 0;
+window.addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(() => { if (PG && overlay === "reader"){ sizePages(); refreshPages(); goPage(PG.cur, false); } }, 200); });
+
+/* Verses with translation */
 function renderReader(){
   const { s, data } = R, n = data.a.length;
   let h = `<div class="surah-head"><div class="sh-frame"><div class="sh-ar">سُورَةُ ${esc(META.ch[s-1][0])}</div></div><div class="sh-ru">${esc(RU[s-1][0])}${RU[s-1][1] ? " · " + esc(RU[s-1][1]) : ""} · ${sType(s)} · ${nAyat(n)}</div></div>`;
   if (s !== 1 && s !== 9) h += `<div class="bism">${BISMILLAH}</div>`;
-  if (S.set.layout === "mushaf"){
-    let cur = -1, buf = [];
-    const flush = () => { if (!buf.length) return; h += `<div class="mpage"><p class="mushaf" lang="ar">${buf.join(" ")}</p><div class="pfoot">стр. ${cur} · джуз ${juzOf(s, buf.v0)}</div></div>`; buf = []; };
-    for (let v = 1; v <= n; v++){
-      const p = pageOf(s, v);
-      if (p !== cur){ flush(); cur = p; buf.v0 = v; }
-      buf.push(`<span class="ayah" data-v="${v}">${data.a[v-1].join(" ")} ${amarker(s, v)}</span>`);
-    }
-    flush();
-  } else {
-    h += `<div class="vlist">`;
-    let cur = pageOf(s, 1);
-    for (let v = 1; v <= n; v++){
-      const p = pageOf(s, v);
-      if (p !== cur && v > 1){ h += `<div class="pfoot">стр. ${p} · джуз ${juzOf(s, v)}</div>`; cur = p; }
-      const x = vpGet(s, v), state = isLearned(s, v) ? "выучен" : x && x[0] ? "в процессе" : "";
-      h += `<article class="vcard" data-v="${v}"><div class="vhead"><span class="vref">${s}:${v}</span>${S.bm.includes(s + ":" + v) ? `<span class="vstate">закладка</span>` : ""}<span class="sp"></span>${state ? `<span class="vstate">${state}</span>` : ""}<button class="vmore" data-act="verse" data-v="${v}" aria-label="Действия с аятом ${v}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div><p class="ar" lang="ar">${data.a[v-1].join(" ")} ${amarker(s, v)}</p><p class="tr">${esc(data.t[v-1])}</p></article>`;
-    }
-    h += `</div>`;
+  h += `<div class="vlist">`;
+  let cur = pageOf(s, 1);
+  for (let v = 1; v <= n; v++){
+    const p = pageOf(s, v);
+    if (p !== cur && v > 1){ h += `<div class="pfoot">стр. ${p} · джуз ${juzOf(s, v)}</div>`; cur = p; }
+    const x = vpGet(s, v), state = isLearned(s, v) ? "выучен" : x && x[0] ? "в процессе" : "";
+    h += `<article class="vcard" data-v="${v}"><div class="vhead"><span class="vref">${s}:${v}</span>${S.bm.includes(s + ":" + v) ? `<span class="vstate">закладка</span>` : ""}<span class="sp"></span>${state ? `<span class="vstate">${state}</span>` : ""}<button class="vmore" data-act="verse" data-v="${v}" aria-label="Действия с аятом ${v}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div><p class="ar" lang="ar">${wordsHTML(s, v, data.a[v-1])} ${amarker(s, v)}</p><p class="tr">${esc(data.t[v-1])}</p></article>`;
   }
-  h += `<div class="reader-end">${s > 1 ? `<button class="btn btn-line" data-act="open" data-s="${s-1}" data-v="1">← ${esc(sName(s-1))}</button>` : ""}<button class="btn btn-primary" data-act="drill-from" data-v="1">Учить эту суру</button>${s < 114 ? `<button class="btn btn-line" data-act="open" data-s="${s+1}" data-v="1">${esc(sName(s+1))} →</button>` : ""}</div>`;
+  h += `</div>`;
+  h += `<div class="reader-end">${s > 1 ? `<button class="btn btn-line" data-act="open" data-s="${s-1}" data-v="1">← ${esc(sName(s-1))}</button>` : ""}<button class="btn btn-primary" data-act="drill-from" data-s="${s}" data-v="1">Учить эту суру</button>${s < 114 ? `<button class="btn btn-line" data-act="open" data-s="${s+1}" data-v="1">${esc(sName(s+1))} →</button>` : ""}</div>`;
   $("#r-body").innerHTML = h;
 }
 function jumpTo(v, flash){
   const sc = $("#r-scroll");
-  const el = $(`[data-v="${v}"].ayah, [data-v="${v}"].vcard`, $("#r-body"));
+  const el = $(`.vcard[data-v="${v}"]`, $("#r-body"));
   if (!el || v <= 1){ sc.scrollTop = 0; return; }
   const top = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 24;
   sc.scrollTop = Math.max(0, top);
@@ -864,30 +1029,36 @@ let readT = 0;
 function onReaderScroll(){
   clearTimeout(readT);
   readT = setTimeout(() => {
-    if (!R) return;
+    if (!R || PG) return;
     const sc = $("#r-scroll"), r = sc.getBoundingClientRect();
     const el = document.elementFromPoint(r.left + r.width / 2, r.top + 40);
-    const host = el && el.closest("[data-v]");
-    if (!host || !host.matches(".ayah,.vcard")) return;
+    const host = el && el.closest(".vcard");
+    if (!host) return;
     const v = +host.dataset.v;
-    $("#r-sub").textContent = `стр. ${pageOf(R.s, v)} · джуз ${juzOf(R.s, v)}`;
-    if (!S.last || S.last.s !== R.s || S.last.v !== v){ S.last = { s: R.s, v }; S.upd = Date.now(); saveLocal(); Remote.schedule(6000); }
+    $("#r-sub").textContent = `стр. ${pageOf(R.s, v)} из 604 · джуз ${juzOf(R.s, v)}`;
+    rememberPos(R.s, v);
   }, 350);
+}
+function refreshReader(){
+  if (overlay !== "reader") return;
+  if (PG) refreshPages();
+  else if (R){ const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; }
 }
 
 /* Verse sheet */
-function verseSheet(s, v){
-  const d = R && R.s === s ? R.data : null; if (!d) return;
+async function verseSheet(s, v){
+  s = +s; v = +v;
+  let d; try { d = await loadSurah(s); } catch (e) { toast("Не удалось загрузить аят. Проверьте соединение."); return; }
   const x = vpGet(s, v), ref = s + ":" + v, bm = S.bm.includes(ref);
   const status = isLearned(s, v) ? `Выучен · повторён ${x[0]} раз` : x && x[0] ? `В процессе · без ошибок ${x[0]} из 3 раз` : x && x[2] ? `Были ошибки: ${x[2]}` : "Ещё не учили";
   openSheet(`
     <div class="grab"></div>
     <h3>${esc(sName(s))}, аят ${v}</h3>
     <p class="sub">${ref} · стр. ${pageOf(s, v)} · джуз ${juzOf(s, v)} · ${status}</p>
-    <p class="ar-big" lang="ar">${d.a[v-1].join(" ")}</p>
+    <p class="ar-big" lang="ar">${wordsHTML(s, v, d.a[v-1])}</p>
     <p class="trn">${esc(d.t[v-1])}</p>
     <div class="sheet-actions">
-      <button class="btn btn-primary wide" data-act="drill-from" data-v="${v}">Учить с этого аята</button>
+      <button class="btn btn-primary wide" data-act="drill-from" data-s="${s}" data-v="${v}">Учить с этого аята</button>
       <button class="btn btn-soft" data-act="toggle-learned" data-s="${s}" data-v="${v}">${isLearned(s, v) ? "Снять «выучен»" : "Отметить выученным"}</button>
       <button class="btn btn-soft" data-act="toggle-bm" data-s="${s}" data-v="${v}">${bm ? "Убрать закладку" : "В закладки"}</button>
       ${AUDIO ? `<button class="btn btn-soft wide" data-act="listen-from" data-s="${s}" data-v="${v}">Слушать с этого аята · ${esc(reciter().name)}</button>` : ""}
@@ -915,6 +1086,7 @@ function renderLearn(){
   const today = dnum();
   const hard = Object.entries(S.vp).filter(([, x]) => (x[2] || 0) > 0 && x[0] < 3).sort((a, b) => b[1][2] - a[1][2]).slice(0, 6);
   $("#learn-body").innerHTML = `
+  ${HOSTED ? "" : `<a class="mic-hint" href="https://mammadibir.github.io/hifz/" target="_blank" rel="noopener" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Проверка чтения голосом и чтецы работают на сайте <b>mammadibir.github.io/hifz</b>. Откройте его в Safari.</span></a>`}
   <div class="card setup">
     <div class="field"><label for="ls">Сура</label><select class="select" id="ls">${opts}</select></div>
     <div class="range-row">
@@ -997,7 +1169,7 @@ function renderDrill(){
 function wordClass(idx){
   const st = D.st[idx];
   if (st === 3) return "w giv";
-  if (st === 1) return "w ok";
+  if (st === 1){ const it = D.items[idx], m = mstr(D.s, it.v, it.i); return "w ok" + (m > 1 ? " m" + (m - 1) : ""); }
   if (st === 2) return "w err";
   return "w hid" + (D.test[D.cur] === idx ? " cur" : "");
 }
@@ -1062,6 +1234,12 @@ function commitDrill(){
     if (D.st[idx] === 2){ p.err++; p.errW.push(idx); }
     per.set(x.v, p);
   });
+  D.items.forEach((it, idx) => {
+    if (!it.test) return;
+    const mk = D.s + ":" + it.v + ":" + it.i;
+    if (D.st[idx] === 2) S.mist[mk] = 5;
+    else if (D.st[idx] === 1 && S.mist[mk]){ S.mist[mk] = Math.min(5, S.mist[mk]) - 1; if (S.mist[mk] <= 0) delete S.mist[mk]; }
+  });
   let versesDone = 0, words = 0, errs = 0;
   for (const [v, p] of per){
     words += p.ok + p.err; errs += p.err;
@@ -1070,7 +1248,6 @@ function commitDrill(){
     if (complete){ versesDone++; if (!p.err) x[0] += 1; }
     x[1] = today; x[2] = (x[2] || 0) + p.err;
     S.vp[key] = x;
-    for (const idx of p.errW){ const it = D.items[idx]; const mk = D.s + ":" + it.v + ":" + it.i; S.mist[mk] = (S.mist[mk] || 0) + 1; }
   }
   const day = S.days[dk] || { v: 0, w: 0, e: 0 };
   day.v += versesDone; day.w += words; day.e += errs; S.days[dk] = day;
@@ -1214,7 +1391,7 @@ async function renderProgress(){
     try {
       const datas = Object.fromEntries(await Promise.all(need.map(async s => [s, await loadSurah(s)])));
       const ml = $("#mist-list"); if (!ml) return;
-      ml.innerHTML = mistakes.map(([k, c]) => { const [s, v, i] = k.split(":").map(Number); const w = datas[s].a[v-1][i] || ""; return `<button class="mrow" data-act="drill" data-s="${s}" data-f="${v}" data-t="${v}"><span class="ar" lang="ar">${w}</span><span><b>${esc(sName(s))}</b><br><small>аят ${s}:${v} · слово ${i + 1}</small></span><span class="badge">×${c}</span></button>`; }).join("");
+      ml.innerHTML = mistakes.map(([k, c]) => { const [s, v, i] = k.split(":").map(Number); const w = datas[s].a[v-1][i] || ""; c = Math.min(5, c); return `<button class="mrow" data-act="drill" data-s="${s}" data-f="${v}" data-t="${v}"><span class="ar" lang="ar"><span class="w m${c}">${w}</span></span><span><b>${esc(sName(s))}</b><br><small>аят ${s}:${v} · слово ${i + 1}</small></span><span class="fade" aria-label="Осталось ${c} прочтений без ошибки">${"<i class=on></i>".repeat(c)}${"<i></i>".repeat(5 - c)}</span></button>`; }).join("") + `<div class="empty" style="padding:12px 14px;text-align:left">Ошибка бледнеет с каждым правильным прочтением этого слова и исчезает после пяти.</div>`;
     } catch (e) { const ml = $("#mist-list"); if (ml) ml.innerHTML = `<div class="empty">Не удалось загрузить слова.</div>`; }
   }
 }
@@ -1225,13 +1402,13 @@ function settingsSheet(confirmReset){
   openSheet(`
     <div class="grab"></div>
     <h3>Настройки</h3>
-    <div class="field"><label for="fs">Размер арабского текста: <span id="fs-val">${S.set.fs}</span> px</label><input type="range" id="fs" min="22" max="44" step="1" value="${S.set.fs}"><p class="preview-ar" lang="ar">${BISMILLAH}</p></div>
-    <div class="field"><span class="flabel">Вид при чтении</span><div class="chips"><button class="chip" data-act="layout" data-k="mushaf" aria-pressed="${S.set.layout === "mushaf"}">Мушаф по страницам</button><button class="chip" data-act="layout" data-k="verses" aria-pressed="${S.set.layout === "verses"}">Аяты с переводом</button></div></div>
+    <div class="field"><label for="fs">Размер арабского текста: <span id="fs-val">${S.set.fs}</span> px</label><input type="range" id="fs" min="22" max="44" step="1" value="${S.set.fs}"><span class="credits">В режиме мушафа размер подбирается под ширину экрана, чтобы строки совпадали с печатным мушафом.</span><p class="preview-ar" lang="ar">${BISMILLAH}</p></div>
+    <div class="field"><span class="flabel">Вид при чтении</span><div class="chips"><button class="chip" data-act="layout" data-k="mushaf" aria-pressed="${S.set.layout === "mushaf"}">Страницы мушафа</button><button class="chip" data-act="layout" data-k="verses" aria-pressed="${S.set.layout === "verses"}">Аяты с переводом</button></div></div>
     <div class="field"><span class="flabel">Цель на день, аятов</span><div class="chips">${[3, 5, 10, 20, 30].map(goalBtn).join("")}</div></div>
     ${AUDIO ? `<button class="btn btn-line" data-act="p-reciter">Чтец: ${esc(reciter().name)} · повтор ${repLabel(S.set.rep)}</button>` : ""}
     <p class="credits">${Remote.ok ? "Прогресс хранится в вашем аккаунте Claude и доступен с любого устройства, где вы открываете это приложение." : "Прогресс хранится в этом браузере. Если очистить данные Safari, он пропадёт."}</p>
     ${confirmReset ? `<div class="confirm"><b>Удалить весь прогресс?</b><span class="muted">Выученные аяты, ошибки и история занятий будут стёрты. Это нельзя отменить.</span><div class="sheet-actions"><button class="btn btn-danger" data-act="reset-yes">Удалить</button><button class="btn btn-line" data-act="settings">Отмена</button></div></div>` : `<button class="btn btn-line" data-act="reset-ask" style="color:var(--err)">Сбросить прогресс</button>`}
-    <p class="credits">Текст Корана: Tanzil Project, Усмани, чтение Хафс от Асыма (<a href="https://tanzil.net" target="_blank" rel="noopener">tanzil.net</a>). Перевод смыслов: Абу Адель, версия 1.0.0, через QuranEnc (<a href="https://quranenc.com/ru/browse/russian_aboadel" target="_blank" rel="noopener">quranenc.com</a>). Разметка страниц и джузов — Мединский мушаф, 604 страницы.</p>`);
+    <p class="credits">Текст Корана: Tanzil Project, Усмани, чтение Хафс от Асыма (<a href="https://tanzil.net" target="_blank" rel="noopener">tanzil.net</a>). Перевод смыслов: Абу Адель, версия 1.0.0, через QuranEnc (<a href="https://quranenc.com/ru/browse/russian_aboadel" target="_blank" rel="noopener">quranenc.com</a>). Страницы и строки — Мединский мушаф, 604 страницы, по разметке проекта quran-madina-html (Tarek Eldeeb, лицензия Waqf GPL).</p>`);
 }
 
 /* ---------- events ---------- */
@@ -1243,7 +1420,7 @@ document.addEventListener("click", e => {
   const w = e.target.closest("#d-body .w"); if (w){ tapWord(+w.dataset.i); return; }
   const a = e.target.closest("[data-act]");
   if (!a){
-    const ay = e.target.closest("#r-body .ayah"); if (ay && R) verseSheet(R.s, +ay.dataset.v);
+    const vs = e.target.closest("#r-body .vs"); if (vs) verseSheet(+vs.dataset.s, +vs.dataset.v);
     return;
   }
   const d = a.dataset, act = d.act;
@@ -1252,7 +1429,7 @@ document.addEventListener("click", e => {
     case "reset-ask": settingsSheet(true); break;
     case "reset-yes": { const set = S.set; S = DEF(); S.set = set; save(); closeSheet(); renderAll(); toast("Прогресс удалён"); break; }
     case "goal": S.set.goal = +d.g; save(); settingsSheet(false); renderAll(); break;
-    case "layout": S.set.layout = d.k; save(); settingsSheet(false); if (overlay === "reader" && R) openReader(R.s, S.last && S.last.s === R.s ? S.last.v : 1); break;
+    case "layout": S.set.layout = d.k; save(); settingsSheet(false); if (overlay === "reader"){ const L = S.last || { s: 1, v: 1 }; openReader(L.s, L.v); } break;
     case "open": closeSheet(); if (D) endDrill(); openReader(+d.s, +d.v || 1); break;
     case "continue-read": { const L = S.last || { s: 1, v: 1 }; openReader(L.s, L.v); break; }
     case "close-reader": if (P.s) pStop(); goTab(tab); break;
@@ -1265,12 +1442,14 @@ document.addEventListener("click", e => {
     case "set-rate": S.set.rate = +d.k; save(); if (P.el) P.el.playbackRate = S.set.rate; reciterSheet(); break;
     case "listen-from": closeSheet(); pPlay(+d.s, +d.v, CNT(+d.s), "reader"); break;
     case "d-listen": { if (!D) break; if (P.s && P.ctx === "drill"){ pStop(); break; } const idx = D.test[D.cur]; const v = idx != null ? D.items[idx].v : D.t; pPlay(D.s, v, v, "drill"); break; }
-    case "toggle-layout": { S.set.layout = S.set.layout === "mushaf" ? "verses" : "mushaf"; save(); const v = S.last && R && S.last.s === R.s ? S.last.v : 1; openReader(R.s, v); break; }
+    case "toggle-layout": { S.set.layout = S.set.layout === "mushaf" ? "verses" : "mushaf"; save(); const L = S.last || { s: 1, v: 1 }; openReader(L.s, L.v); break; }
+    case "page-go": if (PG) goPage(PG.cur + +d.d, true); break;
+    case "page-retry": if (PG) fillPage(+d.p); break;
     case "verse": if (R) verseSheet(R.s, +d.v); break;
-    case "toggle-learned": { const k = d.s + ":" + d.v, x = S.vp[k] || [0, 0, 0]; if (x[0] >= 3) x[0] = 0; else x[0] = 3; x[1] = dnum(); S.vp[k] = x; save(); closeSheet(); if (R) { const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; } toast(x[0] >= 3 ? "Отмечен как выученный" : "Отметка снята"); break; }
-    case "toggle-bm": { const k = d.s + ":" + d.v; S.bm = S.bm.includes(k) ? S.bm.filter(x => x !== k) : [k, ...S.bm].slice(0, 30); save(); closeSheet(); if (R && S.set.layout === "verses") { const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; } toast(S.bm.includes(k) ? "Добавлено в закладки" : "Закладка удалена"); break; }
-    case "copy": { const s = +d.s, v = +d.v; const txt = `${R.data.a[v-1].join(" ")}\n\n${R.data.t[v-1]}\n— ${sName(s)}, ${s}:${v}`; try { navigator.clipboard.writeText(txt).then(() => toast("Скопировано"), () => toast("Не удалось скопировать")); } catch (err) { toast("Не удалось скопировать"); } break; }
-    case "drill-from": { closeSheet(); const s = R.s, f = +d.v, n = CNT(s); startDrill(s, f, Math.min(n, f + (n - f + 1 > 10 ? 4 : n - f))); break; }
+    case "toggle-learned": { const k = d.s + ":" + d.v, x = S.vp[k] || [0, 0, 0]; if (x[0] >= 3) x[0] = 0; else x[0] = 3; x[1] = dnum(); S.vp[k] = x; save(); closeSheet(); refreshReader(); toast(x[0] >= 3 ? "Отмечен как выученный" : "Отметка снята"); break; }
+    case "toggle-bm": { const k = d.s + ":" + d.v; S.bm = S.bm.includes(k) ? S.bm.filter(x => x !== k) : [k, ...S.bm].slice(0, 30); save(); closeSheet(); refreshReader(); toast(S.bm.includes(k) ? "Добавлено в закладки" : "Закладка удалена"); break; }
+    case "copy": { const s = +d.s, v = +d.v, dd = SC[s]; if (!dd) break; const txt = `${dd.a[v-1].join(" ")}\n\n${dd.t[v-1]}\n— ${sName(s)}, ${s}:${v}`; try { navigator.clipboard.writeText(txt).then(() => toast("Скопировано"), () => toast("Не удалось скопировать")); } catch (err) { toast("Не удалось скопировать"); } break; }
+    case "drill-from": { closeSheet(); const s = +d.s || (R && R.s) || 1, f = +d.v, n = CNT(s); startDrill(s, f, Math.min(n, f + (n - f + 1 > 10 ? 4 : n - f))); break; }
     case "drill": closeSheet(); startDrill(+d.s, +d.f, +d.t); break;
     case "drill-done": closeDrill(); break;
     case "close-drill": closeDrill(); break;
@@ -1313,7 +1492,7 @@ $("#r-scroll").addEventListener("scroll", onReaderScroll, { passive: true });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") Remote.flush(); else if (overlay === "drill" && D && !wake) navigator.wakeLock?.request("screen").then(w => wake = w, () => {}); });
 
 function renderAll(){
-  if (overlay === "reader" && R){ const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; }
+  refreshReader();
   if (tab === "home") renderHome(); else if (tab === "learn"){ setup = setup || null; renderLearn(); } else renderProgress();
 }
 
@@ -1322,5 +1501,6 @@ loadLocal(); applySettings(); renderSyncNote(); goTab("home");
 Remote.init();
 </script>
 
+<style>@font-face{font-family:"Amiri Quran Mushaf";src:url(fonts/AmiriQuran.woff2) format("woff2");font-display:swap}:root{--f-quran:"Amiri Quran Mushaf","Amiri Quran","Amiri",serif}</style>
 <script>try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}</script>
 </body></html>
