@@ -344,6 +344,12 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .fmeta b{display:block;font-weight:600;font-size:15px}
 .fmeta small{display:block;color:var(--muted);font-size:12px;line-height:1.35}
 .fsample{font-size:22px;line-height:2;direction:rtl;white-space:nowrap}
+.w.retry{box-shadow:inset 0 -3px 0 var(--err)}
+.w.retry.hid{background:var(--err-soft)}
+.w.retry.err{color:var(--err);background:var(--err-soft)}
+.mframe .w.retry{box-shadow:none}
+.mframe .w.retry.hid,.mframe .w.retry.err{background:linear-gradient(transparent 22%,var(--err-soft) 22% 72%,var(--err) 72% 78%,transparent 78%)}
+.show-all .w.retry.hid{color:var(--ink)}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -513,12 +519,24 @@ function tryMatch(item, toks, t){
   return 0;
 }
 /* Walk recognised tokens against the expected words from `start`.
-   Returns marks [[itemIndex, 1=ok | 2=mistake]] and the index after the last word consumed. */
-function runMatch(items, start, toks, final){
-  const marks = []; let p = start, t = 0;
+   Returns marks [[itemIndex, 1=ok | 2=mistake | 4=mistake, waiting for a correct reading]].
+   Strict mode stops at a wrong word and ignores everything else until that word is read correctly. */
+function runMatch(items, start, toks, final, strict, pending){
+  const marks = []; let p = start, t = 0, waitP = -1;
+  const waiting = q => q === waitP || (pending && pending.has(q));
   while (t < toks.length && p < items.length){
     const k = tryMatch(items[p], toks, t);
-    if (k){ marks.push([p, 1]); p++; t += k; continue; }
+    if (k){ marks.push([p, waiting(p) ? 2 : 1]); p++; t += k; continue; }
+    if (strict){
+      if (!items[p].test){ p++; continue; }
+      if (waiting(p)){ t++; continue; }
+      let rep = 0;
+      for (let d = 1; d <= 4 && p - d >= 0; d++){ rep = tryMatch(items[p - d], toks, t); if (rep) break; }
+      if (rep){ t += rep; continue; }
+      if (t + 1 < toks.length && tryMatch(items[p], toks, t + 1)){ t++; continue; }
+      if (final || t < toks.length - 2){ waitP = p; marks.push([p, 4]); t++; continue; }
+      break;
+    }
     let ahead = 0, kd = 0;
     for (let d = 1; d <= 2 && p + d < items.length; d++){ kd = tryMatch(items[p + d], toks, t); if (kd){ ahead = d; break; } }
     let rep = 0;
@@ -546,7 +564,7 @@ function loadSurah(s){
 
 /* ---------- state ---------- */
 const DEF = () => ({ v: 1, upd: 0, last: null, vp: {}, mist: {}, days: {}, sess: [], bm: [], lastDrill: null,
-  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "amiri" } });
+  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "amiri", strict: true, fb: "sound" } });
 let S = DEF();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function normalizeState(o){
@@ -1165,9 +1183,11 @@ function renderLearn(){
     </div>
     <div class="field"><span class="flabel">Что скрыть</span><div class="chips">${hideBtn("all", "Все слова")}${hideBtn("first", "Кроме первого слова")}${hideBtn("alt", "Через слово")}${hideBtn("none", "Ничего, только проверка")}</div></div>
     <label class="toggle" for="lcue"><span>Показывать перевод как подсказку</span><input type="checkbox" id="lcue"${S.set.cue ? " checked" : ""}></label>
+    <label class="toggle" for="lstrict"><span>Не идти дальше, пока не прочитаю слово правильно</span><input type="checkbox" id="lstrict"${S.set.strict ? " checked" : ""}></label>
+    <div class="field"><span class="flabel">Сигнал при ошибке</span><div class="chips">${[["sound", "Звук"], ["vibe", "Вибрация"], ["both", "Звук и вибрация"], ["off", "Без сигнала"]].map(([k, l]) => `<button class="chip" data-act="fb" data-k="${k}" aria-pressed="${S.set.fb === k}">${l}</button>`).join("")}</div></div>
     <button class="font-row" data-act="font-sheet"><span><span class="flabel">Шрифт</span><b>${esc(qfont().name)}</b></span><span class="ar">${BISMILLAH}</span></button>
     <button class="btn btn-primary" data-act="start-drill" id="start-btn">${esc(startLabel())}</button>
-    <p class="credits">Читайте аят по памяти вслух или про себя. После каждого слова нажимайте «Помню», а если забыли или ошиблись — «Ошибся». ${VOICE ? "Кнопка микрофона включает проверку голосом." : ""} Аят считается выученным после трёх прочтений без ошибок.</p>
+    <p class="credits">Читайте аят по памяти вслух или про себя. После каждого слова нажимайте «Помню», а если забыли или ошиблись — «Ошибся».${S.set.strict ? " Ошибочное слово покажется красным и подождёт: прочитайте его правильно и нажмите «Помню»." : ""} ${VOICE ? "Кнопка микрофона включает проверку голосом." : ""} Аят считается выученным после трёх прочтений без ошибок.</p>
   </div>
   ${rev.length ? `<h2 class="sec">Пора повторить</h2><div class="list">${rev.slice(0, 5).map(r => `<button class="srow" data-act="drill" data-s="${r.s}" data-f="${r.lo}" data-t="${r.hi}"><span class="star${r.l === CNT(r.s) ? " done" : ""}"><span>${r.s}</span></span><span class="sname"><b>${esc(sName(r.s))}, ${r.lo}–${r.hi}</b><small>Повторяли ${agoText(today - r.last)} · выучено ${r.l} из ${CNT(r.s)}</small></span><span class="sar">${esc(META.ch[r.s-1][0])}</span></button>`).join("")}</div>` : ""}
   ${hard.length ? `<h2 class="sec">Трудные аяты</h2><div class="list">${hard.map(([k, x]) => { const [s, v] = k.split(":").map(Number); return `<button class="mrow" data-act="drill" data-s="${s}" data-f="${v}" data-t="${v}"><span class="star"><span>${v}</span></span><span><b>${esc(sName(s))}, ${s}:${v}</b><br><small>Без ошибок ${x[0]} из 3 раз</small></span><span class="badge">${x[2]} ${plural(x[2], OSH)}</span></button>`; }).join("")}</div>` : ""}
@@ -1190,6 +1210,34 @@ function syncSetupUI(){
   $("#start-btn").textContent = startLabel();
 }
 
+/* ---------- mistake signal ---------- */
+let actx = null;
+function unlockAudio(){
+  try {
+    if (!actx){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; actx = new AC(); }
+    if (actx.state === "suspended") actx.resume();
+  } catch (e) {}
+}
+function beep(){
+  if (!actx) return;
+  try {
+    const t0 = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+    o.type = "triangle"; o.frequency.setValueAtTime(330, t0); o.frequency.exponentialRampToValueAtTime(196, t0 + 0.22);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+    o.connect(g); g.connect(actx.destination); o.start(t0); o.stop(t0 + 0.32);
+  } catch (e) {}
+}
+/* Android vibrates through the Vibration API. Safari on iPhone has no such API; on iOS 18+ toggling a switch control gives a short haptic tap. */
+function haptic(){
+  try {
+    if (navigator.vibrate){ navigator.vibrate([70, 50, 70]); return; }
+    const l = document.createElement("label"), i = document.createElement("input");
+    i.type = "checkbox"; i.setAttribute("switch", ""); l.appendChild(i); l.style.cssText = "position:fixed;opacity:0;pointer-events:none;left:-99px";
+    document.body.appendChild(l); l.click(); setTimeout(() => l.remove(), 200);
+  } catch (e) {}
+}
+function feedbackError(){ const f = S.set.fb; if (f === "sound" || f === "both") beep(); if (f === "vibe" || f === "both") haptic(); }
+
 /* ---------- DRILL ---------- */
 let D = null, wake = null;
 const DEC_RE = /^[۞۩]+$/;
@@ -1197,7 +1245,8 @@ function pageLabel(p){
   const [s1, v1] = pageFirst(p), [s2, v2] = p < 604 ? fromGid(PSTART[p] - 1) : [114, 6];
   return s1 === s2 ? `${sName(s1)} ${v1}–${v2}` : `${sName(s1)} ${v1} — ${sName(s2)} ${v2}`;
 }
-const MIC_HINT = `<div class="mic-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Нажмите на микрофон внизу и читайте вслух. Слова будут открываться по мере чтения, ошибки подсветятся красным.</span></div>`;
+const MIC_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
+const micHint = () => `<div class="mic-hint">${MIC_ICON}<span>Нажмите на микрофон внизу и читайте вслух. Слова будут открываться по мере чтения. ${S.set.strict ? "При ошибке слово подчеркнётся красным, и дальше вы пойдёте, только когда прочитаете его правильно. Нажмите на слово, чтобы подсмотреть." : "Ошибки подсветятся красным."}</span></div>`;
 function drillItem(s, v, i, w, data, n){
   let test = true;
   if (S.set.hide === "first" && i === 0 && n > 1) test = false;
@@ -1218,7 +1267,8 @@ function openDrillView(title, sub){
 }
 function beginDrill(meta, items){
   const test = items.map((x, i) => x.test ? i : -1).filter(i => i >= 0);
-  D = Object.assign(meta, { items, test, st: new Int8Array(items.length), cur: 0, hist: [], voiceUsed: false, started: Date.now(), saved: false });
+  D = Object.assign(meta, { items, test, st: new Int8Array(items.length), cur: 0, hist: [], peek: new Set(), alerted: new Set(), voiceUsed: false, started: Date.now(), saved: false });
+  unlockAudio();
   items.forEach((x, i) => { if (!x.test) D.st[i] = 3; });
   S.lastDrill = meta.kind === "page" ? { kind: "page", p: meta.p, s: meta.s, f: meta.f, t: meta.t } : { s: meta.s, f: meta.f, t: meta.t };
   save();
@@ -1266,7 +1316,7 @@ function renderDrill(){
     h += `<span class="w" data-i="${idx}">${x.w}</span> `;
   });
   if (v0) h += ` ${amarker(s, v0)}</p>${S.set.cue ? `<p class="cue">${esc(data.t[v0-1])}</p>` : ""}</div>`;
-  if (VOICE) h = MIC_HINT + h;
+  if (VOICE) h = micHint() + h;
   $("#d-body").innerHTML = h;
   $("#d-body").classList.toggle("show-all", S.set.hide === "none");
   paintAll();
@@ -1277,7 +1327,7 @@ function renderDrillPage(){
   const [s0, v0] = pageFirst(D.p);
   const rows = mushafRows(D.lines, (s, v, i, t) => `<span class="w" data-i="${idxOf.get(s + ":" + v + ":" + i)}">${t}</span>`);
   let h = `<div class="mpg dpg${D.p <= 2 ? " open" : ""}"><div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div><div class="mframe" lang="ar">${rows}</div><div class="mfoot"><span></span><span class="mnum">${arNum(D.p)}</span><span></span></div></div>`;
-  if (VOICE) h = MIC_HINT + h;
+  if (VOICE) h = micHint() + h;
   const body = $("#d-body");
   body.innerHTML = h; body.classList.add("dpage-body"); body.classList.toggle("show-all", S.set.hide === "none");
   sizeDrillPage();
@@ -1297,13 +1347,14 @@ function wordClass(idx){
   if (st === 3) return "w giv";
   if (st === 1){ const it = D.items[idx], m = mstr(it.s, it.v, it.i); return "w ok" + (m > 1 ? " m" + (m - 1) : ""); }
   if (st === 2) return "w err";
+  if (st === 4) return "w retry cur" + (D.peek.has(idx) ? " err" : " hid");
   return "w hid" + (D.test[D.cur] === idx ? " cur" : "");
 }
 function paintAll(){ $$("#d-body .w").forEach(el => el.className = wordClass(+el.dataset.i)); updateDrillHeader(); }
 function paint(idxs){ for (const i of idxs){ const el = $(`#d-body .w[data-i="${i}"]`); if (el) el.className = wordClass(i); } }
 function updateDrillHeader(){
   const total = D.test.length, done = D.cur;
-  let errs = 0; for (const i of D.test) if (D.st[i] === 2) errs++;
+  let errs = 0; for (const i of D.test) if (D.st[i] === 2 || D.st[i] === 4) errs++;
   $("#d-sub").textContent = `${D.range} · ${done} из ${total} ${plural(total, SLOV)}${errs ? " · " + errs + " " + plural(errs, OSH) : ""}`;
   $("#d-prog").style.width = (total ? 100 * done / total : 0) + "%";
   $("#d-undo").disabled = !D.hist.length || !!rec;
@@ -1322,15 +1373,25 @@ function scrollCur(instant){
     sc.scrollTo({ top: sc.scrollTop + (r.top - b.top) - b.height * 0.35, behavior: instant ? "auto" : "smooth" });
   }
 }
+function firstPending(){ let c = 0; while (c < D.test.length && D.st[D.test[c]] !== 0 && D.st[D.test[c]] !== 4) c++; return c; }
 function mark(status, count = 1){
   if (!D || D.cur >= D.test.length) return;
+  unlockAudio();
+  if (status === 2 && S.set.strict){
+    // Strict: show the word in red and wait; "Помню" moves on once it is read correctly.
+    const idx = D.test[D.cur];
+    if (D.st[idx] !== 4){ D.hist.push([[idx, D.st[idx]]]); D.st[idx] = 4; D.alerted.add(idx); }
+    D.peek.add(idx); feedbackError(); paint([idx]); updateDrillHeader(); rebaseVoice();
+    return;
+  }
   const group = [];
-  for (let k = 0; k < count && D.cur < D.test.length; k++){ const idx = D.test[D.cur]; D.st[idx] = status; group.push(idx); D.cur++; }
+  for (let k = 0; k < count && D.cur < D.test.length; k++){ const idx = D.test[D.cur], prev = D.st[idx]; D.st[idx] = prev === 4 ? 2 : status; group.push([idx, prev]); D.cur++; }
   D.hist.push(group);
-  const nextIdx = D.test[D.cur];
-  paint(nextIdx != null ? [...group, nextIdx] : group);
-  if (status === 1) for (const i of group){ const el = $(`#d-body .w[data-i="${i}"]`); if (el){ el.classList.add("fresh"); setTimeout(() => el.classList.remove("fresh"), 500); } }
-  updateDrillHeader(); scrollCur();
+  if (status === 2) feedbackError();
+  const ids = group.map(x => x[0]), nextIdx = D.test[D.cur];
+  paint(nextIdx != null ? [...ids, nextIdx] : ids);
+  if (status === 1) for (const [i, prev] of group){ if (prev === 4) continue; const el = $(`#d-body .w[data-i="${i}"]`); if (el){ el.classList.add("fresh"); setTimeout(() => el.classList.remove("fresh"), 500); } }
+  updateDrillHeader(); scrollCur(); rebaseVoice();
   if (D.cur >= D.test.length) finishDrill();
 }
 function markVerse(){
@@ -1341,20 +1402,21 @@ function markVerse(){
 }
 function undo(){
   if (!D || !D.hist.length || rec) return;
-  const g = D.hist.pop(); const prevCur = D.test[D.cur];
-  for (const i of g) D.st[i] = 0;
-  D.cur = D.test.indexOf(g[0]);
-  paint(prevCur != null ? [...g, prevCur] : g); updateDrillHeader(); scrollCur();
+  const g = D.hist.pop(), prevCur = D.test[D.cur];
+  for (const [i, prev] of g){ D.st[i] = prev; if (prev !== 4) D.peek.delete(i); }
+  D.cur = firstPending();
+  paint([...g.map(x => x[0]), prevCur, D.test[D.cur]].filter(i => i != null)); updateDrillHeader(); scrollCur();
 }
 function tapWord(idx){
   if (!D) return;
   const st = D.st[idx];
+  if (st === 4){ D.peek.add(idx); paint([idx]); return; }
   if (st === 0 && D.test[D.cur] === idx){ mark(2); return; }
   if (st === 1 || st === 2){ D.st[idx] = st === 1 ? 2 : 1; paint([idx]); updateDrillHeader(); }
 }
 function commitDrill(){
   if (!D || D.saved) return null;
-  const marked = D.test.filter(i => D.st[i] === 1 || D.st[i] === 2);
+  const marked = D.test.filter(i => D.st[i] === 1 || D.st[i] === 2 || D.st[i] === 4);
   if (!marked.length) return null;
   D.saved = true;
   const today = dnum(), dk = dkey();
@@ -1364,10 +1426,11 @@ function commitDrill(){
     const k = x.s + ":" + x.v;
     const p = per.get(k) || { s: x.s, v: x.v, tot: 0, ok: 0, err: 0 }; p.tot++;
     if (D.st[idx] === 1) p.ok++;
-    if (D.st[idx] === 2) p.err++;
+    const bad = D.st[idx] === 2 || D.st[idx] === 4;
+    if (bad) p.err++;
     per.set(k, p);
     const mk = k + ":" + x.i;
-    if (D.st[idx] === 2) S.mist[mk] = 5;
+    if (bad) S.mist[mk] = 5;
     else if (D.st[idx] === 1 && S.mist[mk]){ S.mist[mk] = Math.min(5, S.mist[mk]) - 1; if (S.mist[mk] <= 0) delete S.mist[mk]; }
   });
   let versesDone = 0, words = 0, errs = 0;
@@ -1393,7 +1456,7 @@ function finishDrill(){
   const acc = res.words ? Math.floor(100 * (res.words - res.errs) / res.words) : 100;
   const multi = D.s !== D.s2;
   const chips = [...res.per.values()].map(p => `<span class="vchip ${p.err ? "bad" : p.ok + p.err < p.tot ? "part" : "good"}">${multi ? p.s + ":" : ""}${p.v}${p.err ? " · " + p.err : " ✓"}</span>`).join("");
-  const errWords = D.test.filter(i => D.st[i] === 2).map(i => `<span>${D.items[i].w}</span>`).join("");
+  const errWords = D.test.filter(i => D.st[i] === 2 || D.st[i] === 4).map(i => `<span>${D.items[i].w}</span>`).join("");
   let again, next, third;
   if (D.kind === "page"){
     again = `<button class="btn btn-primary wide" data-act="drill-page" data-p="${D.p}">Повторить страницу ещё раз</button>`;
@@ -1434,7 +1497,7 @@ function startVoice(){
   rec = new SR(); rec.lang = "ar-SA"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
   listening = true; D.voiceUsed = true; let starts = 0;
   $("#d-mic").classList.add("on"); $("#d-hear").hidden = false; $("#d-hear").textContent = "Слушаю… начните читать";
-  const begin = () => { vbase = { start: D.cur > 0 ? D.test[D.cur - 1] + 1 : 0, cur: D.cur, st: D.st.slice(), touched: [] }; };
+  const begin = () => { vbase = { start: D.cur > 0 ? D.test[D.cur - 1] + 1 : 0, cur: D.cur, st: D.st.slice(), touched: [], skip: 0, seen: 0 }; };
   begin();
   rec.onstart = () => { starts++; };
   rec.onresult = e => {
@@ -1446,17 +1509,21 @@ function startVoice(){
       if (nx && nt.startsWith(nx)) txt = t; else if (nx && nx.endsWith(nt)) continue; else txt += " " + t;
     }
     $("#d-hear").textContent = txt.trim() || "…";
-    const toks = toTokens(txt);
-    const { marks } = runMatch(D.items, vbase.start, toks, fin);
-    let errsBefore = 0; for (const i of D.test) if (D.st[i] === 2) errsBefore++;
+    const all = toTokens(txt); vbase.seen = all.length;
+    const toks = all.slice(vbase.skip);
+    const pending = new Set(); for (const i of D.test) if (vbase.st[i] === 4) pending.add(i);
+    const { marks } = runMatch(D.items, vbase.start, toks, fin, S.set.strict, pending);
     D.st = vbase.st.slice();
     const touched = new Set(vbase.touched);
-    for (const [i, st] of marks){ if (D.items[i].test){ D.st[i] = st; touched.add(i); } }
+    let newErr = false;
+    for (const [i, st] of marks){
+      if (!D.items[i].test) continue;
+      D.st[i] = st; touched.add(i);
+      if ((st === 2 || st === 4) && !D.alerted.has(i)){ D.alerted.add(i); newErr = true; }
+    }
     vbase.touched = [...touched];
-    let errsAfter = 0; for (const i of D.test) if (D.st[i] === 2) errsAfter++;
-    if (errsAfter > errsBefore) try { navigator.vibrate && navigator.vibrate(60); } catch (err) {}
-    let c = 0; while (c < D.test.length && D.st[D.test[c]] !== 0) c++;
-    const prevCurIdx = D.test[D.cur]; D.cur = c;
+    if (newErr) feedbackError();
+    const prevCurIdx = D.test[D.cur]; D.cur = firstPending();
     paint([...touched, prevCurIdx, D.test[D.cur]].filter(i => i != null));
     updateDrillHeader(); scrollCur();
     if (D.cur >= D.test.length){ stopVoice(); finishDrill(); }
@@ -1469,16 +1536,28 @@ function startVoice(){
   };
   rec.onend = () => {
     if (listening && D && D.cur < D.test.length){
-      if (D.hist) { const g = vbase.touched.filter(i => vbase.st[i] === 0 && D.st[i] !== 0); if (g.length) D.hist.push(g.sort((a, b) => a - b)); }
+      pushVoiceHist();
       begin(); try { rec.start(); } catch (e) { stopVoice(); }
     } else stopVoice();
   };
   try { rec.start(); } catch (e) { stopVoice(); toast("Не удалось включить микрофон."); }
 }
+function pushVoiceHist(){
+  if (!D || !vbase) return;
+  const g = vbase.touched.filter(i => vbase.st[i] !== D.st[i]).sort((a, b) => a - b).map(i => [i, vbase.st[i]]);
+  if (g.length) D.hist.push(g);
+}
+/* A button press while listening: keep what was marked and match only speech that comes after it. */
+function rebaseVoice(){
+  if (!rec || !vbase || !D) return;
+  pushVoiceHist();
+  const seen = vbase.seen;
+  vbase = { start: D.cur > 0 ? D.test[D.cur - 1] + 1 : 0, cur: D.cur, st: D.st.slice(), touched: [], skip: seen, seen };
+}
 function stopVoice(){
   listening = false;
   if (rec){ const r = rec; rec = null; r.onend = null; r.onresult = null; try { r.abort(); } catch (e) {}
-    if (D && vbase){ const g = vbase.touched.filter(i => vbase.st[i] === 0 && D.st[i] !== 0); if (g.length) D.hist.push(g.sort((a, b) => a - b)); } }
+    pushVoiceHist(); }
   vbase = null;
   $("#d-mic").classList.remove("on"); $("#d-hear").hidden = true;
   if (D) updateDrillHeader();
@@ -1618,7 +1697,8 @@ document.addEventListener("click", e => {
     case "d-err": mark(2); break;
     case "d-verse": markVerse(); break;
     case "d-undo": undo(); break;
-    case "d-mic": if (rec) stopVoice(); else startVoice(); break;
+    case "d-mic": unlockAudio(); if (rec) stopVoice(); else startVoice(); break;
+    case "fb": S.set.fb = d.k; save(); $$("[data-act=fb]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === d.k)); unlockAudio(); feedbackError(); break;
     case "hide": S.set.hide = d.k; save(); $$("[data-act=hide]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === d.k)); break;
     case "pick": setup = { mode: (setup && setup.mode) || "range", s: +d.s, f: 1, t: Math.min(CNT(+d.s), 7), p: pageOf(+d.s, 1) }; syncSetupUI(); break;
     case "step": { readSetup(); const n = CNT(setup.s); setup[d.k] = Math.max(1, Math.min(n, setup[d.k] + +d.d)); if (setup.t < setup.f) { if (d.k === "f") setup.t = setup.f; else setup.f = setup.t; } syncSetupUI(); break; }
@@ -1634,6 +1714,7 @@ document.addEventListener("input", e => {
   if (e.target.id === "q"){ query = e.target.value; renderList(); }
   else if (e.target.id === "fs"){ S.set.fs = +e.target.value; $("#fs-val").textContent = S.set.fs; applySettings(); }
   else if (e.target.id === "lcue"){ S.set.cue = e.target.checked; save(); }
+  else if (e.target.id === "lstrict"){ S.set.strict = e.target.checked; save(); }
 });
 document.addEventListener("change", e => {
   if (e.target.id === "fs") save();
