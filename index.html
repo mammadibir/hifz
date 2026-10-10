@@ -350,6 +350,26 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .mframe .w.retry{box-shadow:none}
 .mframe .w.retry.hid,.mframe .w.retry.err{background:linear-gradient(transparent 22%,var(--err-soft) 22% 72%,var(--err) 72% 78%,transparent 78%)}
 .show-all .w.retry.hid{color:var(--ink)}
+.acc-chip{display:flex;align-items:center;gap:6px;height:36px;padding-inline:4px 12px;border-radius:999px;background:var(--lapis-soft);color:var(--lapis);font-weight:600;font-size:13.5px;max-width:150px;flex:none}
+.acc-chip .acc-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.acc-chip:not(:has(.avatar)){padding-inline:14px}
+.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--lapis);color:var(--on-lapis);font:700 14px/1 var(--f-display);flex:none}
+.avatar.big{width:48px;height:48px;font-size:22px}
+.acc-head{display:flex;align-items:center;gap:12px}
+.fam-code{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1.5px dashed var(--gold);border-radius:14px;padding:12px 14px;background:var(--gold-soft)}
+.fam-code b{font:700 24px/1 var(--f-display);letter-spacing:.12em;color:var(--ink);font-variant-numeric:tabular-nums}
+.form-err{margin:0;color:var(--err);font-size:13.5px;line-height:1.4}
+.fam-list{display:flex;flex-direction:column}
+.fam-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;padding-block:10px;border-top:1px solid var(--line)}
+.fam-row:first-child{border-top:0}
+.fam-row.me .fam-main b{color:var(--lapis)}
+.fam-main b{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fam-main b small{font-weight:500;color:var(--muted);font-size:12px}
+.fam-main > small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fam-num{display:flex;flex-direction:column;align-items:center;min-width:52px}
+.fam-num b{font:700 18px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.fam-num small{font-size:11px;color:var(--muted)}
+.link-btn{color:var(--lapis);font-weight:600;font-size:13.5px;padding:4px 2px}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -365,6 +385,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
         <span class="brand-mark" aria-hidden="true">حفظ</span>
         <div><h1>Мой хифз</h1><p id="today-date">&nbsp;</p></div>
       </div>
+      <button class="acc-chip" id="acc-chip" data-act="account" hidden></button>
       <button class="icon-btn" data-act="settings" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </header>
     <div class="scroll" id="home-scroll">
@@ -590,9 +611,9 @@ function mergeStates(a, b){
   base.upd = Math.max(a.upd || 0, b.upd || 0);
   return base;
 }
-function loadLocal(){ try { const raw = localStorage.getItem("hifz.v1"); if (raw) S = normalizeState(JSON.parse(raw)); } catch (e) {} }
-function saveLocal(){ try { localStorage.setItem("hifz.v1", JSON.stringify(S)); } catch (e) {} }
-function save(){ S.upd = Date.now(); trimState(); saveLocal(); Remote.schedule(); }
+function loadLocal(){ try { const raw = localStorage.getItem(LKEY); if (raw) S = normalizeState(JSON.parse(raw)); } catch (e) {} }
+function saveLocal(){ try { localStorage.setItem(LKEY, JSON.stringify(S)); } catch (e) {} }
+function save(){ S.upd = Date.now(); trimState(); saveLocal(); Remote.schedule(); Cloud.schedule(); }
 
 const Remote = {
   ref: null, timer: 0, writing: false, dirty: false, fails: 0, ok: false,
@@ -815,6 +836,252 @@ function reciterSheet(){
     <div class="field"><span class="flabel">Скорость</span><div class="chips">${[0.75, 1, 1.25].map(r => `<button class="chip" data-act="set-rate" data-k="${r}" aria-pressed="${S.set.rate === r}">${String(r).replace(".", ",")}×</button>`).join("")}</div></div>
     <p class="credits">Аудио: everyayah.com и cdn.islamic.network. Для прослушивания нужен интернет.</p>`);
 }
+
+/* ---------- accounts (website only): Firebase login + per-account progress + family ---------- */
+const FB_VER = "10.12.2";
+const LOGIN_RE = /^[a-z0-9._-]{3,30}$/;
+const loginEmail = l => l.trim().toLowerCase() + "@hifz.family";
+const FAM_ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const genCode = () => Array.from({ length: 6 }, () => FAM_ABC[Math.floor(Math.random() * FAM_ABC.length)]).join("");
+let pendingJoin = null;
+function readJoinHash(){ try { const m = location.hash.match(/^#join-([A-Za-z0-9]{4,10})$/); if (m){ pendingJoin = m[1].toUpperCase(); history.replaceState(null, "", location.pathname + location.search); return true; } } catch (e) {} return false; }
+readJoinHash();
+window.addEventListener("hashchange", () => { if (readJoinHash() && Cloud.on) accountSheet(Cloud.user ? "family" : "register"); });
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("load " + src)); document.head.appendChild(s); }); }
+function cloudErr(e){
+  const c = (e && e.code) || "";
+  if (c === "auth/email-already-in-use") return "Такой логин уже занят. Выберите другой.";
+  if (c === "auth/invalid-credential" || c === "auth/wrong-password" || c === "auth/user-not-found" || c === "auth/invalid-login-credentials") return "Неверный логин или пароль.";
+  if (c === "auth/weak-password") return "Пароль должен быть не короче 6 символов.";
+  if (c === "auth/invalid-email") return "Логин: латинские буквы, цифры, точка, дефис или подчёркивание, от 3 символов.";
+  if (c === "auth/too-many-requests") return "Слишком много попыток. Подождите пару минут.";
+  if (c === "auth/network-request-failed" || c === "unavailable") return "Нет связи с сервером. Проверьте интернет.";
+  if (c === "family/not-found") return "Семья с таким кодом не найдена. Проверьте код.";
+  if (c === "permission-denied") return "Сервер отказал в доступе. Проверьте, что правила Firestore вставлены и опубликованы.";
+  return "Не получилось: " + ((e && e.message) || "неизвестная ошибка");
+}
+function summary(){
+  const last = S.sess[0];
+  return {
+    learned: totalLearned(), streak: streak(), today: (S.days[dkey()] || {}).v || 0, dayKey: dkey(), acc7: accuracy(7),
+    sess: S.sess.length, last: last ? last.id : 0,
+    lastLabel: last ? (last.k === "page" ? "Страница " + last.p : sName(last.s) + ", " + last.f + "–" + last.t) : "",
+    updated: Date.now()
+  };
+}
+const Cloud = {
+  on: false, user: null, profile: null, db: null, auth: null, timer: 0, writing: false, dirty: false, famUnsub: null, family: [], ready: false,
+  async init(){
+    if (!HOSTED || !window.HIFZ_FIREBASE) return;
+    try {
+      const base = "https://www.gstatic.com/firebasejs/" + FB_VER + "/";
+      if (!window.firebase){
+        await loadScript(base + "firebase-app-compat.js");
+        await Promise.all([loadScript(base + "firebase-auth-compat.js"), loadScript(base + "firebase-firestore-compat.js")]);
+      }
+      firebase.initializeApp(window.HIFZ_FIREBASE);
+      this.auth = firebase.auth(); this.db = firebase.firestore();
+    } catch (e) { console.warn("cloud", e); return; }
+    this.on = true; renderAccountChip();
+    this.auth.onAuthStateChanged(u => this.onUser(u));
+  },
+  async onUser(u){
+    this.user = u; this.ready = false;
+    if (this.famUnsub){ this.famUnsub(); this.famUnsub = null; } this.family = [];
+    if (!u){ this.profile = null; switchLocal(null); renderAccountChip(); renderAll(); if (pendingJoin) accountSheet("register"); return; }
+    switchLocal(u.uid);
+    renderAccountChip();
+    try {
+      const [st, pr] = await Promise.all([this.db.doc("states/" + u.uid).get(), this.db.doc("profiles/" + u.uid).get()]);
+      if (this.user !== u) return;
+      if (st.exists){ try { S = mergeStates(S, normalizeState(JSON.parse(st.data().s))); } catch (e) {} }
+      this.profile = pr.exists ? pr.data() : null;
+    } catch (e) { console.warn("cloud load", e); }
+    this.ready = true;
+    saveLocal(); applySettings(); renderAccountChip(); renderAll();
+    if (this.profile) this.watchFamily();
+    if (!this.profile || pendingJoin) accountSheet("family");
+    else { if ($("#acc-form")) closeSheet(); if (this.justLogged) toast("Вы вошли как " + this.profile.name); offerImport(); }
+    this.justLogged = false;
+    this.schedule(800);
+  },
+  schedule(ms = 3000){ if (!this.user || !this.ready) return; this.dirty = true; clearTimeout(this.timer); this.timer = setTimeout(() => this.flush(), ms); },
+  async flush(){
+    if (!this.user || !this.ready || this.writing || !this.dirty) return;
+    this.writing = true; this.dirty = false;
+    const uid = this.user.uid;
+    try {
+      await this.db.doc("states/" + uid).set({ s: JSON.stringify(S), updated: Date.now() });
+      if (this.profile) await this.db.doc("profiles/" + uid).set(Object.assign({ name: this.profile.name, login: this.profile.login, family: this.profile.family, created: this.profile.created || Date.now() }, summary()));
+    } catch (e) { console.warn("cloud save", e); this.dirty = true; }
+    finally { this.writing = false; if (this.dirty) this.schedule(8000); }
+  },
+  async createFamily(uid){
+    for (let i = 0; i < 6; i++){
+      const code = genCode();
+      try { await this.db.doc("families/" + code).set({ owner: uid, created: Date.now() }); return code; }
+      catch (e) { if (e && e.code !== "permission-denied") throw e; }
+    }
+    throw new Error("Не удалось создать семью, попробуйте ещё раз.");
+  },
+  async setFamily(code){
+    const uid = this.user.uid;
+    if (code){
+      code = code.trim().toUpperCase();
+      const f = await this.db.doc("families/" + code).get();
+      if (!f.exists){ const er = new Error("family"); er.code = "family/not-found"; throw er; }
+    } else code = await this.createFamily(uid);
+    const name = (this.profile && this.profile.name) || this.pendingName || this.user.displayName || "Без имени";
+    const login = (this.profile && this.profile.login) || (this.user.email || "").split("@")[0];
+    this.profile = { name, login, family: code, created: (this.profile && this.profile.created) || Date.now() };
+    await this.db.doc("profiles/" + uid).set(Object.assign({}, this.profile, summary()));
+    pendingJoin = null;
+    this.watchFamily(); this.schedule(500);
+    return code;
+  },
+  async register(name, login, pass){
+    const cred = await this.auth.createUserWithEmailAndPassword(loginEmail(login), pass);
+    await cred.user.updateProfile({ displayName: name });
+    this.profile = null; this.pendingName = name;
+  },
+  watchFamily(){
+    if (this.famUnsub){ this.famUnsub(); this.famUnsub = null; }
+    if (!this.profile || !this.profile.family) return;
+    this.famUnsub = this.db.collection("profiles").where("family", "==", this.profile.family).onSnapshot(qs => {
+      this.family = qs.docs.map(d => Object.assign({ id: d.id }, d.data()));
+      if (tab === "progress" && !overlay) renderFamily();
+    }, e => console.warn("family", e));
+  },
+  async logout(){ await this.flush(); await this.auth.signOut(); }
+};
+
+/* Each account keeps its own copy on the phone, so brothers sharing one phone never see each other's progress. */
+let LKEY = "hifz.v1";
+try { const lu = localStorage.getItem("hifz.lastUid"); if (lu && HOSTED && window.HIFZ_FIREBASE) LKEY = "hifz.u." + lu; } catch (e) {}
+function switchLocal(uid){
+  const key = uid ? "hifz.u." + uid : "hifz.v1";
+  try { localStorage.setItem("hifz.lastUid", uid || ""); } catch (e) {}
+  if (key === LKEY) return;
+  saveLocal();
+  const set = S.set;
+  LKEY = key;
+  S = DEF(); loadLocal();
+  if (!localStorageHas(key)) S.set = Object.assign(DEF().set, set);
+}
+function localStorageHas(k){ try { return !!localStorage.getItem(k); } catch (e) { return false; } }
+function offerImport(){
+  if (!Cloud.user) return;
+  let anon = null;
+  try { const raw = localStorage.getItem("hifz.v1"); if (raw) anon = normalizeState(JSON.parse(raw)); if (localStorage.getItem("hifz.imported." + Cloud.user.uid)) anon = null; } catch (e) {}
+  if (!anon || !anon.sess.length) return;
+  openSheet(`
+    <div class="grab"></div>
+    <h3>Перенести прогресс в аккаунт?</h3>
+    <p class="sub" style="margin:0">На этом телефоне уже есть занятия без аккаунта: ${anon.sess.length} ${plural(anon.sess.length, ["занятие", "занятия", "занятий"])}. Их можно добавить в аккаунт «${esc(Cloud.profile ? Cloud.profile.name : "")}».</p>
+    <div class="sheet-actions"><button class="btn btn-primary" data-act="import-yes">Перенести</button><button class="btn btn-line" data-act="import-no">Не нужно</button></div>`);
+}
+function renderAccountChip(){
+  const b = $("#acc-chip"); if (!b) return;
+  b.hidden = !Cloud.on;
+  if (!Cloud.on) return;
+  const u = Cloud.user, name = (Cloud.profile && Cloud.profile.name) || (u && u.displayName) || "";
+  b.innerHTML = u ? `<span class="avatar">${esc((name || "?").slice(0, 1).toUpperCase())}</span><span class="acc-name">${esc(name || "Аккаунт")}</span>` : `<span class="acc-name">Войти</span>`;
+  b.setAttribute("aria-label", u ? "Аккаунт " + name : "Войти в аккаунт");
+}
+function inviteLink(code){ return location.origin + location.pathname + "#join-" + code; }
+function accountSheet(mode, msg){
+  if (!Cloud.on) return;
+  const u = Cloud.user, err = msg ? `<p class="form-err" role="alert">${esc(msg)}</p>` : "";
+  if (!u){
+    const reg = mode === "register";
+    openSheet(`
+      <div class="grab"></div>
+      <h3>${reg ? "Регистрация" : "Вход"}</h3>
+      <div class="seg" role="group"><button data-act="acc-mode" data-k="login" aria-pressed="${!reg}">Вход</button><button data-act="acc-mode" data-k="register" aria-pressed="${reg}">Регистрация</button></div>
+      <form id="acc-form" class="setup" data-mode="${reg ? "register" : "login"}" novalidate>
+        ${reg ? `<div class="field"><label for="acc-name">Имя</label><input class="select" id="acc-name" autocomplete="nickname" placeholder="Как вас показывать братьям" maxlength="30" required></div>` : ""}
+        <div class="field"><label for="acc-login">Логин</label><input class="select" id="acc-login" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="латиницей, например muhammad" maxlength="30" required></div>
+        <div class="field"><label for="acc-pass">Пароль</label><input class="select" id="acc-pass" type="password" autocomplete="${reg ? "new-password" : "current-password"}" placeholder="не короче 6 символов" required></div>
+        ${err}
+        <button class="btn btn-primary" type="submit" id="acc-submit">${reg ? "Создать аккаунт" : "Войти"}</button>
+      </form>
+      <p class="credits">${reg ? "У каждого брата свой логин и пароль. После регистрации можно создать семью или вступить в неё по коду, чтобы видеть прогресс друг друга." : "Прогресс хранится на сервере и доступен с любого телефона, где вы войдёте."}${pendingJoin ? ` Код семьи из приглашения: <b>${esc(pendingJoin)}</b>.` : ""}</p>`);
+    return;
+  }
+  if (!Cloud.profile || mode === "family"){
+    const code = pendingJoin || "";
+    openSheet(`
+      <div class="grab"></div>
+      <h3>Семья</h3>
+      <p class="sub" style="margin:0">Братья в одной семье видят прогресс друг друга. Вступите по коду, который вам прислали, или создайте новую семью.</p>
+      <form id="fam-form" class="setup" novalidate>
+        <div class="field"><label for="fam-code">Код семьи</label><input class="select" id="fam-code" autocapitalize="characters" spellcheck="false" maxlength="10" value="${esc(code)}" placeholder="например K7Q2MX"></div>
+        ${err}
+        <button class="btn btn-primary" type="submit">Вступить в семью</button>
+      </form>
+      ${Cloud.profile && Cloud.profile.family ? `<button class="btn btn-line" data-act="account">Отмена</button>` : `<button class="btn btn-soft" data-act="fam-new">Создать новую семью</button>`}`);
+    return;
+  }
+  const p = Cloud.profile;
+  openSheet(`
+    <div class="grab"></div>
+    <div class="acc-head"><span class="avatar big">${esc(p.name.slice(0, 1).toUpperCase())}</span><div><h3>${esc(p.name)}</h3><p class="sub" style="margin:0">Логин: ${esc(p.login)}</p></div></div>
+    <div class="fam-code"><span class="flabel">Код семьи</span><b>${esc(p.family)}</b></div>
+    <p class="credits" style="margin:0">Чтобы брат попал в вашу семью, отправьте ему ссылку-приглашение. Он зарегистрируется, и код подставится сам.</p>
+    <div class="sheet-actions">
+      <button class="btn btn-primary wide" data-act="copy-invite">Отправить ссылку-приглашение</button>
+      <button class="btn btn-soft" data-act="acc-family">Сменить семью</button>
+      <button class="btn btn-line" data-act="logout">Выйти</button>
+    </div>
+    <p class="credits">Прогресс сохраняется на сервере. На этом телефоне можно входить в разные аккаунты по очереди, у каждого будет свой прогресс.</p>`);
+}
+async function onAccountSubmit(form){
+  const btn = form.querySelector("[type=submit]"); btn.disabled = true;
+  try {
+    if (form.id === "acc-form"){
+      const reg = form.dataset.mode === "register";
+      const login = $("#acc-login").value.trim().toLowerCase(), pass = $("#acc-pass").value;
+      if (!LOGIN_RE.test(login)) throw { code: "auth/invalid-email" };
+      if (pass.length < 6) throw { code: "auth/weak-password" };
+      if (reg){
+        const name = $("#acc-name").value.trim();
+        if (!name){ accountSheet("register", "Укажите имя."); return; }
+        await Cloud.register(name, login, pass);
+      } else { Cloud.justLogged = true; await Cloud.auth.signInWithEmailAndPassword(loginEmail(login), pass); }
+    } else if (form.id === "fam-form"){
+      const code = $("#fam-code").value.trim();
+      if (!code){ accountSheet("family", "Введите код или создайте новую семью."); return; }
+      await Cloud.setFamily(code);
+      closeSheet(); toast("Вы в семье " + Cloud.profile.family); renderAccountChip(); offerImport();
+    }
+  } catch (e) {
+    const mode = form.id === "fam-form" ? "family" : form.dataset.mode;
+    accountSheet(mode, cloudErr(e));
+  } finally { btn.disabled = false; }
+}
+function ago(ms){
+  if (!ms) return "ещё не занимался";
+  const d = dnum() - dnum(new Date(ms));
+  return d <= 0 ? "сегодня" : d === 1 ? "вчера" : d + " " + plural(d, DNEY) + " назад";
+}
+function familyHTML(){
+  if (!Cloud.on) return "";
+  if (!Cloud.user) return `<div class="card fam-card"><div class="eyebrow">Семья</div><p style="margin:6px 0 12px">Войдите в аккаунт, чтобы прогресс хранился на сервере и братья видели, как у вас дела.</p><button class="btn btn-primary" data-act="account">Войти или зарегистрироваться</button></div>`;
+  if (!Cloud.profile) return `<div class="card fam-card"><div class="eyebrow">Семья</div><p style="margin:6px 0 12px">Вступите в семью по коду или создайте новую.</p><button class="btn btn-primary" data-act="acc-family">Настроить семью</button></div>`;
+  const me = Cloud.user.uid, today = dkey();
+  const rows = (Cloud.family.length ? Cloud.family : [Object.assign({ id: me }, Cloud.profile, summary())]).slice().sort((a, b) => (b.learned || 0) - (a.learned || 0));
+  return `<div class="card fam-card">
+    <div class="list-head" style="margin-bottom:8px"><div class="eyebrow">Семья · ${esc(Cloud.profile.family)}</div><button class="link-btn" data-act="copy-invite">Пригласить</button></div>
+    <div class="fam-list">${rows.map(r => { const isMe = r.id === me, t = r.dayKey === today ? (r.today || 0) : 0; return `<div class="fam-row${isMe ? " me" : ""}">
+      <span class="avatar">${esc((r.name || "?").slice(0, 1).toUpperCase())}</span>
+      <span class="fam-main"><b>${esc(r.name || "Без имени")}${isMe ? ` <small>вы</small>` : ""}</b><small>${t ? `сегодня ${nAyat(t)}` : ago(r.last)}${r.lastLabel ? " · " + esc(r.lastLabel) : ""}</small></span>
+      <span class="fam-num"><b>${r.learned || 0}</b><small>выучено</small></span>
+      <span class="fam-num"><b>${r.streak || 0}</b><small>${plural(r.streak || 0, DNEY)}</small></span>
+    </div>`; }).join("")}</div>
+    ${rows.length < 2 ? `<p class="credits" style="margin:10px 0 0">Пока в семье только вы. Нажмите «Пригласить» и отправьте ссылку братьям.</p>` : ""}
+  </div>`;
+}
+function renderFamily(){ const el = $("#family-slot"); if (el) el.innerHTML = familyHTML(); }
 
 /* ---------- navigation ---------- */
 let tab = "home", overlay = null;
@@ -1564,7 +1831,7 @@ function stopVoice(){
 }
 
 /* ---------- PROGRESS ---------- */
-function renderSyncNote(){ $("#sync-note").textContent = Remote.ok ? "Сохраняется в вашем аккаунте Claude" : "Сохраняется на этом устройстве"; }
+function renderSyncNote(){ $("#sync-note").textContent = Cloud.user ? `Аккаунт ${(Cloud.profile && Cloud.profile.name) || ""} · сохраняется на сервере` : Remote.ok ? "Сохраняется в вашем аккаунте Claude" : "Сохраняется на этом устройстве"; }
 async function renderProgress(){
   renderSyncNote();
   const learned = totalLearned(), st = streak(), acc = accuracy(7);
@@ -1588,6 +1855,7 @@ async function renderProgress(){
   const mistakes = Object.entries(S.mist).sort((a, b) => b[1] - a[1]).slice(0, 10);
   const empty = !S.sess.length;
   el.innerHTML = `
+    <div id="family-slot">${familyHTML()}</div>
     <div class="tiles">
       <div class="tile"><b>${learned}</b><span>${plural(learned, AYAT)} выучено из 6236 (${pct < 1 && learned ? pct.toFixed(2) : pct.toFixed(1)}%)</span></div>
       <div class="tile"><b>${st}</b><span>${plural(st, DNEY)} подряд с занятиями</span></div>
@@ -1632,6 +1900,7 @@ function settingsSheet(confirmReset){
     <button class="font-row" data-act="font-sheet"><span><span class="flabel">Шрифт и размер</span><b>${esc(qfont().name)} · ${S.set.fs} px</b></span><span class="ar">${BISMILLAH}</span></button>
     <div class="field"><span class="flabel">Вид при чтении</span><div class="chips"><button class="chip" data-act="layout" data-k="mushaf" aria-pressed="${S.set.layout === "mushaf"}">Страницы мушафа</button><button class="chip" data-act="layout" data-k="verses" aria-pressed="${S.set.layout === "verses"}">Аяты с переводом</button></div></div>
     <div class="field"><span class="flabel">Цель на день, аятов</span><div class="chips">${[3, 5, 10, 20, 30].map(goalBtn).join("")}</div></div>
+    ${Cloud.on ? `<button class="btn btn-line" data-act="account">${Cloud.user ? "Аккаунт: " + esc((Cloud.profile && Cloud.profile.name) || "") : "Войти в аккаунт"}</button>` : ""}
     ${AUDIO ? `<button class="btn btn-line" data-act="p-reciter">Чтец: ${esc(reciter().name)} · повтор ${repLabel(S.set.rep)}</button>` : ""}
     <p class="credits">${Remote.ok ? "Прогресс хранится в вашем аккаунте Claude и доступен с любого устройства, где вы открываете это приложение." : "Прогресс хранится в этом браузере. Если очистить данные Safari, он пропадёт."}</p>
     ${confirmReset ? `<div class="confirm"><b>Удалить весь прогресс?</b><span class="muted">Выученные аяты, ошибки и история занятий будут стёрты. Это нельзя отменить.</span><div class="sheet-actions"><button class="btn btn-danger" data-act="reset-yes">Удалить</button><button class="btn btn-line" data-act="settings">Отмена</button></div></div>` : `<button class="btn btn-line" data-act="reset-ask" style="color:var(--err)">Сбросить прогресс</button>`}
@@ -1653,6 +1922,23 @@ document.addEventListener("click", e => {
   const d = a.dataset, act = d.act;
   switch (act){
     case "settings": settingsSheet(false); break;
+    case "account": accountSheet(Cloud.user ? "profile" : "login"); break;
+    case "acc-mode": accountSheet(d.k); break;
+    case "acc-family": accountSheet("family"); break;
+    case "fam-new": a.disabled = true; Cloud.setFamily(null).then(code => { closeSheet(); toast("Семья создана, код " + code); renderAccountChip(); renderAll(); offerImport(); }, e => accountSheet("family", cloudErr(e))); break;
+    case "copy-invite": {
+      if (!Cloud.profile) break;
+      const url = inviteLink(Cloud.profile.family), text = "Заучиваем Коран вместе. Регистрируйся по ссылке, код семьи " + Cloud.profile.family + ":";
+      if (navigator.share) navigator.share({ title: "Мой хифз", text, url }).catch(() => {});
+      else { try { navigator.clipboard.writeText(url).then(() => toast("Ссылка скопирована"), () => toast(url)); } catch (err) { toast(url); } }
+      break;
+    }
+    case "logout": Cloud.logout().then(() => { closeSheet(); toast("Вы вышли из аккаунта"); }, e => toast(cloudErr(e))); break;
+    case "import-yes": {
+      try { const anon = normalizeState(JSON.parse(localStorage.getItem("hifz.v1"))); S = mergeStates(S, anon); localStorage.removeItem("hifz.v1"); localStorage.setItem("hifz.imported." + Cloud.user.uid, "1"); } catch (err) {}
+      save(); closeSheet(); renderAll(); toast("Прогресс перенесён в аккаунт"); break;
+    }
+    case "import-no": try { localStorage.setItem("hifz.imported." + Cloud.user.uid, "1"); } catch (err) {} closeSheet(); break;
     case "font-sheet": fontSheet(); break;
     case "set-font": {
       S.set.font = d.k; save(); applyFont();
@@ -1722,6 +2008,9 @@ document.addEventListener("change", e => {
   else if (e.target.id === "lf" || e.target.id === "lt"){ readSetup(); setup.p = pageOf(setup.s, setup.f); syncSetupUI(); }
   else if (e.target.id === "lp"){ readSetup(); const [s, v] = pageFirst(setup.p); setup.s = s; setup.f = v; setup.t = Math.min(CNT(s), v + 4); syncSetupUI(); }
 });
+document.addEventListener("submit", e => {
+  if (e.target.id === "acc-form" || e.target.id === "fam-form"){ e.preventDefault(); onAccountSubmit(e.target); }
+});
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#sheet").hidden){ closeSheet(); return; }
   if (overlay === "drill" && $("#sheet").hidden && !e.target.closest("input,select")){
@@ -1731,7 +2020,7 @@ document.addEventListener("keydown", e => {
   }
 });
 $("#r-scroll").addEventListener("scroll", onReaderScroll, { passive: true });
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") Remote.flush(); else if (overlay === "drill" && D && !wake) navigator.wakeLock?.request("screen").then(w => wake = w, () => {}); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden"){ Remote.flush(); Cloud.flush(); } else if (overlay === "drill" && D && !wake) navigator.wakeLock?.request("screen").then(w => wake = w, () => {}); });
 
 function renderAll(){
   refreshReader();
@@ -1741,6 +2030,7 @@ function renderAll(){
 /* ---------- boot ---------- */
 loadLocal(); applySettings(); renderSyncNote(); goTab("home");
 Remote.init();
+Cloud.init();
 </script>
 
 <script>try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}</script>
