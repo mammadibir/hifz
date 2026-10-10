@@ -310,12 +310,30 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .pnav{width:48px;height:36px;border-radius:10px;color:var(--lapis);display:grid;place-items:center}
 .pnav svg{width:22px;height:22px}
 .pnav:disabled{opacity:.25}
+.mnum-btn{display:flex;flex-direction:column;align-items:center;gap:0;padding:2px 12px;border-radius:10px;line-height:1.1}
+.mnum-btn small{font:600 10.5px var(--f-ui);color:var(--lapis);letter-spacing:.02em}
+.mnum-btn:hover{background:var(--lapis-soft)}
+.dpage-body{padding-inline:12px}
+.dpage-body .mpg{margin-inline:auto}
+.dpage-body .mfoot{justify-content:center}
+.cue-strip{padding-inline:16px;padding-block:8px;background:var(--surface);border-top:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.45;max-height:4.6em;overflow-y:auto}
 /* Past mistakes fade with each correct reading: m5 is fresh, m1 nearly gone */
 .w.m5{color:var(--err);background:var(--err-soft)}
 .w.m4{color:color-mix(in srgb,var(--err) 80%,var(--ink));background:color-mix(in srgb,var(--err-soft) 75%,transparent)}
 .w.m3{color:color-mix(in srgb,var(--err) 60%,var(--ink));background:color-mix(in srgb,var(--err-soft) 50%,transparent)}
 .w.m2{color:color-mix(in srgb,var(--err) 40%,var(--ink));background:color-mix(in srgb,var(--err-soft) 30%,transparent)}
 .w.m1{color:color-mix(in srgb,var(--err) 22%,var(--ink));background:color-mix(in srgb,var(--err-soft) 14%,transparent)}
+/* Inside mushaf lines the font's tall line box would turn word highlights into one grey wall; draw them as bands instead. */
+.mframe .w.hid{background:linear-gradient(transparent 22%,var(--veil) 22% 78%,transparent 78%)}
+.mframe .w.cur{background:linear-gradient(transparent 22%,var(--lapis-soft) 22% 72%,var(--lapis) 72% 78%,transparent 78%);box-shadow:none}
+.mframe .w.err,.mframe .w.m5{background:linear-gradient(transparent 22%,var(--err-soft) 22% 78%,transparent 78%)}
+.mframe .w.m4{background:linear-gradient(transparent 22%,color-mix(in srgb,var(--err-soft) 75%,transparent) 22% 78%,transparent 78%)}
+.mframe .w.m3{background:linear-gradient(transparent 22%,color-mix(in srgb,var(--err-soft) 50%,transparent) 22% 78%,transparent 78%)}
+.mframe .w.m2{background:linear-gradient(transparent 22%,color-mix(in srgb,var(--err-soft) 30%,transparent) 22% 78%,transparent 78%)}
+.mframe .w.m1{background:linear-gradient(transparent 22%,color-mix(in srgb,var(--err-soft) 14%,transparent) 22% 78%,transparent 78%)}
+.mframe .w.ok.fresh{background:linear-gradient(transparent 22%,var(--ok-soft) 22% 78%,transparent 78%)}
+.show-all .mframe .w.hid{background:none}
+.show-all .mframe .w.cur{background:linear-gradient(transparent 22%,var(--lapis-soft) 22% 72%,var(--lapis) 72% 78%,transparent 78%)}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -364,6 +382,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
     <header class="bar">
       <button class="icon-btn" data-act="close-reader" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
       <div class="bar-title"><b id="r-title">&nbsp;</b><small id="r-sub">&nbsp;</small></div>
+      <button class="icon-btn" data-act="learn-page" aria-label="Учить эту страницу" id="r-learnpage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="7" height="4" rx="1.5"/><rect x="13" y="5" width="8" height="4" rx="1.5" fill="currentColor" opacity=".3"/><rect x="3" y="12" width="10" height="4" rx="1.5" fill="currentColor" opacity=".3"/><rect x="16" y="12" width="5" height="4" rx="1.5"/><path d="M3 20h9"/></svg></button>
       <button class="icon-btn" data-act="toggle-layout" aria-label="Переключить вид" id="r-layout"></button>
     </header>
     <div class="scroll" id="r-scroll"><div id="r-body"></div></div>
@@ -385,6 +404,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
     </header>
     <div class="pline"><i id="d-prog"></i></div>
     <div class="scroll" id="d-scroll"><div class="dbody" id="d-body"></div></div>
+    <div class="cue-strip" id="d-cue" hidden></div>
     <div class="hearing" id="d-hear" hidden></div>
     <div class="ctl" id="d-ctl">
       <button class="cbtn c-ghost" data-act="d-undo" aria-label="Отменить" id="d-undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg></button>
@@ -716,7 +736,7 @@ function pHighlight(){
       if (r.top < b.top || r.top > b.bottom - 120) sc.scrollTo({ top: sc.scrollTop + r.top - b.top - 24, behavior: "smooth" });
     }
   }
-  if (P.ctx === "drill" && overlay === "drill"){ const el = $(`#d-body .dverse[data-v="${P.v}"]`); if (el) el.classList.add("playing"); }
+  if (P.ctx === "drill" && overlay === "drill"){ $$(`#d-body .dverse[data-v="${P.v}"], #d-body .vs[data-s="${P.s}"][data-v="${P.v}"]`).forEach(el => el.classList.add("playing")); }
 }
 function pRender(){
   const bar = $("#player"); if (!bar) return;
@@ -771,6 +791,7 @@ function renderDate(){
 function nextDrill(){
   const L = S.lastDrill;
   if (!L) return { s: 1, f: 1, t: CNT(1) };
+  if (L.kind === "page") return { kind: "page", p: L.p < 604 ? L.p + 1 : 1 };
   const len = Math.max(1, Math.min(10, L.t - L.f + 1)), n = CNT(L.s);
   if (L.t < n) return { s: L.s, f: L.t + 1, t: Math.min(n, L.t + len) };
   const s2 = L.s < 114 ? L.s + 1 : 1;
@@ -798,7 +819,7 @@ function renderToday(){
       </div>
     </div>
     <div class="actions">
-      <button class="btn btn-primary btn-col" data-act="drill" data-s="${nd.s}" data-f="${nd.f}" data-t="${nd.t}">Учить дальше<small>${esc(sName(nd.s))}, ${nd.f}–${nd.t}</small></button>
+      ${nd.kind === "page" ? `<button class="btn btn-primary btn-col" data-act="drill-page" data-p="${nd.p}">Учить дальше<small>Страница ${nd.p}</small></button>` : `<button class="btn btn-primary btn-col" data-act="drill" data-s="${nd.s}" data-f="${nd.f}" data-t="${nd.t}">Учить дальше<small>${esc(sName(nd.s))}, ${nd.f}–${nd.t}</small></button>`}
       <button class="btn btn-soft btn-col" data-act="continue-read">Читать<small>${esc(contTxt)}</small></button>
     </div>
   </div>`;
@@ -869,6 +890,7 @@ function setReaderHead(s, v, p){
   $("#r-title").textContent = sName(s) + " · " + s;
   $("#r-sub").textContent = `стр. ${p || pageOf(s, v)} из 604 · джуз ${juzOf(s, v)}`;
   const mush = S.set.layout === "mushaf";
+  $("#r-learnpage").hidden = !mush;
   $("#r-layout").innerHTML = mush ? LAYOUT_ICONS.verses : LAYOUT_ICONS.mushaf;
   $("#r-layout").setAttribute("aria-label", mush ? "Аяты с переводом" : "Страницы мушафа");
 }
@@ -956,9 +978,8 @@ async function fillPage(p){
     el.innerHTML = `<div class="loading">Не удалось загрузить страницу. Проверьте соединение.<br><br><button class="btn btn-soft" data-act="page-retry" data-p="${p}">Повторить</button></div>`;
   } finally { delete el.dataset.loading; }
 }
-function pageHTML(p, lines){
-  const [s0, v0] = pageFirst(p);
-  const rows = lines.map(line => {
+function mushafRows(lines, wordSpan){
+  return lines.map(line => {
     if (!line.length) return `<div class="ml"></div>`;
     const sc = line[0], items = line.slice(1);
     if (items[0][0] === "t"){ const s = items[0][1]; return `<div class="ml mt mc"><span class="lt"><span class="mt-frame">سُورَةُ ${esc(META.ch[s-1][0])}</span></span></div>`; }
@@ -969,18 +990,22 @@ function pageHTML(p, lines){
       h += `<span class="vs" data-s="${s}" data-v="${v}">`;
       for (const t of text.split(" ")){
         if (!t) continue;
-        if (/^[۞۩]+$/.test(t)) h += `<span class="dec">${t}</span> `;
-        else { h += `<span class="w${mcls(s, v, i)}">${t}</span> `; i++; }
+        if (/^[\u06DE\u06E9]+$/.test(t)) h += `<span class="dec">${t}</span> `;
+        else { h += wordSpan(s, v, i, t) + " "; i++; }
       }
       if (end) h += amarker(s, v);
       h += `</span> `;
     }
     return `<div class="ml mw${sc < 0 ? " mc" : ""}"><span class="lt">${h.trim()}</span></div>`;
   }).join("");
+}
+function pageHTML(p, lines){
+  const [s0, v0] = pageFirst(p);
+  const rows = mushafRows(lines, (s, v, i, t) => `<span class="w${mcls(s, v, i)}">${t}</span>`);
   return `<div class="mpg${p <= 2 ? " open" : ""}">
     <div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div>
     <div class="mframe" lang="ar">${rows}</div>
-    <div class="mfoot"><button class="pnav" data-act="page-go" data-d="-1" aria-label="Предыдущая страница"${p === 1 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><span class="mnum">${arNum(p)}</span><button class="pnav" data-act="page-go" data-d="1" aria-label="Следующая страница"${p === 604 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+    <div class="mfoot"><button class="pnav" data-act="page-go" data-d="-1" aria-label="Предыдущая страница"${p === 1 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button class="mnum-btn" data-act="drill-page" data-p="${p}" aria-label="Учить страницу ${p}"><span class="mnum">${arNum(p)}</span><small>учить страницу</small></button><button class="pnav" data-act="page-go" data-d="1" aria-label="Следующая страница"${p === 604 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
   </div>`;
 }
 /* Like the printed mushaf, each justified line is stretched or squeezed horizontally to the full width; centred lines only shrink if too long. */
@@ -991,8 +1016,9 @@ function fitPage(el){
     if (!l.classList.contains("mc") || w > W) t.style.transform = `scaleX(${(W / w).toFixed(4)})`;
   });
 }
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => $$("#pager .mp[data-ready]").forEach(fitPage));
-if (document.fonts && "onloadingdone" in document.fonts) document.fonts.addEventListener("loadingdone", () => $$("#pager .mp[data-ready]").forEach(fitPage));
+const refitAll = () => $$("#pager .mp[data-ready], #d-body.dpage-body").forEach(fitPage);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(refitAll);
+if (document.fonts && "onloadingdone" in document.fonts) document.fonts.addEventListener("loadingdone", refitAll);
 function markPage(el){
   if (P.s && P.ctx === "reader") el.querySelectorAll(`.vs[data-s="${P.s}"][data-v="${P.v}"]`).forEach(x => x.classList.add("playing"));
   if (PG && PG.focus && PG.focus.flash){
@@ -1002,7 +1028,7 @@ function markPage(el){
 }
 function refreshPages(){ $$("#pager .mp[data-ready]").forEach(el => { delete el.dataset.ready; fillPage(+el.dataset.p); }); }
 let rzT = 0;
-window.addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(() => { if (PG && overlay === "reader"){ sizePages(); refreshPages(); goPage(PG.cur, false); } }, 200); });
+window.addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(() => { if (PG && overlay === "reader"){ sizePages(); refreshPages(); goPage(PG.cur, false); } if (overlay === "drill" && D && D.kind === "page") sizeDrillPage(); }, 200); });
 
 /* Verses with translation */
 function renderReader(){
@@ -1062,7 +1088,8 @@ async function verseSheet(s, v){
     <p class="ar-big" lang="ar">${wordsHTML(s, v, d.a[v-1])}</p>
     <p class="trn">${esc(d.t[v-1])}</p>
     <div class="sheet-actions">
-      <button class="btn btn-primary wide" data-act="drill-from" data-s="${s}" data-v="${v}">Учить с этого аята</button>
+      <button class="btn btn-primary" data-act="drill-from" data-s="${s}" data-v="${v}">Учить с этого аята</button>
+      <button class="btn btn-primary" data-act="drill-page" data-p="${pageOf(s, v)}">Учить страницу ${pageOf(s, v)}</button>
       <button class="btn btn-soft" data-act="toggle-learned" data-s="${s}" data-v="${v}">${isLearned(s, v) ? "Снять «выучен»" : "Отметить выученным"}</button>
       <button class="btn btn-soft" data-act="toggle-bm" data-s="${s}" data-v="${v}">${bm ? "Убрать закладку" : "В закладки"}</button>
       ${AUDIO ? `<button class="btn btn-soft wide" data-act="listen-from" data-s="${s}" data-v="${v}">Слушать с этого аята · ${esc(reciter().name)}</button>` : ""}
@@ -1077,8 +1104,10 @@ function closeSheet(){ $("#sheet").hidden = true; $("#sheet-body").innerHTML = "
 let setup = null;
 function defaultSetup(){
   const nd = nextDrill();
-  return { s: nd.s, f: nd.f, t: nd.t };
+  if (nd.kind === "page"){ const [s, v] = pageFirst(nd.p); return { mode: "page", p: nd.p, s, f: v, t: Math.min(CNT(s), v + 4) }; }
+  return { mode: "range", s: nd.s, f: nd.f, t: nd.t, p: pageOf(nd.s, nd.f) };
 }
+const startLabel = () => setup.mode === "page" ? `Начать · страница ${setup.p}` : `Начать · ${sName(setup.s)}, ${setup.f}–${setup.t}`;
 function renderLearn(){
   if (!setup) setup = defaultSetup();
   const n = CNT(setup.s);
@@ -1093,14 +1122,16 @@ function renderLearn(){
   $("#learn-body").innerHTML = `
   ${HOSTED ? "" : `<a class="mic-hint" href="https://mammadibir.github.io/hifz/" target="_blank" rel="noopener" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Проверка чтения голосом и чтецы работают на сайте <b>mammadibir.github.io/hifz</b>. Откройте его в Safari.</span></a>`}
   <div class="card setup">
+    <div class="seg" role="group" aria-label="Что учить"><button data-act="lmode" data-k="range" aria-pressed="${setup.mode !== "page"}">По аятам</button><button data-act="lmode" data-k="page" aria-pressed="${setup.mode === "page"}">Целая страница</button></div>
     <div class="field"><label for="ls">Сура</label><select class="select" id="ls">${opts}</select></div>
-    <div class="range-row">
+    <div class="field" id="page-field"${setup.mode === "page" ? "" : " hidden"}><span class="flabel">Страница мушафа</span><div class="stepper"><button data-act="pstep" data-d="-1" aria-label="Предыдущая страница">−</button><input id="lp" class="num-in" type="number" inputmode="numeric" min="1" max="604" value="${setup.p}" aria-label="Номер страницы"><button data-act="pstep" data-d="1" aria-label="Следующая страница">+</button></div><span class="credits" id="lp-label">${esc(pageLabel(setup.p))}</span></div>
+    <div class="range-row" id="range-field"${setup.mode === "page" ? " hidden" : ""}>
       <div class="field"><span class="flabel">С аята</span><div class="stepper"><button data-act="step" data-k="f" data-d="-1" aria-label="Меньше">−</button><input id="lf" class="num-in" type="number" inputmode="numeric" min="1" max="${n}" value="${setup.f}" aria-label="С аята"><button data-act="step" data-k="f" data-d="1" aria-label="Больше">+</button></div></div>
       <div class="field"><span class="flabel">По аят</span><div class="stepper"><button data-act="step" data-k="t" data-d="-1" aria-label="Меньше">−</button><input id="lt" class="num-in" type="number" inputmode="numeric" min="1" max="${n}" value="${setup.t}" aria-label="По аят"><button data-act="step" data-k="t" data-d="1" aria-label="Больше">+</button></div></div>
     </div>
     <div class="field"><span class="flabel">Что скрыть</span><div class="chips">${hideBtn("all", "Все слова")}${hideBtn("first", "Кроме первого слова")}${hideBtn("alt", "Через слово")}${hideBtn("none", "Ничего, только проверка")}</div></div>
     <label class="toggle" for="lcue"><span>Показывать перевод как подсказку</span><input type="checkbox" id="lcue"${S.set.cue ? " checked" : ""}></label>
-    <button class="btn btn-primary" data-act="start-drill" id="start-btn">Начать · ${esc(sName(setup.s))}, ${setup.f}–${setup.t}</button>
+    <button class="btn btn-primary" data-act="start-drill" id="start-btn">${esc(startLabel())}</button>
     <p class="credits">Читайте аят по памяти вслух или про себя. После каждого слова нажимайте «Помню», а если забыли или ошиблись — «Ошибся». ${VOICE ? "Кнопка микрофона включает проверку голосом." : ""} Аят считается выученным после трёх прочтений без ошибок.</p>
   </div>
   ${rev.length ? `<h2 class="sec">Пора повторить</h2><div class="list">${rev.slice(0, 5).map(r => `<button class="srow" data-act="drill" data-s="${r.s}" data-f="${r.lo}" data-t="${r.hi}"><span class="star${r.l === CNT(r.s) ? " done" : ""}"><span>${r.s}</span></span><span class="sname"><b>${esc(sName(r.s))}, ${r.lo}–${r.hi}</b><small>Повторяли ${agoText(today - r.last)} · выучено ${r.l} из ${CNT(r.s)}</small></span><span class="sar">${esc(META.ch[r.s-1][0])}</span></button>`).join("")}</div>` : ""}
@@ -1112,50 +1143,85 @@ function readSetup(){
   let f = Math.max(1, Math.min(n, parseInt($("#lf").value) || 1));
   let t = Math.max(1, Math.min(n, parseInt($("#lt").value) || f));
   if (t < f) t = f;
-  setup = { s, f, t };
+  const p = Math.max(1, Math.min(604, parseInt($("#lp").value) || pageOf(s, f)));
+  setup = { mode: (setup && setup.mode) || "range", s, f, t, p };
   return setup;
 }
 function syncSetupUI(){
+  $("#ls").value = setup.s;
   $("#lf").value = setup.f; $("#lt").value = setup.t;
   $("#lf").max = $("#lt").max = CNT(setup.s);
-  $("#start-btn").textContent = `Начать · ${sName(setup.s)}, ${setup.f}–${setup.t}`;
+  $("#lp").value = setup.p; $("#lp-label").textContent = pageLabel(setup.p);
+  $("#start-btn").textContent = startLabel();
 }
 
 /* ---------- DRILL ---------- */
 let D = null, wake = null;
-async function startDrill(s, f, t){
+const DEC_RE = /^[۞۩]+$/;
+function pageLabel(p){
+  const [s1, v1] = pageFirst(p), [s2, v2] = p < 604 ? fromGid(PSTART[p] - 1) : [114, 6];
+  return s1 === s2 ? `${sName(s1)} ${v1}–${v2}` : `${sName(s1)} ${v1} — ${sName(s2)} ${v2}`;
+}
+const MIC_HINT = `<div class="mic-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Нажмите на микрофон внизу и читайте вслух. Слова будут открываться по мере чтения, ошибки подсветятся красным.</span></div>`;
+function drillItem(s, v, i, w, data, n){
+  let test = true;
+  if (S.set.hide === "first" && i === 0 && n > 1) test = false;
+  if (S.set.hide === "alt" && i % 2 === 0 && n > 1) test = false;
+  const key = data.k[v-1][i] || normAr(w).replace(/\s/g, "");
+  const alt = (i === 0 && (v === 1 || (s === 42 && v === 2)) && MUQ.has(key)) ? spelled(key) : null;
+  return { s, v, i, w, key, alt, test };
+}
+function openDrillView(title, sub){
   if (D) endDrill();
-  const n = CNT(s); f = Math.max(1, Math.min(n, f)); t = Math.max(f, Math.min(n, t));
   overlay = "drill"; show("drill");
-  $("#d-title").textContent = sName(s);
-  $("#d-sub").textContent = `аяты ${f}–${t}`;
-  $("#d-body").innerHTML = `<div class="loading">Загружаю…</div>`;
+  $("#d-title").textContent = title; $("#d-sub").textContent = sub;
+  const body = $("#d-body"); body.innerHTML = `<div class="loading">Загружаю…</div>`; body.classList.remove("dpage-body");
+  $("#d-cue").hidden = true;
   $("#d-mic").hidden = !VOICE; $("#d-ctl").classList.toggle("has-mic", VOICE);
   if (P.s) pStop();
   pRender();
+}
+function beginDrill(meta, items){
+  const test = items.map((x, i) => x.test ? i : -1).filter(i => i >= 0);
+  D = Object.assign(meta, { items, test, st: new Int8Array(items.length), cur: 0, hist: [], voiceUsed: false, started: Date.now(), saved: false });
+  items.forEach((x, i) => { if (!x.test) D.st[i] = 3; });
+  S.lastDrill = meta.kind === "page" ? { kind: "page", p: meta.p, s: meta.s, f: meta.f, t: meta.t } : { s: meta.s, f: meta.f, t: meta.t };
+  save();
+  if (meta.kind === "page") renderDrillPage(); else renderDrill();
+  try { navigator.wakeLock && navigator.wakeLock.request("screen").then(w => { wake = w; }, () => { wake = null; }); } catch (e) {}
+}
+async function startDrill(s, f, t){
+  const n = CNT(s); f = Math.max(1, Math.min(n, f)); t = Math.max(f, Math.min(n, t));
+  openDrillView(sName(s), `аяты ${f}–${t}`);
   let data;
   try { data = await loadSurah(s); } catch (e) { $("#d-body").innerHTML = `<div class="loading">Не удалось загрузить суру. Проверьте соединение.</div>`; return; }
+  if (overlay !== "drill") return;
   const items = [];
-  for (let v = f; v <= t; v++){
-    const ws = data.a[v-1], ks = data.k[v-1];
-    ws.forEach((w, i) => {
-      let test = true;
-      if (S.set.hide === "first" && i === 0 && ws.length > 1) test = false;
-      if (S.set.hide === "alt" && i % 2 === 0 && ws.length > 1) test = false;
-      const key = ks[i] || normAr(w).replace(/\s/g, "");
-      const alt = (i === 0 && (v === 1 || (s === 42 && v === 2)) && MUQ.has(key)) ? spelled(key) : null;
-      items.push({ v, i, w, key, alt, test });
-    });
+  for (let v = f; v <= t; v++){ const ws = data.a[v-1]; ws.forEach((w, i) => items.push(drillItem(s, v, i, w, data, ws.length))); }
+  beginDrill({ kind: "range", s, f, t, s2: s, datas: { [s]: data }, range: `аяты ${f}–${t}` }, items);
+}
+/* A whole mushaf page: same lines as the printed page, words hidden in place. */
+async function startPageDrill(p){
+  p = Math.max(1, Math.min(604, p));
+  openDrillView(`Страница ${p}`, pageLabel(p));
+  let lines; const datas = {};
+  try {
+    lines = await loadPage(p);
+    const ss = [...new Set(lines.flatMap(l => l.slice(1).filter(it => typeof it[0] === "number").map(it => it[0])))];
+    for (const s of ss) datas[s] = await loadSurah(s);
+  } catch (e) { $("#d-body").innerHTML = `<div class="loading">Не удалось загрузить страницу. Проверьте соединение.</div>`; return; }
+  if (overlay !== "drill") return;
+  const items = [];
+  for (const line of lines) for (const it of line.slice(1)){
+    if (typeof it[0] !== "number") continue;
+    const [s, v, i0, text] = it; let i = i0; const n = datas[s].a[v-1].length;
+    for (const t of text.split(" ")){ if (!t || DEC_RE.test(t)) continue; items.push(drillItem(s, v, i, t, datas[s], n)); i++; }
   }
-  const test = items.map((x, i) => x.test ? i : -1).filter(i => i >= 0);
-  D = { s, f, t, data, items, test, st: new Int8Array(items.length), cur: 0, hist: [], voiceUsed: false, started: Date.now(), saved: false };
-  items.forEach((x, i) => { if (!x.test) D.st[i] = 3; });
-  S.lastDrill = { s, f, t }; save();
-  renderDrill();
-  try { wake = await navigator.wakeLock?.request("screen"); } catch (e) { wake = null; }
+  const first = items[0], last = items[items.length - 1];
+  beginDrill({ kind: "page", p, lines, s: first.s, f: first.v, s2: last.s, t: last.v, datas, range: pageLabel(p) }, items);
 }
 function renderDrill(){
-  const { items, s, data } = D;
+  const { items, s } = D, data = D.datas[s];
   let h = "", v0 = 0;
   items.forEach((x, idx) => {
     if (x.v !== v0){
@@ -1165,16 +1231,36 @@ function renderDrill(){
     h += `<span class="w" data-i="${idx}">${x.w}</span> `;
   });
   if (v0) h += ` ${amarker(s, v0)}</p>${S.set.cue ? `<p class="cue">${esc(data.t[v0-1])}</p>` : ""}</div>`;
-  if (VOICE) h = `<div class="mic-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Нажмите на микрофон внизу и читайте вслух. Слова будут открываться по мере чтения, ошибки подсветятся красным.</span></div>` + h;
+  if (VOICE) h = MIC_HINT + h;
   $("#d-body").innerHTML = h;
   $("#d-body").classList.toggle("show-all", S.set.hide === "none");
   paintAll();
   scrollCur(true);
 }
+function renderDrillPage(){
+  const idxOf = new Map(D.items.map((x, k) => [x.s + ":" + x.v + ":" + x.i, k]));
+  const [s0, v0] = pageFirst(D.p);
+  const rows = mushafRows(D.lines, (s, v, i, t) => `<span class="w" data-i="${idxOf.get(s + ":" + v + ":" + i)}">${t}</span>`);
+  let h = `<div class="mpg dpg${D.p <= 2 ? " open" : ""}"><div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div><div class="mframe" lang="ar">${rows}</div><div class="mfoot"><span></span><span class="mnum">${arNum(D.p)}</span><span></span></div></div>`;
+  if (VOICE) h = MIC_HINT + h;
+  const body = $("#d-body");
+  body.innerHTML = h; body.classList.add("dpage-body"); body.classList.toggle("show-all", S.set.hide === "none");
+  sizeDrillPage();
+  paintAll();
+  scrollCur(true);
+}
+function sizeDrillPage(){
+  const b = $("#d-body"); if (!b.classList.contains("dpage-body")) return;
+  const w = Math.min(b.clientWidth - 32, 560) - 2 * 10 - 4;
+  const fs = Math.max(13, w / 410 * 24);
+  b.style.setProperty("--mfs", fs.toFixed(2) + "px");
+  b.style.setProperty("--mlh", (fs * 2.05).toFixed(2) + "px");
+  fitPage(b);
+}
 function wordClass(idx){
   const st = D.st[idx];
   if (st === 3) return "w giv";
-  if (st === 1){ const it = D.items[idx], m = mstr(D.s, it.v, it.i); return "w ok" + (m > 1 ? " m" + (m - 1) : ""); }
+  if (st === 1){ const it = D.items[idx], m = mstr(it.s, it.v, it.i); return "w ok" + (m > 1 ? " m" + (m - 1) : ""); }
   if (st === 2) return "w err";
   return "w hid" + (D.test[D.cur] === idx ? " cur" : "");
 }
@@ -1183,9 +1269,15 @@ function paint(idxs){ for (const i of idxs){ const el = $(`#d-body .w[data-i="${
 function updateDrillHeader(){
   const total = D.test.length, done = D.cur;
   let errs = 0; for (const i of D.test) if (D.st[i] === 2) errs++;
-  $("#d-sub").textContent = `аяты ${D.f}–${D.t} · ${done} из ${total} ${plural(total, SLOV)}${errs ? " · " + errs + " " + plural(errs, OSH) : ""}`;
+  $("#d-sub").textContent = `${D.range} · ${done} из ${total} ${plural(total, SLOV)}${errs ? " · " + errs + " " + plural(errs, OSH) : ""}`;
   $("#d-prog").style.width = (total ? 100 * done / total : 0) + "%";
   $("#d-undo").disabled = !D.hist.length || !!rec;
+  const cue = $("#d-cue");
+  if (D.kind === "page" && S.set.cue){
+    const it = D.items[D.test[Math.min(D.cur, D.test.length - 1)]];
+    cue.hidden = !it;
+    if (it) cue.textContent = `${it.s}:${it.v} — ${D.datas[it.s].t[it.v-1]}`;
+  } else cue.hidden = true;
 }
 function scrollCur(instant){
   const idx = D.test[D.cur]; if (idx == null) return;
@@ -1208,8 +1300,8 @@ function mark(status, count = 1){
 }
 function markVerse(){
   if (!D || D.cur >= D.test.length) return;
-  const v = D.items[D.test[D.cur]].v; let c = 0;
-  for (let k = D.cur; k < D.test.length && D.items[D.test[k]].v === v; k++) c++;
+  const it0 = D.items[D.test[D.cur]]; let c = 0;
+  for (let k = D.cur; k < D.test.length; k++){ const it = D.items[D.test[k]]; if (it.v !== it0.v || it.s !== it0.s) break; c++; }
   mark(1, c);
 }
 function undo(){
@@ -1234,29 +1326,29 @@ function commitDrill(){
   const per = new Map();
   D.items.forEach((x, idx) => {
     if (!x.test) return;
-    const p = per.get(x.v) || { tot: 0, ok: 0, err: 0, errW: [] }; p.tot++;
+    const k = x.s + ":" + x.v;
+    const p = per.get(k) || { s: x.s, v: x.v, tot: 0, ok: 0, err: 0 }; p.tot++;
     if (D.st[idx] === 1) p.ok++;
-    if (D.st[idx] === 2){ p.err++; p.errW.push(idx); }
-    per.set(x.v, p);
-  });
-  D.items.forEach((it, idx) => {
-    if (!it.test) return;
-    const mk = D.s + ":" + it.v + ":" + it.i;
+    if (D.st[idx] === 2) p.err++;
+    per.set(k, p);
+    const mk = k + ":" + x.i;
     if (D.st[idx] === 2) S.mist[mk] = 5;
     else if (D.st[idx] === 1 && S.mist[mk]){ S.mist[mk] = Math.min(5, S.mist[mk]) - 1; if (S.mist[mk] <= 0) delete S.mist[mk]; }
   });
   let versesDone = 0, words = 0, errs = 0;
-  for (const [v, p] of per){
+  for (const [key, p] of per){
     words += p.ok + p.err; errs += p.err;
     const complete = p.ok + p.err === p.tot;
-    const key = D.s + ":" + v, x = S.vp[key] || [0, 0, 0];
+    const x = S.vp[key] || [0, 0, 0];
     if (complete){ versesDone++; if (!p.err) x[0] += 1; }
     x[1] = today; x[2] = (x[2] || 0) + p.err;
     S.vp[key] = x;
   }
   const day = S.days[dk] || { v: 0, w: 0, e: 0 };
   day.v += versesDone; day.w += words; day.e += errs; S.days[dk] = day;
-  S.sess.unshift({ id: Date.now(), s: D.s, f: D.f, t: D.t, w: words, e: errs, m: D.voiceUsed ? "voice" : "self", c: D.cur >= D.test.length ? 1 : 0 });
+  const rec0 = { id: Date.now(), s: D.s, f: D.f, t: D.t, w: words, e: errs, m: D.voiceUsed ? "voice" : "self", c: D.cur >= D.test.length ? 1 : 0 };
+  if (D.kind === "page"){ rec0.k = "page"; rec0.p = D.p; }
+  S.sess.unshift(rec0);
   save();
   return { per, words, errs };
 }
@@ -1264,21 +1356,26 @@ function finishDrill(){
   if (rec) stopVoice();
   const res = commitDrill(); if (!res) return;
   const acc = res.words ? Math.floor(100 * (res.words - res.errs) / res.words) : 100;
-  const chips = [...res.per].map(([v, p]) => `<span class="vchip ${p.err ? "bad" : p.ok + p.err < p.tot ? "part" : "good"}">${v}${p.err ? " · " + p.err : " ✓"}</span>`).join("");
+  const multi = D.s !== D.s2;
+  const chips = [...res.per.values()].map(p => `<span class="vchip ${p.err ? "bad" : p.ok + p.err < p.tot ? "part" : "good"}">${multi ? p.s + ":" : ""}${p.v}${p.err ? " · " + p.err : " ✓"}</span>`).join("");
   const errWords = D.test.filter(i => D.st[i] === 2).map(i => `<span>${D.items[i].w}</span>`).join("");
-  const n = CNT(D.s), len = D.t - D.f + 1;
-  const nf = D.t < n ? D.t + 1 : null;
+  let again, next, third;
+  if (D.kind === "page"){
+    again = `<button class="btn btn-primary wide" data-act="drill-page" data-p="${D.p}">Повторить страницу ещё раз</button>`;
+    next = D.p < 604 ? `<button class="btn btn-soft" data-act="drill-page" data-p="${D.p + 1}">Дальше: стр. ${D.p + 1}</button>` : `<button class="btn btn-soft" data-act="open" data-s="${D.s}" data-v="${D.f}">Читать страницу</button>`;
+  } else {
+    const n = CNT(D.s), len = D.t - D.f + 1, nf = D.t < n ? D.t + 1 : null;
+    again = `<button class="btn btn-primary wide" data-act="drill" data-s="${D.s}" data-f="${D.f}" data-t="${D.t}">Повторить ещё раз</button>`;
+    next = nf ? `<button class="btn btn-soft" data-act="drill" data-s="${D.s}" data-f="${nf}" data-t="${Math.min(n, nf + len - 1)}">Дальше: ${nf}–${Math.min(n, nf + len - 1)}</button>` : `<button class="btn btn-soft" data-act="open" data-s="${D.s}" data-v="${D.f}">Читать суру</button>`;
+  }
+  third = `<button class="btn btn-line" data-act="drill-done">Готово</button>`;
   openSheet(`
     <div class="grab"></div>
-    <div class="eyebrow">${esc(sName(D.s))}, аяты ${D.f}–${D.t}</div>
+    <div class="eyebrow">${D.kind === "page" ? `Страница ${D.p} · ${esc(D.range)}` : `${esc(sName(D.s))}, аяты ${D.f}–${D.t}`}</div>
     <div class="big-acc"><b class="acc ${accClass(acc)}">${acc}%</b><span class="muted">${res.words - res.errs} из ${res.words} ${plural(res.words, SLOV)} без ошибок</span></div>
     <div class="field"><span class="flabel">По аятам</span><div class="vchips">${chips}</div></div>
     ${errWords ? `<div class="field"><span class="flabel">Где были ошибки</span><div class="errwords" lang="ar">${errWords}</div></div>` : `<p style="margin:0">Без единой ошибки. Каждый аят засчитан как прочтение без ошибок.</p>`}
-    <div class="sheet-actions">
-      <button class="btn btn-primary wide" data-act="drill" data-s="${D.s}" data-f="${D.f}" data-t="${D.t}">Повторить ещё раз</button>
-      ${nf ? `<button class="btn btn-soft" data-act="drill" data-s="${D.s}" data-f="${nf}" data-t="${Math.min(n, nf + len - 1)}">Дальше: ${nf}–${Math.min(n, nf + len - 1)}</button>` : `<button class="btn btn-soft" data-act="open" data-s="${D.s}" data-v="${D.f}">Читать суру</button>`}
-      <button class="btn btn-line" data-act="drill-done">Готово</button>
-    </div>`);
+    <div class="sheet-actions">${again}${next}${third}</div>`);
 }
 function endDrill(){
   if (rec) stopVoice();
@@ -1390,7 +1487,7 @@ async function renderProgress(){
     ${empty ? `<div class="card empty"><p style="margin:0 0 12px">Здесь появятся выученные суры, трудные слова и история занятий после первого заучивания.</p><button class="btn btn-primary" data-tab-go="learn">Начать заучивание</button></div>` : ""}
     ${rows.length ? `<h2 class="sec">По сурам</h2><div class="list">${rows.map(r => { const n = CNT(r.s); return `<button class="prow" data-act="drill" data-s="${r.s}" data-f="${r.lo || 1}" data-t="${r.hi || Math.min(n, 5)}"><span><b>${esc(sName(r.s))}</b> <span class="muted">${r.s}</span></span><span class="cnt">${r.l} / ${n}</span><span class="pbar"><span class="l" style="width:${(100 * r.l / n).toFixed(1)}%"></span><span class="p" style="width:${(100 * r.p / n).toFixed(1)}%"></span></span></button>`; }).join("")}</div><div class="legend" style="justify-content:flex-start"><i style="background:var(--gold)"></i> выучено <i style="background:color-mix(in srgb,var(--gold) 40%,var(--surface));margin-left:8px"></i> в процессе</div>` : ""}
     ${mistakes.length ? `<h2 class="sec">Трудные слова</h2><div class="list" id="mist-list"><div class="loading">Загружаю…</div></div>` : ""}
-    ${hist.length ? `<h2 class="sec">Последние занятия</h2><div class="list">${hist.map(x => { const a = x.w ? Math.floor(100 * (x.w - x.e) / x.w) : 0; const d = new Date(x.id); return `<div class="hrow"><span><b>${esc(sName(x.s))}, ${x.f}–${x.t}</b></span><span class="acc ${accClass(a)}">${a}%</span><small>${d.toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}, ${d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })} · ${x.w} ${plural(x.w, SLOV)}${x.m === "voice" ? " · голосом" : ""}${x.c ? "" : " · не до конца"}</small><small>${x.e} ${plural(x.e, OSH)}</small></div>`; }).join("")}</div>` : ""}`;
+    ${hist.length ? `<h2 class="sec">Последние занятия</h2><div class="list">${hist.map(x => { const a = x.w ? Math.floor(100 * (x.w - x.e) / x.w) : 0; const d = new Date(x.id); return `<div class="hrow"><span><b>${x.k === "page" ? "Страница " + x.p + " · " + esc(pageLabel(x.p)) : esc(sName(x.s)) + ", " + x.f + "–" + x.t}</b></span><span class="acc ${accClass(a)}">${a}%</span><small>${d.toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}, ${d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })} · ${x.w} ${plural(x.w, SLOV)}${x.m === "voice" ? " · голосом" : ""}${x.c ? "" : " · не до конца"}</small><small>${x.e} ${plural(x.e, OSH)}</small></div>`; }).join("")}</div>` : ""}`;
   if (mistakes.length){
     const need = [...new Set(mistakes.map(([k]) => +k.split(":")[0]))];
     try {
@@ -1446,7 +1543,7 @@ document.addEventListener("click", e => {
     case "set-rep": S.set.rep = +d.k; P.left = S.set.rep || 1; save(); reciterSheet(); pRender(); break;
     case "set-rate": S.set.rate = +d.k; save(); if (P.el) P.el.playbackRate = S.set.rate; reciterSheet(); break;
     case "listen-from": closeSheet(); pPlay(+d.s, +d.v, CNT(+d.s), "reader"); break;
-    case "d-listen": { if (!D) break; if (P.s && P.ctx === "drill"){ pStop(); break; } const idx = D.test[D.cur]; const v = idx != null ? D.items[idx].v : D.t; pPlay(D.s, v, v, "drill"); break; }
+    case "d-listen": { if (!D) break; if (P.s && P.ctx === "drill"){ pStop(); break; } const idx = D.test[Math.min(D.cur, D.test.length - 1)]; const it = D.items[idx != null ? idx : D.items.length - 1]; pPlay(it.s, it.v, it.v, "drill"); break; }
     case "toggle-layout": { S.set.layout = S.set.layout === "mushaf" ? "verses" : "mushaf"; save(); const L = S.last || { s: 1, v: 1 }; openReader(L.s, L.v); break; }
     case "page-go": if (PG) goPage(PG.cur + +d.d, true); break;
     case "page-retry": if (PG) fillPage(+d.p); break;
@@ -1458,16 +1555,20 @@ document.addEventListener("click", e => {
     case "drill": closeSheet(); startDrill(+d.s, +d.f, +d.t); break;
     case "drill-done": closeDrill(); break;
     case "close-drill": closeDrill(); break;
-    case "drill-restart": if (D) { const { s, f, t } = D; startDrill(s, f, t); } break;
+    case "drill-restart": if (D) { const { kind, p, s, f, t } = D; if (kind === "page") startPageDrill(p); else startDrill(s, f, t); } break;
+    case "drill-page": closeSheet(); startPageDrill(+d.p); break;
+    case "learn-page": if (PG) startPageDrill(PG.cur); break;
+    case "lmode": readSetup(); setup.mode = d.k; renderLearn(); break;
+    case "pstep": { readSetup(); setup.p = Math.max(1, Math.min(604, setup.p + +d.d)); const [ps, pv] = pageFirst(setup.p); setup.s = ps; setup.f = pv; setup.t = Math.min(CNT(ps), pv + 4); syncSetupUI(); break; }
     case "d-ok": mark(1); break;
     case "d-err": mark(2); break;
     case "d-verse": markVerse(); break;
     case "d-undo": undo(); break;
     case "d-mic": if (rec) stopVoice(); else startVoice(); break;
     case "hide": S.set.hide = d.k; save(); $$("[data-act=hide]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === d.k)); break;
-    case "pick": setup = { s: +d.s, f: 1, t: Math.min(CNT(+d.s), 7) }; $("#ls").value = setup.s; syncSetupUI(); break;
+    case "pick": setup = { mode: (setup && setup.mode) || "range", s: +d.s, f: 1, t: Math.min(CNT(+d.s), 7), p: pageOf(+d.s, 1) }; syncSetupUI(); break;
     case "step": { readSetup(); const n = CNT(setup.s); setup[d.k] = Math.max(1, Math.min(n, setup[d.k] + +d.d)); if (setup.t < setup.f) { if (d.k === "f") setup.t = setup.f; else setup.f = setup.t; } syncSetupUI(); break; }
-    case "start-drill": { const x = readSetup(); startDrill(x.s, x.f, x.t); break; }
+    case "start-drill": { const x = readSetup(); if (x.mode === "page") startPageDrill(x.p); else startDrill(x.s, x.f, x.t); break; }
     case "list": break;
   }
 });
@@ -1482,8 +1583,9 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   if (e.target.id === "fs") save();
-  else if (e.target.id === "ls"){ const s = +e.target.value, st = surahStats(s), n = CNT(s); let f = 1; for (let v = 1; v <= n; v++){ if (!isLearned(s, v)){ f = v; break; } } setup = { s, f, t: Math.min(n, f + Math.min(4, n - f)) }; syncSetupUI(); }
-  else if (e.target.id === "lf" || e.target.id === "lt"){ readSetup(); syncSetupUI(); }
+  else if (e.target.id === "ls"){ const s = +e.target.value, n = CNT(s); let f = 1; for (let v = 1; v <= n; v++){ if (!isLearned(s, v)){ f = v; break; } } setup = { mode: setup.mode, s, f, t: Math.min(n, f + Math.min(4, n - f)), p: pageOf(s, setup.mode === "page" ? 1 : f) }; syncSetupUI(); }
+  else if (e.target.id === "lf" || e.target.id === "lt"){ readSetup(); setup.p = pageOf(setup.s, setup.f); syncSetupUI(); }
+  else if (e.target.id === "lp"){ readSetup(); const [s, v] = pageFirst(setup.p); setup.s = s; setup.f = v; setup.t = Math.min(CNT(s), v + 4); syncSetupUI(); }
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#sheet").hidden){ closeSheet(); return; }
