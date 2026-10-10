@@ -1,0 +1,1326 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Мой хифз</title>
+<meta name="description" content="Чтение и заучивание Корана с проверкой чтения голосом">
+<meta name="theme-color" content="#F3F4F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C111D" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=Amiri+Quran&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-screen app. Three tab views over a bottom tab bar; the reader and the memorization drill take over the whole screen. */
+:root{
+  --paper:#F3F4F8; --surface:#FFFFFF; --ink:#151A2A; --muted:#5B6378; --line:#DADFEA;
+  --lapis:#2A4AA2; --on-lapis:#FFFFFF; --lapis-soft:#E3E8F6;
+  --gold:#A3741A; --gold-soft:#F3E8CF;
+  --ok:#1C8350; --ok-soft:#DCF0E3; --err:#C0382A; --err-soft:#F8DFDA; --veil:#DCE1ED;
+  --shadow:0 1px 2px rgba(21,26,42,.06),0 8px 24px rgba(21,26,42,.06);
+  --f-quran:"Amiri Quran","Amiri","Scheherazade New","Noto Naskh Arabic","Geeza Pro",serif;
+  --f-display:"Alegreya",Georgia,"Times New Roman",serif;
+  --f-ui:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --qsize:28px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0C111D; --surface:#141B2B; --ink:#E7EAF2; --muted:#949CB1; --line:#243049;
+  --lapis:#93ABF3; --on-lapis:#0C111D; --lapis-soft:#1C2742;
+  --gold:#D8B060; --gold-soft:#2D2716;
+  --ok:#53C58E; --ok-soft:#132E1F; --err:#F27B6C; --err-soft:#3A1B18; --veil:#222B43;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0C111D; --surface:#141B2B; --ink:#E7EAF2; --muted:#949CB1; --line:#243049;
+  --lapis:#93ABF3; --on-lapis:#0C111D; --lapis-soft:#1C2742;
+  --gold:#D8B060; --gold-soft:#2D2716;
+  --ok:#53C58E; --ok-soft:#132E1F; --err:#F27B6C; --err-soft:#3A1B18; --veil:#222B43;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%;box-sizing:border-box}
+body{height:100%;margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.45 var(--f-ui);overflow:hidden;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+:focus-visible{outline:2px solid var(--lapis);outline-offset:2px;border-radius:6px}
+.ar{font-family:var(--f-quran);direction:rtl}
+
+#app{height:100%;display:flex;flex-direction:column;max-width:760px;margin:0 auto;background:var(--paper)}
+.view{flex:1;min-height:0;display:flex;flex-direction:column}
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.pad{padding-inline:16px;padding-block:4px 28px;display:flex;flex-direction:column;gap:18px}
+
+/* Top bars */
+.top{display:flex;align-items:center;gap:12px;padding-inline:16px;padding-block:14px 10px}
+.brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.brand-mark{font-family:var(--f-quran);font-size:26px;line-height:1;color:var(--gold);width:44px;height:44px;display:grid;place-items:center;border:1.5px solid var(--gold);border-radius:12px;padding-bottom:4px}
+.brand h1{margin:0;font:700 22px/1.1 var(--f-display);letter-spacing:.2px}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+.icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink);flex:none}
+.icon-btn:hover{background:var(--lapis-soft)}
+.icon-btn svg{width:22px;height:22px}
+.bar{display:flex;align-items:center;gap:6px;padding-inline:8px;padding-block:8px;border-bottom:1px solid var(--line);background:var(--surface)}
+.bar-title{flex:1;min-width:0;text-align:center}
+.bar-title b{display:block;font:700 17px/1.2 var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-title small{display:block;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+
+h2.sec{margin:0;font:700 19px/1.2 var(--f-display);text-wrap:balance}
+.eyebrow{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+
+/* Cards */
+.card{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+.today{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.ring{width:84px;height:84px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .bg{stroke:var(--veil)} .ring .fg{stroke:var(--gold);transition:stroke-dashoffset .5s}
+.ring-num{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1.05}
+.ring-num b{font:700 22px var(--f-display);font-variant-numeric:tabular-nums}
+.ring-num small{display:block;font-size:10.5px;color:var(--muted)}
+.today-txt{display:flex;flex-direction:column;gap:6px;min-width:0}
+.today-txt .h{font:700 17px/1.25 var(--f-display)}
+.stat-line{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.stat-line b{color:var(--ink);font-variant-numeric:tabular-nums}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 14px;border-radius:14px;font-weight:600;font-size:14.5px;text-align:center;line-height:1.2}
+.btn svg{width:18px;height:18px;flex:none}
+.btn-primary{background:var(--lapis);color:var(--on-lapis)}
+.btn-soft{background:var(--lapis-soft);color:var(--lapis)}
+.btn-line{border:1.5px solid var(--line);background:var(--surface)}
+.btn-danger{background:var(--err);color:var(--surface)}
+.btn small{display:block;font-weight:500;font-size:11.5px;opacity:.85}
+.btn-col{flex-direction:column;gap:2px}
+
+/* Search + segmented */
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding-inline:12px}
+.search svg{width:18px;height:18px;color:var(--muted);flex:none}
+.search input{flex:1;min-width:0;border:0;outline:0;background:none;padding-block:12px;font-size:15px}
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--veil);border-radius:12px;padding:3px;gap:2px}
+.seg button{padding:7px 14px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* Surah rows */
+.list{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.srow{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:0}
+.srow:hover{background:var(--lapis-soft)}
+.sname{min-width:0}
+.sname b{display:block;font-weight:600;font-size:15px}
+.sname small{display:block;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sar{font-family:var(--f-quran);font-size:21px;color:var(--ink);direction:rtl;line-height:1.3}
+.minibar{display:block;height:3px;border-radius:2px;background:var(--veil);margin-top:6px;overflow:hidden;max-width:140px}
+.minibar i{display:block;height:100%;background:var(--gold)}
+.star{position:relative;width:36px;height:36px;display:grid;place-items:center;font:600 12px var(--f-ui);color:var(--lapis);font-variant-numeric:tabular-nums}
+.star::before,.star::after{content:"";position:absolute;inset:6px;border:1.5px solid var(--gold);border-radius:3px}
+.star::after{transform:rotate(45deg)}
+.star.done{color:var(--gold)}
+.star.done::before,.star.done::after{background:var(--gold-soft)}
+.star span{position:relative;z-index:1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 12px;border-radius:999px;background:var(--surface);border:1.5px solid var(--line);font-size:13.5px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--lapis-soft);border-color:var(--lapis);color:var(--lapis)}
+.empty{padding:22px 16px;text-align:center;color:var(--muted)}
+
+/* Tabs */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-top:1px solid var(--line)}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding-block:9px 8px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.tabs svg{width:23px;height:23px}
+.tabs button[aria-current="page"]{color:var(--lapis)}
+
+/* Reader */
+.surah-head{text-align:center;padding-block:22px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.sh-frame{border:1.5px solid var(--gold);border-radius:14px;padding:6px 26px 10px;position:relative;background:var(--surface)}
+.sh-frame::before,.sh-frame::after{content:"";position:absolute;top:50%;width:10px;height:10px;border:1.5px solid var(--gold);background:var(--paper);transform:translateY(-50%) rotate(45deg)}
+.sh-frame::before{left:-6px} .sh-frame::after{right:-6px}
+.sh-ar{font-family:var(--f-quran);font-size:30px;line-height:1.6;direction:rtl}
+.sh-ru{color:var(--muted);font-size:13px}
+.bism{font-family:var(--f-quran);font-size:calc(var(--qsize) * .95);text-align:center;direction:rtl;line-height:2;padding-block:4px 6px}
+.mpage{padding-inline:16px;padding-block:6px 4px}
+.mushaf{font-family:var(--f-quran);font-size:var(--qsize);line-height:2.15;direction:rtl;text-align:justify;text-align-last:center;margin:0;word-spacing:.04em}
+.ayah{border-radius:8px;cursor:pointer;transition:background .2s}
+.ayah:hover{background:var(--lapis-soft)}
+.ayah.flash,.vcard.flash{background:var(--gold-soft)}
+.am{display:inline-grid;place-items:center;min-width:1.55em;height:1.55em;padding-inline:.18em;margin-inline:.15em;border:1.5px solid var(--gold);border-radius:50%;color:var(--gold);font-family:var(--f-quran);font-size:.62em;line-height:1;vertical-align:.18em;font-variant-numeric:tabular-nums}
+.am.learned{background:var(--gold);color:var(--surface)}
+.am.prog{background:var(--gold-soft)}
+.sajda{color:var(--gold);font-size:.8em;margin-inline-start:.1em}
+.pfoot{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding-block:10px 4px;font-variant-numeric:tabular-nums}
+.pfoot::before,.pfoot::after{content:"";flex:1;height:1px;background:var(--line)}
+.vlist{display:flex;flex-direction:column;gap:12px;padding-inline:16px;padding-block:8px}
+.vcard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;transition:background .3s}
+.vhead{display:flex;align-items:center;gap:8px}
+.vref{font-size:12px;font-weight:600;color:var(--lapis);background:var(--lapis-soft);border-radius:8px;padding:3px 8px;font-variant-numeric:tabular-nums}
+.vhead .sp{flex:1}
+.vstate{font-size:11.5px;color:var(--gold);font-weight:600}
+.vmore{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--muted)}
+.vmore svg{width:18px;height:18px}
+.vcard .ar{font-size:var(--qsize);line-height:2.05;margin:0;text-align:right}
+.vcard .tr{margin:0;color:var(--ink);font-size:14.5px;line-height:1.55;max-width:65ch}
+.reader-end{display:flex;gap:10px;padding-inline:16px;padding-block:18px 30px}
+.reader-end .btn{flex:1}
+.loading{padding:40px 16px;text-align:center;color:var(--muted)}
+.ayah.playing{background:var(--lapis-soft);box-shadow:inset 0 -2px 0 var(--lapis)}
+.vcard.playing{box-shadow:0 0 0 2px var(--lapis),var(--shadow)}
+.dverse.playing{background:var(--lapis-soft);border-radius:12px}
+.player{display:grid;grid-template-columns:48px 1fr auto 40px;align-items:center;gap:8px;padding-inline:10px;padding-block:8px;background:var(--surface);border-top:1px solid var(--line)}
+.pbtn{width:48px;height:48px;border-radius:50%;background:var(--lapis);color:var(--on-lapis);display:grid;place-items:center}
+.pbtn svg{width:22px;height:22px}
+.pinfo{min-width:0;text-align:left;display:flex;flex-direction:column}
+.pinfo b{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinfo small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pchip{min-width:44px;height:34px;padding-inline:10px;border-radius:10px;background:var(--gold-soft);color:var(--gold);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.icon-btn.on{background:var(--lapis);color:var(--on-lapis)}
+.rlist{display:flex;flex-direction:column;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.rrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14.5px}
+.rrow:last-child{border-bottom:0}
+.rrow i{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none}
+.rrow[aria-pressed="true"]{background:var(--lapis-soft)}
+.rrow[aria-pressed="true"] i{border:5px solid var(--lapis)}
+.show-all .w.hid{color:var(--muted);background:none}
+.show-all .w.cur{color:var(--ink);background:var(--lapis-soft)}
+.mic-hint{display:flex;gap:10px;align-items:center;background:var(--lapis-soft);color:var(--ink);border-radius:14px;padding:10px 12px;font-size:13.5px;line-height:1.4}
+.mic-hint svg{width:22px;height:22px;color:var(--lapis);flex:none}
+
+/* Drill */
+.pline{height:3px;background:var(--veil)}
+.pline i{display:block;height:100%;width:0;background:var(--lapis);transition:width .25s}
+.dbody{padding-inline:16px;padding-block:14px 30px;display:flex;flex-direction:column;gap:6px}
+.dverse{padding-block:6px;border-bottom:1px dashed var(--line)}
+.dverse:last-child{border-bottom:0}
+.dverse .ar{font-size:var(--qsize);line-height:2.25;margin:0;text-align:right}
+.cue{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+.w{border-radius:7px;padding-inline:.06em;transition:color .2s,background .2s;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.w.hid{color:transparent;background:var(--veil);user-select:none;-webkit-user-select:none}
+.w.cur{background:var(--lapis-soft);box-shadow:inset 0 -3px 0 var(--lapis)}
+.w.err{color:var(--err);background:var(--err-soft)}
+.w.ok.fresh{background:var(--ok-soft)}
+.w.giv{color:var(--muted)}
+.ctl{display:grid;grid-template-columns:48px 1fr 1.35fr 48px;gap:8px;padding-inline:12px;padding-block:10px 12px;background:var(--surface);border-top:1px solid var(--line)}
+.ctl.has-mic{grid-template-columns:48px 1fr 56px 1fr 48px}
+.cbtn{min-height:56px;border-radius:16px;font-weight:600;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.1}
+.cbtn small{font-size:11px;font-weight:500;opacity:.8}
+.cbtn svg{width:22px;height:22px}
+.c-ok{background:var(--lapis);color:var(--on-lapis)}
+.c-err{background:var(--err-soft);color:var(--err)}
+.c-ghost{background:var(--veil);color:var(--ink)}
+.c-mic{background:var(--veil);color:var(--ink);border-radius:50%;min-height:56px}
+.c-mic.on{background:var(--err);color:var(--surface);animation:pulse 1.6s infinite}
+.cbtn:disabled{opacity:.4;cursor:default}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--err) 45%,transparent)}70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hearing{min-height:20px;padding-inline:16px;padding-block:4px;color:var(--muted);font-size:13px;direction:rtl;text-align:right;font-family:var(--f-quran);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface)}
+
+/* Forms */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.flabel{font-size:12.5px;font-weight:600;color:var(--muted)}
+.select,.num{width:100%;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);padding:11px 12px;font-size:15px}
+.range-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stepper{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.stepper button{height:44px;font-size:20px;color:var(--lapis)}
+.stepper input{border:0;text-align:center;background:none;width:100%;min-width:0;font-size:16px;font-variant-numeric:tabular-nums;outline:0;-moz-appearance:textfield}
+.stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toggle input{width:44px;height:26px;appearance:none;-webkit-appearance:none;background:var(--veil);border-radius:999px;position:relative;cursor:pointer;flex:none;transition:background .2s}
+.toggle input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .2s}
+.toggle input:checked{background:var(--lapis)}
+.toggle input:checked::after{transform:translateX(18px)}
+.setup{display:flex;flex-direction:column;gap:14px}
+.preview-ar{font-family:var(--f-quran);font-size:var(--qsize);direction:rtl;text-align:center;line-height:2;margin:0;border:1px dashed var(--line);border-radius:12px;padding:4px 8px}
+input[type=range]{width:100%;accent-color:var(--lapis)}
+
+/* Progress */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile b{font:700 24px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.tile span{font-size:11.5px;color:var(--muted);line-height:1.3}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,auto);grid-auto-columns:1fr;gap:3px;overflow-x:auto}
+.heat i{width:100%;aspect-ratio:1;border-radius:3px;background:var(--veil);min-width:12px}
+.heat i.l1{background:color-mix(in srgb,var(--lapis) 28%,var(--surface))}
+.heat i.l2{background:color-mix(in srgb,var(--lapis) 52%,var(--surface))}
+.heat i.l3{background:color-mix(in srgb,var(--lapis) 76%,var(--surface))}
+.heat i.l4{background:var(--lapis)}
+.heat i.today{outline:1.5px solid var(--gold);outline-offset:1px}
+.legend{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);justify-content:flex-end;margin-top:8px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.prow{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:11px 14px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.prow:last-child{border-bottom:0}
+.prow b{font-weight:600}
+.prow .cnt{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.pbar{grid-column:1/-1;display:flex;height:6px;border-radius:3px;background:var(--veil);overflow:hidden}
+.pbar .l{background:var(--gold)} .pbar .p{background:color-mix(in srgb,var(--gold) 40%,var(--surface))}
+.mrow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.mrow:last-child{border-bottom:0}
+.mrow .ar{font-size:24px;line-height:1.7;color:var(--err)}
+.mrow small{color:var(--muted);font-size:12.5px}
+.badge{font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;background:var(--err-soft);color:var(--err);font-variant-numeric:tabular-nums}
+.hrow{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.hrow:last-child{border-bottom:0}
+.hrow small{color:var(--muted);font-size:12.5px}
+.acc{font-weight:600;font-variant-numeric:tabular-nums}
+.acc.good{color:var(--ok)} .acc.mid{color:var(--gold)} .acc.low{color:var(--err)}
+
+/* Sheet & toast */
+.sheet-wrap{position:fixed;inset:0;z-index:20;background:rgba(10,14,25,.42);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:640px;max-height:88%;overflow-y:auto;background:var(--surface);border-radius:22px 22px 0 0;padding-inline:18px;padding-block:10px calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:14px;animation:up .22s ease-out}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 2px}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+.sheet h3{margin:0;font:700 20px/1.25 var(--f-display);text-wrap:balance}
+.sheet .sub{margin:-8px 0 0;color:var(--muted);font-size:13px}
+.sheet .ar-big{font-family:var(--f-quran);font-size:calc(var(--qsize) * .9);direction:rtl;text-align:right;line-height:2;margin:0}
+.sheet .trn{margin:0;font-size:14.5px;line-height:1.55}
+.sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet-actions .wide{grid-column:1/-1}
+.big-acc{display:flex;align-items:baseline;gap:10px}
+.big-acc b{font:700 48px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.vchips{display:flex;flex-wrap:wrap;gap:6px}
+.vchip{font-size:12.5px;font-weight:600;border-radius:9px;padding:4px 8px;font-variant-numeric:tabular-nums}
+.vchip.good{background:var(--ok-soft);color:var(--ok)} .vchip.bad{background:var(--err-soft);color:var(--err)} .vchip.part{background:var(--veil);color:var(--muted)}
+.errwords{display:flex;flex-wrap:wrap;gap:6px 10px;direction:rtl;font-family:var(--f-quran);font-size:24px;color:var(--err);line-height:1.8}
+.confirm{display:flex;flex-direction:column;gap:10px;border:1.5px solid var(--err);border-radius:14px;padding:12px}
+.credits{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0}
+.credits a{color:var(--lapis)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:30;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:500;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+@media (min-width:560px){.pad{padding-inline:24px}.mushaf{padding-inline:8px}}
+</style>
+
+<div id="app">
+  <!-- HOME -->
+  <section class="view" id="v-home">
+    <header class="top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">حفظ</span>
+        <div><h1>Мой хифз</h1><p id="today-date">&nbsp;</p></div>
+      </div>
+      <button class="icon-btn" data-act="settings" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </header>
+    <div class="scroll" id="home-scroll">
+      <div class="pad">
+        <div id="today-card"></div>
+        <div id="bookmarks"></div>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Сура, номер или 2:255" autocomplete="off" aria-label="Поиск суры или аята"></div>
+        <div class="list-head">
+          <h2 class="sec" id="list-title">Суры</h2>
+          <div class="seg" role="group" aria-label="Список"><button data-list="surah" aria-pressed="true">Суры</button><button data-list="juz" aria-pressed="false">Джузы</button></div>
+        </div>
+        <div class="list" id="slist"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="view" id="v-learn" hidden>
+    <header class="top"><div class="brand"><div><h1>Заучивание</h1><p>Читайте по памяти и открывайте слова по одному</p></div></div></header>
+    <div class="scroll"><div class="pad" id="learn-body"></div></div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section class="view" id="v-progress" hidden>
+    <header class="top"><div class="brand"><div><h1>Прогресс</h1><p id="sync-note">&nbsp;</p></div></div></header>
+    <div class="scroll"><div class="pad" id="progress-body"></div></div>
+  </section>
+
+  <!-- READER -->
+  <section class="view" id="v-reader" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-act="close-reader" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="bar-title"><b id="r-title">&nbsp;</b><small id="r-sub">&nbsp;</small></div>
+      <button class="icon-btn" data-act="toggle-layout" aria-label="Переключить вид" id="r-layout"></button>
+    </header>
+    <div class="scroll" id="r-scroll"><div id="r-body"></div></div>
+    <div class="player" id="player" hidden>
+      <button class="pbtn" data-act="p-toggle" id="p-toggle" aria-label="Слушать"></button>
+      <button class="pinfo" data-act="p-reciter"><b id="p-title">Слушать чтеца</b><small id="p-sub">&nbsp;</small></button>
+      <button class="pchip" data-act="p-rep" id="p-rep" aria-label="Повтор аята">×1</button>
+      <button class="icon-btn" data-act="p-next" aria-label="Следующий аят"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 6.2v11.6a.8.8 0 0 0 1.2.7L15 13v4.8a1 1 0 0 0 2 0V6.2a1 1 0 0 0-2 0V11L6.2 5.5a.8.8 0 0 0-1.2.7z"/></svg></button>
+    </div>
+  </section>
+
+  <!-- DRILL -->
+  <section class="view" id="v-drill" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-act="close-drill" aria-label="Закончить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <div class="bar-title"><b id="d-title">&nbsp;</b><small id="d-sub">&nbsp;</small></div>
+      <button class="icon-btn" data-act="d-listen" id="d-listen" aria-label="Послушать аят" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></button>
+      <button class="icon-btn" data-act="drill-restart" aria-label="Начать заново"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+    </header>
+    <div class="pline"><i id="d-prog"></i></div>
+    <div class="scroll" id="d-scroll"><div class="dbody" id="d-body"></div></div>
+    <div class="hearing" id="d-hear" hidden></div>
+    <div class="ctl" id="d-ctl">
+      <button class="cbtn c-ghost" data-act="d-undo" aria-label="Отменить" id="d-undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg></button>
+      <button class="cbtn c-err" data-act="d-err">Ошибся<small>открыть слово</small></button>
+      <button class="cbtn c-mic" data-act="d-mic" id="d-mic" aria-label="Проверять голосом" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      <button class="cbtn c-ok" data-act="d-ok">Помню<small>следующее слово</small></button>
+      <button class="cbtn c-ghost" data-act="d-verse" aria-label="Помню аят целиком"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/><path d="M5 18h14" opacity=".5"/></svg></button>
+    </div>
+  </section>
+
+  <nav class="tabs" id="tabs" aria-label="Разделы">
+    <button data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.6-4.7-2-8-2v14c3.3 0 6 .4 8 2 2-1.6 4.7-2 8-2V4c-3.3 0-6 .4-8 2z"/><path d="M12 6v14"/></svg>Коран</button>
+    <button data-tab="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="7" height="4" rx="1.5"/><rect x="13" y="5" width="8" height="4" rx="1.5" fill="currentColor" opacity=".25"/><rect x="3" y="12" width="10" height="4" rx="1.5" fill="currentColor" opacity=".25"/><rect x="16" y="12" width="5" height="4" rx="1.5"/><path d="M3 20h9"/></svg>Заучивание</button>
+    <button data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Прогресс</button>
+  </nav>
+</div>
+
+<div class="sheet-wrap" id="sheet" hidden><div class="sheet" id="sheet-body" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+const META = {"juz":[[1,1],[2,142],[2,253],[3,93],[4,24],[4,148],[5,82],[6,111],[7,88],[8,41],[9,93],[11,6],[12,53],[15,1],[17,1],[18,75],[21,1],[23,1],[25,21],[27,56],[29,46],[33,31],[36,28],[39,32],[41,47],[46,1],[51,31],[58,1],[67,1],[78,1]],"pages":[[1,1],[2,1],[2,6],[2,17],[2,25],[2,30],[2,38],[2,49],[2,58],[2,62],[2,70],[2,77],[2,84],[2,89],[2,94],[2,102],[2,106],[2,113],[2,120],[2,127],[2,135],[2,142],[2,146],[2,154],[2,164],[2,170],[2,177],[2,182],[2,187],[2,191],[2,197],[2,203],[2,211],[2,216],[2,220],[2,225],[2,231],[2,234],[2,238],[2,246],[2,249],[2,253],[2,257],[2,260],[2,265],[2,270],[2,275],[2,282],[2,283],[3,1],[3,10],[3,16],[3,23],[3,30],[3,38],[3,46],[3,53],[3,62],[3,71],[3,78],[3,84],[3,92],[3,101],[3,109],[3,116],[3,122],[3,133],[3,141],[3,149],[3,154],[3,158],[3,166],[3,174],[3,181],[3,187],[3,195],[4,1],[4,7],[4,12],[4,15],[4,20],[4,24],[4,27],[4,34],[4,38],[4,45],[4,52],[4,60],[4,66],[4,75],[4,80],[4,87],[4,92],[4,95],[4,102],[4,106],[4,114],[4,122],[4,128],[4,135],[4,141],[4,148],[4,155],[4,163],[4,171],[4,176],[5,3],[5,6],[5,10],[5,14],[5,18],[5,24],[5,32],[5,37],[5,42],[5,46],[5,51],[5,58],[5,65],[5,71],[5,77],[5,83],[5,90],[5,96],[5,104],[5,109],[5,114],[6,1],[6,9],[6,19],[6,28],[6,36],[6,45],[6,53],[6,60],[6,69],[6,74],[6,82],[6,91],[6,95],[6,102],[6,111],[6,119],[6,125],[6,132],[6,138],[6,143],[6,147],[6,152],[6,158],[7,1],[7,12],[7,23],[7,31],[7,38],[7,44],[7,52],[7,58],[7,68],[7,74],[7,82],[7,88],[7,96],[7,105],[7,121],[7,131],[7,138],[7,144],[7,150],[7,156],[7,160],[7,164],[7,171],[7,179],[7,188],[7,196],[8,1],[8,9],[8,17],[8,26],[8,34],[8,41],[8,46],[8,53],[8,62],[8,70],[9,1],[9,7],[9,14],[9,21],[9,27],[9,32],[9,37],[9,41],[9,48],[9,55],[9,62],[9,69],[9,73],[9,80],[9,87],[9,94],[9,100],[9,107],[9,112],[9,118],[9,123],[10,1],[10,7],[10,15],[10,21],[10,26],[10,34],[10,43],[10,54],[10,62],[10,71],[10,79],[10,89],[10,98],[10,107],[11,6],[11,13],[11,20],[11,29],[11,38],[11,46],[11,54],[11,63],[11,72],[11,82],[11,89],[11,98],[11,109],[11,118],[12,5],[12,15],[12,23],[12,31],[12,38],[12,44],[12,53],[12,64],[12,70],[12,79],[12,87],[12,96],[12,104],[13,1],[13,6],[13,14],[13,19],[13,29],[13,35],[13,43],[14,6],[14,11],[14,19],[14,25],[14,34],[14,43],[15,1],[15,16],[15,32],[15,52],[15,71],[15,91],[16,7],[16,15],[16,27],[16,35],[16,43],[16,55],[16,65],[16,73],[16,80],[16,88],[16,94],[16,103],[16,111],[16,119],[17,1],[17,8],[17,18],[17,28],[17,39],[17,50],[17,59],[17,67],[17,76],[17,87],[17,97],[17,105],[18,5],[18,16],[18,21],[18,28],[18,35],[18,46],[18,54],[18,62],[18,75],[18,84],[18,98],[19,1],[19,12],[19,26],[19,39],[19,52],[19,65],[19,77],[19,96],[20,13],[20,38],[20,52],[20,65],[20,77],[20,88],[20,99],[20,114],[20,126],[21,1],[21,11],[21,25],[21,36],[21,45],[21,58],[21,73],[21,82],[21,91],[21,102],[22,1],[22,6],[22,16],[22,24],[22,31],[22,39],[22,47],[22,56],[22,65],[22,73],[23,1],[23,18],[23,28],[23,43],[23,60],[23,75],[23,90],[23,105],[24,1],[24,11],[24,21],[24,28],[24,32],[24,37],[24,44],[24,54],[24,59],[24,62],[25,3],[25,12],[25,21],[25,33],[25,44],[25,56],[25,68],[26,1],[26,20],[26,40],[26,61],[26,84],[26,112],[26,137],[26,160],[26,184],[26,207],[27,1],[27,14],[27,23],[27,36],[27,45],[27,56],[27,64],[27,77],[27,89],[28,6],[28,14],[28,22],[28,29],[28,36],[28,44],[28,51],[28,60],[28,71],[28,78],[28,85],[29,7],[29,15],[29,24],[29,31],[29,39],[29,46],[29,53],[29,64],[30,6],[30,16],[30,25],[30,33],[30,42],[30,51],[31,1],[31,12],[31,20],[31,29],[32,1],[32,12],[32,21],[33,1],[33,7],[33,16],[33,23],[33,31],[33,36],[33,44],[33,51],[33,55],[33,63],[34,1],[34,8],[34,15],[34,23],[34,32],[34,40],[34,49],[35,4],[35,12],[35,19],[35,31],[35,39],[35,45],[36,13],[36,28],[36,41],[36,55],[36,71],[37,1],[37,25],[37,52],[37,77],[37,103],[37,127],[37,154],[38,1],[38,17],[38,27],[38,43],[38,62],[38,84],[39,6],[39,11],[39,22],[39,32],[39,41],[39,48],[39,57],[39,68],[39,75],[40,8],[40,17],[40,26],[40,34],[40,41],[40,50],[40,59],[40,67],[40,78],[41,1],[41,12],[41,21],[41,30],[41,39],[41,47],[42,1],[42,11],[42,16],[42,23],[42,32],[42,45],[42,52],[43,11],[43,23],[43,34],[43,48],[43,61],[43,74],[44,1],[44,19],[44,40],[45,1],[45,14],[45,23],[45,33],[46,6],[46,15],[46,21],[46,29],[47,1],[47,12],[47,20],[47,30],[48,1],[48,10],[48,16],[48,24],[48,29],[49,5],[49,12],[50,1],[50,16],[50,36],[51,7],[51,31],[51,52],[52,15],[52,32],[53,1],[53,27],[53,45],[54,7],[54,28],[54,50],[55,17],[55,41],[55,68],[56,17],[56,51],[56,77],[57,4],[57,12],[57,19],[57,25],[58,1],[58,7],[58,12],[58,22],[59,4],[59,10],[59,17],[60,1],[60,6],[60,12],[61,6],[62,1],[62,9],[63,5],[64,1],[64,10],[65,1],[65,6],[66,1],[66,8],[67,1],[67,13],[67,27],[68,16],[68,43],[69,9],[69,35],[70,11],[70,40],[71,11],[72,1],[72,14],[73,1],[73,20],[74,18],[74,48],[75,20],[76,6],[76,26],[77,20],[78,1],[78,31],[79,16],[80,1],[81,1],[82,1],[83,7],[83,35],[85,1],[86,1],[87,16],[89,1],[89,24],[91,1],[92,15],[95,1],[97,1],[98,8],[100,10],[103,1],[106,1],[109,1],[112,1]],"sajda":[[7,206],[13,15],[16,50],[17,109],[19,58],[22,18],[22,77],[25,60],[27,26],[32,15],[38,24],[41,38],[53,62],[84,21],[96,19]],"ch":[["الفاتحة","mk",7],["البقرة","md",286],["آل عمران","md",200],["النساء","md",176],["المائدة","md",120],["الأنعام","mk",165],["الأعراف","mk",206],["الأنفال","md",75],["التوبة","md",129],["يونس","mk",109],["هود","mk",123],["يوسف","mk",111],["الرعد","md",43],["ابراهيم","mk",52],["الحجر","mk",99],["النحل","mk",128],["الإسراء","mk",111],["الكهف","mk",110],["مريم","mk",98],["طه","mk",135],["الأنبياء","mk",112],["الحج","md",78],["المؤمنون","mk",118],["النور","md",64],["الفرقان","mk",77],["الشعراء","mk",227],["النمل","mk",93],["القصص","mk",88],["العنكبوت","mk",69],["الروم","mk",60],["لقمان","mk",34],["السجدة","mk",30],["الأحزاب","md",73],["سبإ","mk",54],["فاطر","mk",45],["يس","mk",83],["الصافات","mk",182],["ص","mk",88],["الزمر","mk",75],["غافر","mk",85],["فصلت","mk",54],["الشورى","mk",53],["الزخرف","mk",89],["الدخان","mk",59],["الجاثية","mk",37],["الأحقاف","mk",35],["محمد","md",38],["الفتح","md",29],["الحجرات","md",18],["ق","mk",45],["الذاريات","mk",60],["الطور","mk",49],["النجم","mk",62],["القمر","mk",55],["الرحمن","md",78],["الواقعة","mk",96],["الحديد","md",29],["المجادلة","md",22],["الحشر","md",24],["الممتحنة","md",13],["الصف","md",14],["الجمعة","md",11],["المنافقون","md",11],["التغابن","md",18],["الطلاق","md",12],["التحريم","md",12],["الملك","mk",30],["القلم","mk",52],["الحاقة","mk",52],["المعارج","mk",44],["نوح","mk",28],["الجن","mk",28],["المزمل","mk",20],["المدثر","mk",56],["القيامة","mk",40],["الانسان","md",31],["المرسلات","mk",50],["النبإ","mk",40],["النازعات","mk",46],["عبس","mk",42],["التكوير","mk",29],["الإنفطار","mk",19],["المطففين","mk",36],["الإنشقاق","mk",25],["البروج","mk",22],["الطارق","mk",17],["الأعلى","mk",19],["الغاشية","mk",26],["الفجر","mk",30],["البلد","mk",20],["الشمس","mk",15],["الليل","mk",21],["الضحى","mk",11],["الشرح","mk",8],["التين","mk",8],["العلق","mk",19],["القدر","mk",5],["البينة","md",8],["الزلزلة","md",8],["العاديات","mk",11],["القارعة","mk",11],["التكاثر","mk",8],["العصر","mk",3],["الهمزة","mk",9],["الفيل","mk",5],["قريش","mk",4],["الماعون","mk",7],["الكوثر","mk",3],["الكافرون","mk",6],["النصر","md",3],["المسد","mk",5],["الإخلاص","mk",4],["الفلق","mk",5],["الناس","mk",6]]};
+const RU = [["Аль-Фатиха","Открывающая"],["Аль-Бакара","Корова"],["Аль Имран","Семейство Имрана"],["Ан-Ниса","Женщины"],["Аль-Маида","Трапеза"],["Аль-Анам","Скот"],["Аль-Араф","Ограды"],["Аль-Анфаль","Трофеи"],["Ат-Тауба","Покаяние"],["Юнус","Иона"],["Худ",""],["Юсуф","Иосиф"],["Ар-Рад","Гром"],["Ибрахим","Авраам"],["Аль-Хиджр","Хиджр"],["Ан-Нахль","Пчёлы"],["Аль-Исра","Ночной перенос"],["Аль-Кахф","Пещера"],["Марьям","Мария"],["Та Ха",""],["Аль-Анбийа","Пророки"],["Аль-Хадж","Паломничество"],["Аль-Муминун","Верующие"],["Ан-Нур","Свет"],["Аль-Фуркан","Различение"],["Аш-Шуара","Поэты"],["Ан-Намль","Муравьи"],["Аль-Касас","Рассказ"],["Аль-Анкабут","Паук"],["Ар-Рум","Римляне"],["Лукман",""],["Ас-Саджда","Земной поклон"],["Аль-Ахзаб","Союзники"],["Саба","Сава"],["Фатыр","Творец"],["Йа Син",""],["Ас-Саффат","Выстроившиеся в ряды"],["Сад",""],["Аз-Зумар","Толпы"],["Гафир","Прощающий"],["Фуссылат","Разъяснены"],["Аш-Шура","Совет"],["Аз-Зухруф","Украшения"],["Ад-Духан","Дым"],["Аль-Джасийа","Коленопреклонённые"],["Аль-Ахкаф","Барханы"],["Мухаммад",""],["Аль-Фатх","Победа"],["Аль-Худжурат","Комнаты"],["Каф",""],["Аз-Зарийат","Рассеивающие"],["Ат-Тур","Гора"],["Ан-Наджм","Звезда"],["Аль-Камар","Месяц"],["Ар-Рахман","Милостивый"],["Аль-Вакиа","Событие"],["Аль-Хадид","Железо"],["Аль-Муджадила","Препирающаяся"],["Аль-Хашр","Сбор"],["Аль-Мумтахана","Испытуемая"],["Ас-Сафф","Ряды"],["Аль-Джумуа","Собрание"],["Аль-Мунафикун","Лицемеры"],["Ат-Тагабун","Взаимный обман"],["Ат-Талак","Развод"],["Ат-Тахрим","Запрещение"],["Аль-Мульк","Власть"],["Аль-Калам","Письменная трость"],["Аль-Хакка","Неизбежное"],["Аль-Мааридж","Ступени"],["Нух","Ной"],["Аль-Джинн","Джинны"],["Аль-Муззаммиль","Закутавшийся"],["Аль-Муддассир","Завернувшийся"],["Аль-Кийама","Воскресение"],["Аль-Инсан","Человек"],["Аль-Мурсалят","Посылаемые"],["Ан-Наба","Весть"],["Ан-Назиат","Вырывающие"],["Абаса","Нахмурился"],["Ат-Таквир","Скручивание"],["Аль-Инфитар","Раскалывание"],["Аль-Мутаффифин","Обвешивающие"],["Аль-Иншикак","Разверзнется"],["Аль-Бурудж","Созвездия"],["Ат-Тарик","Ночной путник"],["Аль-Аля","Всевышний"],["Аль-Гашийа","Покрывающее"],["Аль-Фаджр","Заря"],["Аль-Балад","Город"],["Аш-Шамс","Солнце"],["Аль-Лайль","Ночь"],["Ад-Духа","Утро"],["Аш-Шарх","Раскрытие"],["Ат-Тин","Смоковница"],["Аль-Алак","Сгусток"],["Аль-Кадр","Предопределение"],["Аль-Баййина","Ясное знамение"],["Аз-Зальзаля","Землетрясение"],["Аль-Адийат","Мчащиеся"],["Аль-Кариа","Великое бедствие"],["Ат-Такасур","Страсть к приумножению"],["Аль-Аср","Предвечернее время"],["Аль-Хумаза","Хулитель"],["Аль-Филь","Слон"],["Курайш","Курайшиты"],["Аль-Маун","Мелочь"],["Аль-Каусар","Изобилие"],["Аль-Кафирун","Неверующие"],["Ан-Наср","Помощь"],["Аль-Масад","Пальмовые волокна"],["Аль-Ихлас","Очищение веры"],["Аль-Фалак","Рассвет"],["Ан-Нас","Люди"]];
+const BISMILLAH = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+
+/* ---------- helpers ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad3 = n => String(n).padStart(3, "0");
+const arNum = n => String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+function plural(n, f){ const a = Math.abs(n) % 100, b = a % 10; if (a > 10 && a < 20) return f[2]; if (b > 1 && b < 5) return f[1]; if (b === 1) return f[0]; return f[2]; }
+const AYAT = ["аят","аята","аятов"], SLOV = ["слово","слова","слов"], DNEY = ["день","дня","дней"], OSH = ["ошибка","ошибки","ошибок"];
+const nAyat = n => n + " " + plural(n, AYAT);
+const CNT = s => META.ch[s-1][2];
+const sName = s => RU[s-1][0];
+const sType = s => META.ch[s-1][1] === "mk" ? "Мекканская" : "Мединская";
+const OFF = [0]; META.ch.forEach((c, i) => OFF.push(OFF[i] + c[2]));
+const gid = (s, v) => OFF[s-1] + v;
+const PSTART = META.pages.map(([s, a]) => gid(s, a));
+const JSTART = META.juz.map(([s, a]) => gid(s, a));
+const SAJDA = new Set(META.sajda.map(([s, a]) => gid(s, a)));
+function lastLE(arr, x){ let lo = 0, hi = arr.length - 1, r = 0; while (lo <= hi){ const m = (lo + hi) >> 1; if (arr[m] <= x){ r = m; lo = m + 1; } else hi = m - 1; } return r + 1; }
+const pageOf = (s, v) => lastLE(PSTART, gid(s, v));
+const juzOf = (s, v) => lastLE(JSTART, gid(s, v));
+function dkey(d = new Date()){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function dnum(d = new Date()){ return Math.round(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 864e5); }
+function agoText(days){ if (days <= 0) return "сегодня"; if (days === 1) return "вчера"; return days + " " + plural(days, DNEY) + " назад"; }
+let toastT;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+
+/* ---------- Arabic matching (voice check) ---------- */
+//#matcher-start
+const HAR = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g;
+function normAr(s){
+  return s.replace(HAR, "").replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+    .replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/ء/g, "").replace(/[^ء-ي\s]/g, " ");
+}
+const toTokens = s => normAr(s).split(/\s+/).filter(Boolean);
+function lev(a, b){
+  if (a === b) return 0;
+  let prev = Array.from({length: b.length + 1}, (_, j) => j);
+  for (let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur.push(Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1)));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+function sameWord(key, tok){
+  if (key === tok) return true;
+  const L = Math.max(key.length, tok.length);
+  const d = lev(key, tok);
+  if (L <= 3) return d <= 1 && key[0] === tok[0];
+  if (L <= 5) return d <= 1;
+  return 1 - d / L >= 0.7;
+}
+const LETTER = {"ا":"الف","ل":"لام","م":"ميم","ر":"را","ص":"صاد","ك":"كاف","ه":"ها","ي":"يا","ع":"عين","ط":"طا","س":"سين","ح":"حا","ق":"قاف","ن":"نون"};
+const MUQ = new Set(["الم","المص","الر","المر","كهيعص","طه","طسم","طس","يس","ص","حم","عسق","ق","ن"]);
+function spelled(key){ return [...key].map(c => LETTER[c] || c).join(""); }
+function tryMatch(item, toks, t){
+  if (!item) return 0;
+  const keys = item.alt ? [item.alt, item.key] : [item.key];
+  for (const key of keys){
+    let cand = "";
+    for (let k = 1; k <= (item.alt ? 6 : 3) && t + k <= toks.length; k++){
+      cand += toks[t + k - 1];
+      if (sameWord(key, cand)) return k;
+      if (cand.length > key.length + 2) break;
+    }
+  }
+  return 0;
+}
+/* Walk recognised tokens against the expected words from `start`.
+   Returns marks [[itemIndex, 1=ok | 2=mistake]] and the index after the last word consumed. */
+function runMatch(items, start, toks, final){
+  const marks = []; let p = start, t = 0;
+  while (t < toks.length && p < items.length){
+    const k = tryMatch(items[p], toks, t);
+    if (k){ marks.push([p, 1]); p++; t += k; continue; }
+    let ahead = 0, kd = 0;
+    for (let d = 1; d <= 2 && p + d < items.length; d++){ kd = tryMatch(items[p + d], toks, t); if (kd){ ahead = d; break; } }
+    let rep = 0;
+    for (let d = 1; d <= 4 && p - d >= 0; d++){ rep = tryMatch(items[p - d], toks, t); if (rep) break; }
+    if (rep && !ahead){ t += rep; continue; }
+    if (ahead){ for (let q = p; q < p + ahead; q++) marks.push([q, 2]); marks.push([p + ahead, 1]); p += ahead + 1; t += kd; continue; }
+    if (t + 1 < toks.length && tryMatch(items[p], toks, t + 1)){ t++; continue; }
+    if (final || t < toks.length - 2){ marks.push([p, 2]); p++; t++; continue; }
+    break;
+  }
+  return { marks, end: p };
+}
+//#matcher-end
+
+/* ---------- data ---------- */
+const cache = new Map();
+function loadSurah(s){
+  if (cache.has(s)) return cache.get(s);
+  const prom = (window.QDATA ? Promise.resolve(window.QDATA[s]) : fetch("s/" + pad3(s) + ".json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }))
+    .then(d => ({ a: d.a.map(x => x.split(" ")), k: d.k.map(x => x.split(" ")), t: d.t }));
+  cache.set(s, prom);
+  prom.catch(() => cache.delete(s));
+  return prom;
+}
+
+/* ---------- state ---------- */
+const DEF = () => ({ v: 1, upd: 0, last: null, vp: {}, mist: {}, days: {}, sess: [], bm: [], lastDrill: null,
+  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1 } });
+let S = DEF();
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function normalizeState(o){
+  const d = DEF(); const r = Object.assign(d, o || {}); r.set = Object.assign(DEF().set, (o && o.set) || {});
+  for (const k of ["vp","mist","days"]) if (!r[k] || typeof r[k] !== "object" || Array.isArray(r[k])) r[k] = {};
+  if (!Array.isArray(r.sess)) r.sess = []; if (!Array.isArray(r.bm)) r.bm = [];
+  return r;
+}
+function trimState(){
+  const m = Object.entries(S.mist); if (m.length > 1500){ m.sort((a, b) => b[1] - a[1]); S.mist = Object.fromEntries(m.slice(0, 1500)); }
+  const d = Object.keys(S.days).sort(); if (d.length > 400) for (const k of d.slice(0, d.length - 400)) delete S.days[k];
+  if (S.sess.length > 80) S.sess = S.sess.slice(0, 80);
+}
+function mergeStates(a, b){
+  const base = normalizeState(clone((b.upd || 0) > (a.upd || 0) ? b : a));
+  for (const src of [a, b]){
+    for (const [k, x] of Object.entries(src.vp || {})){ const y = base.vp[k]; base.vp[k] = y ? [Math.max(y[0], x[0]), Math.max(y[1], x[1]), Math.max(y[2] || 0, x[2] || 0)] : x.slice(); }
+    for (const [k, x] of Object.entries(src.mist || {})) base.mist[k] = Math.max(base.mist[k] || 0, x);
+    for (const [k, x] of Object.entries(src.days || {})){ const y = base.days[k] || {}; base.days[k] = { v: Math.max(y.v || 0, x.v || 0), w: Math.max(y.w || 0, x.w || 0), e: Math.max(y.e || 0, x.e || 0) }; }
+  }
+  const seen = new Map(); for (const x of [...(a.sess || []), ...(b.sess || [])]) seen.set(x.id, x);
+  base.sess = [...seen.values()].sort((x, y) => y.id - x.id).slice(0, 80);
+  base.upd = Math.max(a.upd || 0, b.upd || 0);
+  return base;
+}
+function loadLocal(){ try { const raw = localStorage.getItem("hifz.v1"); if (raw) S = normalizeState(JSON.parse(raw)); } catch (e) {} }
+function saveLocal(){ try { localStorage.setItem("hifz.v1", JSON.stringify(S)); } catch (e) {} }
+function save(){ S.upd = Date.now(); trimState(); saveLocal(); Remote.schedule(); }
+
+const Remote = {
+  ref: null, timer: 0, writing: false, dirty: false, fails: 0, ok: false,
+  async init(){
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+      if (!db || !user) return;
+      const uid = await user.id(); if (!uid) return;
+      this.ref = db.doc("data/users/" + uid + "/hifz");
+      const snap = await this.ref.get();
+      this.ok = true;
+      if (snap.exists){
+        const remote = clone(snap.data());
+        const localUpd = S.upd || 0;
+        S = mergeStates(S, normalizeState(remote));
+        saveLocal(); applySettings(); renderAll();
+        if (localUpd > (remote.upd || 0)) this.schedule(500);
+      } else if (S.upd) this.schedule(500);
+      renderSyncNote();
+    } catch (e) { console.warn("sync", e); }
+  },
+  schedule(ms = 2500){ if (!this.ref) return; this.dirty = true; clearTimeout(this.timer); this.timer = setTimeout(() => this.flush(), ms); },
+  async flush(){
+    if (!this.ref || this.writing || !this.dirty) return;
+    this.writing = true; this.dirty = false;
+    try { await this.ref.set(clone(S)); this.fails = 0; }
+    catch (e) {
+      if ((e && e.code) === "unavailable" && this.fails < 1){ this.fails++; this.dirty = true; setTimeout(() => this.flush(), 2000 + Math.random() * 2000); }
+      else console.warn("save", e);
+    } finally { this.writing = false; if (this.dirty) this.schedule(1500); }
+  }
+};
+
+/* ---------- derived stats ---------- */
+const vpGet = (s, v) => S.vp[s + ":" + v];
+const isLearned = (s, v) => { const x = vpGet(s, v); return !!x && x[0] >= 3; };
+const inProgress = (s, v) => { const x = vpGet(s, v); return !!x && x[0] > 0 && x[0] < 3; };
+function surahStats(s){
+  let l = 0, p = 0, last = 0, lo = 0, hi = 0, errs = 0;
+  for (let v = 1, n = CNT(s); v <= n; v++){
+    const x = vpGet(s, v); if (!x) continue;
+    if (x[0] >= 3) l++; else if (x[0] > 0) p++;
+    if (x[0] > 0){ if (!lo) lo = v; hi = v; }
+    last = Math.max(last, x[1]); errs += x[2] || 0;
+  }
+  return { l, p, last, lo, hi, errs };
+}
+function totalLearned(){ let n = 0; for (const k in S.vp) if (S.vp[k][0] >= 3) n++; return n; }
+function streak(){
+  let d = new Date(), n = 0;
+  const has = dt => (S.days[dkey(dt)] || {}).w > 0;
+  if (!has(d)) d.setDate(d.getDate() - 1);
+  while (has(d)){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function accuracy(days = 7){
+  const cut = dnum() - days + 1; let w = 0, e = 0;
+  for (const [k, x] of Object.entries(S.days)){ const [y, m, dd] = k.split("-").map(Number); if (dnum(new Date(y, m - 1, dd)) >= cut){ w += x.w || 0; e += x.e || 0; } }
+  return w ? Math.floor(100 * (w - e) / w) : null;
+}
+const accClass = a => a >= 90 ? "good" : a >= 70 ? "mid" : "low";
+
+/* ---------- settings ---------- */
+function applySettings(){ document.documentElement.style.setProperty("--qsize", S.set.fs + "px"); }
+/* Microphone and reciter audio only work when the page is opened as a normal website, not inside a frame. */
+const HOSTED = window.top === window.self;
+const VOICE = HOSTED && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+const AUDIO = HOSTED;
+
+/* ---------- reciter audio ---------- */
+const RECITERS = [
+  { id: "alafasy", name: "Мишари Алафаси", ea: "Alafasy_128kbps", isn: "128/ar.alafasy" },
+  { id: "husary", name: "Махмуд Халиль аль-Хусари", ea: "Husary_128kbps", isn: "128/ar.husary" },
+  { id: "husary_m", name: "Хусари, обучающее чтение", ea: "Husary_Muallim_128kbps" },
+  { id: "minshawi", name: "Мухаммад Сиддик аль-Миншави", ea: "Minshawy_Murattal_128kbps", isn: "128/ar.minshawi" },
+  { id: "abdulbasit", name: "Абдуль-Басит Абдус-Самад", ea: "Abdul_Basit_Murattal_192kbps", isn: "192/ar.abdulbasitmurattal" },
+  { id: "maher", name: "Махер аль-Муайкли", ea: "MaherAlMuaiqly128kbps", isn: "128/ar.mahermuaiqly" },
+  { id: "sudais", name: "Абдуррахман ас-Судайс", ea: "Abdurrahmaan_As-Sudais_192kbps", isn: "192/ar.abdurrahmaansudais" },
+  { id: "shuraym", name: "Сауд аш-Шурайм", ea: "Saood_ash-Shuraym_128kbps", isn: "64/ar.saoodshuraym" },
+  { id: "hudhaify", name: "Али аль-Хузайфи", ea: "Hudhaify_128kbps", isn: "128/ar.hudhaify" },
+  { id: "ayyoub", name: "Мухаммад Аюб", ea: "Muhammad_Ayyoub_128kbps", isn: "128/ar.muhammadayyoub" },
+  { id: "ghamadi", name: "Саад аль-Гамиди", ea: "Ghamadi_40kbps" },
+  { id: "dussary", name: "Ясир ад-Даусари", ea: "Yasser_Ad-Dussary_128kbps" }
+];
+const REPS = [1, 2, 3, 5, 10, 0];
+const repLabel = r => r === 0 ? "∞" : "×" + r;
+const reciter = () => RECITERS.find(r => r.id === S.set.rc) || RECITERS[0];
+function audioUrls(s, v){
+  const r = reciter(), u = [`https://everyayah.com/data/${r.ea}/${pad3(s)}${pad3(v)}.mp3`];
+  if (r.isn) u.push(`https://cdn.islamic.network/quran/audio/${r.isn}/${gid(s, v)}.mp3`);
+  return u;
+}
+const P = { el: null, pre: null, s: 0, v: 0, end: 0, left: 1, playing: false, bism: false, ctx: "", urls: [] };
+function pInit(){
+  if (P.el) return;
+  P.el = new Audio(); P.el.preload = "auto"; P.pre = new Audio(); P.pre.preload = "auto";
+  P.el.addEventListener("ended", pEnded);
+  P.el.addEventListener("error", pError);
+  P.el.addEventListener("playing", () => { P.playing = true; pRender(); });
+  P.el.addEventListener("pause", () => { P.playing = false; pRender(); });
+  if ("mediaSession" in navigator){
+    try {
+      navigator.mediaSession.setActionHandler("play", () => pToggle());
+      navigator.mediaSession.setActionHandler("pause", () => pToggle());
+      navigator.mediaSession.setActionHandler("nexttrack", () => pSkip(1));
+      navigator.mediaSession.setActionHandler("previoustrack", () => pSkip(-1));
+    } catch (e) {}
+  }
+}
+function pPlay(s, v, end, ctx){
+  pInit(); if (rec) stopVoice();
+  Object.assign(P, { s, v, end, ctx, left: S.set.rep, bism: v === 1 && s !== 1 && s !== 9 });
+  pLoad();
+}
+function pLoad(){
+  const [s, v] = P.bism ? [1, 1] : [P.s, P.v];
+  P.urls = audioUrls(s, v);
+  P.el.src = P.urls.shift();
+  P.el.playbackRate = S.set.rate;
+  P.el.play().catch(err => { if (err && err.name === "NotAllowedError"){ P.playing = false; pRender(); toast("Нажмите ▶, чтобы включить звук"); } });
+  if (!P.bism && P.v < P.end){ P.pre.src = audioUrls(P.s, P.v + 1)[0]; }
+  if ("mediaSession" in navigator && window.MediaMetadata){
+    try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${sName(P.s)} ${P.s}:${P.v}`, artist: reciter().name, album: "Коран" }); } catch (e) {}
+  }
+  pRender(); pHighlight();
+}
+function pError(){
+  if (!P.s) return;
+  if (P.urls.length){ P.el.src = P.urls.shift(); P.el.playbackRate = S.set.rate; P.el.play().catch(() => {}); return; }
+  toast("Не удалось загрузить аудио. Проверьте интернет или выберите другого чтеца.");
+  pStop();
+}
+function pEnded(){
+  if (P.bism){ P.bism = false; pLoad(); return; }
+  if (S.set.rep === 0 || P.left > 1){ if (S.set.rep) P.left--; P.el.currentTime = 0; P.el.play().catch(() => {}); pRender(); return; }
+  if (P.v < P.end){ P.v++; P.left = S.set.rep; pLoad(); }
+  else pStop();
+}
+function pStop(){
+  if (P.el){ P.el.pause(); P.el.removeAttribute("src"); try { P.el.load(); } catch (e) {} }
+  P.s = 0; P.playing = false; pHighlight(); pRender();
+}
+function pToggle(){
+  if (!P.s){
+    if (overlay === "reader" && R){ const v = S.last && S.last.s === R.s ? S.last.v : 1; pPlay(R.s, v, R.data.a.length, "reader"); }
+    return;
+  }
+  if (P.el.paused) P.el.play().catch(() => {}); else P.el.pause();
+}
+function pSkip(d){
+  if (!P.s) return;
+  const n = CNT(P.s), v = Math.max(1, Math.min(n, P.v + d));
+  P.v = v; P.bism = false; P.left = S.set.rep; if (P.end < v) P.end = v; pLoad();
+}
+function pHighlight(){
+  $$(".playing").forEach(el => el.classList.remove("playing"));
+  if (!P.s) return;
+  if (P.ctx === "reader" && overlay === "reader" && R && R.s === P.s){
+    const el = $(`#r-body [data-v="${P.v}"].ayah, #r-body [data-v="${P.v}"].vcard`);
+    if (el){
+      el.classList.add("playing");
+      const sc = $("#r-scroll"), r = el.getBoundingClientRect(), b = sc.getBoundingClientRect();
+      if (r.top < b.top || r.top > b.bottom - 120) sc.scrollTo({ top: sc.scrollTop + r.top - b.top - 24, behavior: "smooth" });
+    }
+  }
+  if (P.ctx === "drill" && overlay === "drill"){ const el = $(`#d-body .dverse[data-v="${P.v}"]`); if (el) el.classList.add("playing"); }
+}
+function pRender(){
+  const bar = $("#player"); if (!bar) return;
+  bar.hidden = !AUDIO;
+  const active = !!P.s;
+  $("#p-toggle").innerHTML = active && P.playing ? ICON.pause : ICON.play;
+  $("#p-toggle").setAttribute("aria-label", active && P.playing ? "Пауза" : "Слушать");
+  $("#p-title").textContent = active ? `${P.bism ? "Бисмиллях · " : ""}${sName(P.s)}, аят ${P.v}` : "Слушать чтеца";
+  const rp = S.set.rep;
+  $("#p-sub").textContent = reciter().name + (active && rp !== 1 ? ` · повтор ${rp === 0 ? "∞" : (rp - P.left + 1) + " из " + rp}` : "");
+  $("#p-rep").textContent = repLabel(rp);
+  const dl = $("#d-listen"); if (dl){ dl.hidden = !AUDIO; dl.classList.toggle("on", active && P.ctx === "drill"); }
+}
+const ICON = {
+  play: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>`,
+  pause: `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>`
+};
+function reciterSheet(){
+  openSheet(`
+    <div class="grab"></div>
+    <h3>Чтец и повтор</h3>
+    <div class="rlist">${RECITERS.map(r => `<button class="rrow" data-act="set-rc" data-k="${r.id}" aria-pressed="${r.id === reciter().id}"><span>${esc(r.name)}</span><i></i></button>`).join("")}</div>
+    <div class="field"><span class="flabel">Повторять каждый аят</span><div class="chips">${REPS.map(r => `<button class="chip" data-act="set-rep" data-k="${r}" aria-pressed="${S.set.rep === r}">${r === 0 ? "без конца" : r === 1 ? "1 раз" : r + " " + plural(r, ["раз","раза","раз"])}</button>`).join("")}</div></div>
+    <div class="field"><span class="flabel">Скорость</span><div class="chips">${[0.75, 1, 1.25].map(r => `<button class="chip" data-act="set-rate" data-k="${r}" aria-pressed="${S.set.rate === r}">${String(r).replace(".", ",")}×</button>`).join("")}</div></div>
+    <p class="credits">Аудио: everyayah.com и cdn.islamic.network. Для прослушивания нужен интернет.</p>`);
+}
+
+/* ---------- navigation ---------- */
+let tab = "home", overlay = null;
+function show(viewId){
+  for (const v of ["home","learn","progress","reader","drill"]) $("#v-" + v).hidden = v !== viewId;
+  $("#tabs").hidden = viewId === "reader" || viewId === "drill";
+}
+function goTab(t){
+  tab = t; overlay = null; show(t);
+  $$("#tabs button").forEach(b => { if (b.dataset.tab === t) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+  if (t === "home") renderHome(); else if (t === "learn") renderLearn(); else renderProgress();
+}
+
+/* ---------- HOME ---------- */
+let listMode = "surah", query = "";
+function renderDate(){
+  const d = new Date();
+  let hij = "";
+  try {
+    const parts = new Intl.DateTimeFormat("ru-RU-u-ca-islamic-umalqura", { day: "numeric", month: "long", year: "numeric" }).formatToParts(d);
+    hij = parts.filter(p => ["day","month","year","literal"].includes(p.type)).map(p => p.value).join("").replace(/\s*г\.?\s*$/,"").trim();
+  } catch (e) {}
+  const greg = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long" }).format(d);
+  $("#today-date").textContent = greg + (hij ? " · " + hij : "");
+}
+function nextDrill(){
+  const L = S.lastDrill;
+  if (!L) return { s: 1, f: 1, t: CNT(1) };
+  const len = Math.max(1, Math.min(10, L.t - L.f + 1)), n = CNT(L.s);
+  if (L.t < n) return { s: L.s, f: L.t + 1, t: Math.min(n, L.t + len) };
+  const s2 = L.s < 114 ? L.s + 1 : 1;
+  return { s: s2, f: 1, t: Math.min(CNT(s2), len) };
+}
+function renderToday(){
+  const today = S.days[dkey()] || {}, goal = S.set.goal, done = today.v || 0;
+  const frac = Math.min(1, done / goal), C = 2 * Math.PI * 34;
+  const st = streak(), learned = totalLearned();
+  const nd = nextDrill();
+  const L = S.last;
+  const contTxt = L ? `${sName(L.s)}, ${L.v}` : "Аль-Фатиха, 1";
+  const headline = done >= goal ? "Цель на сегодня выполнена" : done ? `Ещё ${nAyat(goal - done)} до цели` : "Сегодня ещё не занимались";
+  $("#today-card").innerHTML = `
+  <div class="card">
+    <div class="today">
+      <div class="ring" aria-label="Сегодня ${done} из ${goal} аятов">
+        <svg viewBox="0 0 80 80"><circle class="bg" cx="40" cy="40" r="34" fill="none" stroke-width="7"/><circle class="fg" cx="40" cy="40" r="34" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - frac)).toFixed(1)}"/></svg>
+        <div class="ring-num"><div><b>${done}</b><small>из ${goal}</small></div></div>
+      </div>
+      <div class="today-txt">
+        <div class="eyebrow">Сегодня</div>
+        <div class="h">${headline}</div>
+        <div class="stat-line"><span>Серия <b>${st}</b> ${plural(st, DNEY)}</span><span>Выучено <b>${learned}</b> ${plural(learned, AYAT)}</span></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary btn-col" data-act="drill" data-s="${nd.s}" data-f="${nd.f}" data-t="${nd.t}">Учить дальше<small>${esc(sName(nd.s))}, ${nd.f}–${nd.t}</small></button>
+      <button class="btn btn-soft btn-col" data-act="continue-read">Читать<small>${esc(contTxt)}</small></button>
+    </div>
+  </div>`;
+}
+function renderBookmarks(){
+  const el = $("#bookmarks");
+  if (!S.bm.length){ el.innerHTML = ""; el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<div class="flabel" style="margin-bottom:8px">Закладки</div><div class="chips">${S.bm.map(r => { const [s, v] = r.split(":").map(Number); return `<button class="chip" data-act="open" data-s="${s}" data-v="${v}">${esc(sName(s))} ${s}:${v}</button>`; }).join("")}</div>`;
+}
+const normRu = s => s.toLowerCase().replace(/ё/g, "е").replace(/[^a-zа-я0-9؀-ۿ]/g, "").replace(/^(аль|ан|ар|ас|аш|ат|аз|ад)/, "");
+function surahMatches(i, q){
+  if (!q) return true;
+  const n = i + 1;
+  if (/^\d+$/.test(q)) return String(n).startsWith(q);
+  const nq = normRu(q), aq = normAr(q).replace(/\s/g, "");
+  return normRu(RU[i][0]).includes(nq) || normRu(RU[i][1]).includes(nq) || (aq && normAr(META.ch[i][0]).replace(/\s/g, "").includes(aq));
+}
+function renderList(){
+  const el = $("#slist");
+  const q = query.trim();
+  const ref = q.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/);
+  let pre = "";
+  if (ref){
+    const s = +ref[1], v = +ref[2];
+    if (s >= 1 && s <= 114 && v >= 1 && v <= CNT(s)) pre = `<button class="srow" data-act="open" data-s="${s}" data-v="${v}"><span class="star"><span>${s}</span></span><span class="sname"><b>Открыть аят ${s}:${v}</b><small>${esc(sName(s))} · стр. ${pageOf(s, v)}</small></span><span class="sar">${esc(META.ch[s-1][0])}</span></button>`;
+  }
+  if (listMode === "juz" && !q){
+    el.innerHTML = META.juz.map(([s, a], i) => `<button class="srow" data-act="open" data-s="${s}" data-v="${a}"><span class="star"><span>${i + 1}</span></span><span class="sname"><b>Джуз ${i + 1}</b><small>с ${esc(sName(s))} ${s}:${a} · стр. ${pageOf(s, a)}</small></span><span class="sar">${esc(META.ch[s-1][0])}</span></button>`).join("");
+    return;
+  }
+  const rows = [];
+  for (let i = 0; i < 114; i++){
+    if (!surahMatches(i, q)) continue;
+    const s = i + 1, st = surahStats(s), n = CNT(s);
+    const done = st.l === n;
+    const meaning = RU[i][1] ? RU[i][1] + " · " : "";
+    rows.push(`<button class="srow" data-act="open" data-s="${s}" data-v="1"><span class="star${done ? " done" : ""}"><span>${s}</span></span><span class="sname"><b>${esc(RU[i][0])}</b><small>${esc(meaning)}${sType(s)} · ${nAyat(n)}</small>${st.l || st.p ? `<span class="minibar"><i style="width:${(100 * st.l / n).toFixed(1)}%"></i></span>` : ""}</span><span class="sar">${esc(META.ch[i][0])}</span></button>`);
+  }
+  el.innerHTML = pre + (rows.join("") || (pre ? "" : `<div class="empty">Ничего не нашлось. Попробуйте номер суры или ссылку вида 2:255.</div>`));
+}
+function renderHome(){ renderDate(); renderToday(); renderBookmarks(); renderList(); }
+
+/* ---------- READER ---------- */
+let R = null; // {s, data}
+const LAYOUT_ICONS = {
+  mushaf: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg>`,
+  verses: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/></svg>`
+};
+async function openReader(s, v = 1){
+  overlay = "reader"; show("reader");
+  $("#r-title").textContent = sName(s) + " · " + s;
+  $("#r-sub").textContent = `стр. ${pageOf(s, v)} · джуз ${juzOf(s, v)}`;
+  $("#r-layout").innerHTML = S.set.layout === "mushaf" ? LAYOUT_ICONS.verses : LAYOUT_ICONS.mushaf;
+  $("#r-layout").setAttribute("aria-label", S.set.layout === "mushaf" ? "Показать перевод" : "Показать мушаф");
+  const body = $("#r-body");
+  if (!R || R.s !== s) body.innerHTML = `<div class="loading">Загружаю суру…</div>`;
+  try {
+    const data = await loadSurah(s);
+    if (overlay !== "reader") return;
+    R = { s, data };
+    renderReader();
+    jumpTo(v, v > 1);
+    pRender(); pHighlight();
+  } catch (e) {
+    body.innerHTML = `<div class="loading">Не удалось загрузить суру. Проверьте соединение.<br><br><button class="btn btn-soft" data-act="open" data-s="${s}" data-v="${v}">Повторить</button></div>`;
+  }
+}
+function amarker(s, v){
+  const cls = isLearned(s, v) ? " learned" : inProgress(s, v) ? " prog" : "";
+  return `<span class="am${cls}">${arNum(v)}</span>${SAJDA.has(gid(s, v)) ? `<span class="sajda" title="Земной поклон">۩</span>` : ""}`;
+}
+function renderReader(){
+  const { s, data } = R, n = data.a.length;
+  let h = `<div class="surah-head"><div class="sh-frame"><div class="sh-ar">سُورَةُ ${esc(META.ch[s-1][0])}</div></div><div class="sh-ru">${esc(RU[s-1][0])}${RU[s-1][1] ? " · " + esc(RU[s-1][1]) : ""} · ${sType(s)} · ${nAyat(n)}</div></div>`;
+  if (s !== 1 && s !== 9) h += `<div class="bism">${BISMILLAH}</div>`;
+  if (S.set.layout === "mushaf"){
+    let cur = -1, buf = [];
+    const flush = () => { if (!buf.length) return; h += `<div class="mpage"><p class="mushaf" lang="ar">${buf.join(" ")}</p><div class="pfoot">стр. ${cur} · джуз ${juzOf(s, buf.v0)}</div></div>`; buf = []; };
+    for (let v = 1; v <= n; v++){
+      const p = pageOf(s, v);
+      if (p !== cur){ flush(); cur = p; buf.v0 = v; }
+      buf.push(`<span class="ayah" data-v="${v}">${data.a[v-1].join(" ")} ${amarker(s, v)}</span>`);
+    }
+    flush();
+  } else {
+    h += `<div class="vlist">`;
+    let cur = pageOf(s, 1);
+    for (let v = 1; v <= n; v++){
+      const p = pageOf(s, v);
+      if (p !== cur && v > 1){ h += `<div class="pfoot">стр. ${p} · джуз ${juzOf(s, v)}</div>`; cur = p; }
+      const x = vpGet(s, v), state = isLearned(s, v) ? "выучен" : x && x[0] ? "в процессе" : "";
+      h += `<article class="vcard" data-v="${v}"><div class="vhead"><span class="vref">${s}:${v}</span>${S.bm.includes(s + ":" + v) ? `<span class="vstate">закладка</span>` : ""}<span class="sp"></span>${state ? `<span class="vstate">${state}</span>` : ""}<button class="vmore" data-act="verse" data-v="${v}" aria-label="Действия с аятом ${v}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div><p class="ar" lang="ar">${data.a[v-1].join(" ")} ${amarker(s, v)}</p><p class="tr">${esc(data.t[v-1])}</p></article>`;
+    }
+    h += `</div>`;
+  }
+  h += `<div class="reader-end">${s > 1 ? `<button class="btn btn-line" data-act="open" data-s="${s-1}" data-v="1">← ${esc(sName(s-1))}</button>` : ""}<button class="btn btn-primary" data-act="drill-from" data-v="1">Учить эту суру</button>${s < 114 ? `<button class="btn btn-line" data-act="open" data-s="${s+1}" data-v="1">${esc(sName(s+1))} →</button>` : ""}</div>`;
+  $("#r-body").innerHTML = h;
+}
+function jumpTo(v, flash){
+  const sc = $("#r-scroll");
+  const el = $(`[data-v="${v}"].ayah, [data-v="${v}"].vcard`, $("#r-body"));
+  if (!el || v <= 1){ sc.scrollTop = 0; return; }
+  const top = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 24;
+  sc.scrollTop = Math.max(0, top);
+  if (flash){ el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1600); }
+}
+let readT = 0;
+function onReaderScroll(){
+  clearTimeout(readT);
+  readT = setTimeout(() => {
+    if (!R) return;
+    const sc = $("#r-scroll"), r = sc.getBoundingClientRect();
+    const el = document.elementFromPoint(r.left + r.width / 2, r.top + 40);
+    const host = el && el.closest("[data-v]");
+    if (!host || !host.matches(".ayah,.vcard")) return;
+    const v = +host.dataset.v;
+    $("#r-sub").textContent = `стр. ${pageOf(R.s, v)} · джуз ${juzOf(R.s, v)}`;
+    if (!S.last || S.last.s !== R.s || S.last.v !== v){ S.last = { s: R.s, v }; S.upd = Date.now(); saveLocal(); Remote.schedule(6000); }
+  }, 350);
+}
+
+/* Verse sheet */
+function verseSheet(s, v){
+  const d = R && R.s === s ? R.data : null; if (!d) return;
+  const x = vpGet(s, v), ref = s + ":" + v, bm = S.bm.includes(ref);
+  const status = isLearned(s, v) ? `Выучен · повторён ${x[0]} раз` : x && x[0] ? `В процессе · без ошибок ${x[0]} из 3 раз` : x && x[2] ? `Были ошибки: ${x[2]}` : "Ещё не учили";
+  openSheet(`
+    <div class="grab"></div>
+    <h3>${esc(sName(s))}, аят ${v}</h3>
+    <p class="sub">${ref} · стр. ${pageOf(s, v)} · джуз ${juzOf(s, v)} · ${status}</p>
+    <p class="ar-big" lang="ar">${d.a[v-1].join(" ")}</p>
+    <p class="trn">${esc(d.t[v-1])}</p>
+    <div class="sheet-actions">
+      <button class="btn btn-primary wide" data-act="drill-from" data-v="${v}">Учить с этого аята</button>
+      <button class="btn btn-soft" data-act="toggle-learned" data-s="${s}" data-v="${v}">${isLearned(s, v) ? "Снять «выучен»" : "Отметить выученным"}</button>
+      <button class="btn btn-soft" data-act="toggle-bm" data-s="${s}" data-v="${v}">${bm ? "Убрать закладку" : "В закладки"}</button>
+      ${AUDIO ? `<button class="btn btn-soft wide" data-act="listen-from" data-s="${s}" data-v="${v}">Слушать с этого аята · ${esc(reciter().name)}</button>` : ""}
+      <button class="btn btn-line wide" data-act="copy" data-s="${s}" data-v="${v}">Копировать текст и перевод</button>
+    </div>`);
+}
+function openSheet(html){ $("#sheet-body").innerHTML = html; $("#sheet").hidden = false; }
+function closeSheet(){ $("#sheet").hidden = true; $("#sheet-body").innerHTML = ""; }
+
+/* ---------- LEARN (setup) ---------- */
+let setup = null;
+function defaultSetup(){
+  const nd = nextDrill();
+  return { s: nd.s, f: nd.f, t: nd.t };
+}
+function renderLearn(){
+  if (!setup) setup = defaultSetup();
+  const n = CNT(setup.s);
+  const opts = RU.map((r, i) => `<option value="${i + 1}"${i + 1 === setup.s ? " selected" : ""}>${i + 1}. ${esc(r[0])} (${META.ch[i][2]})</option>`).join("");
+  const hideBtn = (k, label) => `<button class="chip" data-act="hide" data-k="${k}" aria-pressed="${S.set.hide === k}">${label}</button>`;
+  // review suggestions
+  const rev = [];
+  for (let s = 1; s <= 114; s++){ const st = surahStats(s); if (st.lo) rev.push({ s, ...st }); }
+  rev.sort((a, b) => a.last - b.last);
+  const today = dnum();
+  const hard = Object.entries(S.vp).filter(([, x]) => (x[2] || 0) > 0 && x[0] < 3).sort((a, b) => b[1][2] - a[1][2]).slice(0, 6);
+  $("#learn-body").innerHTML = `
+  <div class="card setup">
+    <div class="field"><label for="ls">Сура</label><select class="select" id="ls">${opts}</select></div>
+    <div class="range-row">
+      <div class="field"><span class="flabel">С аята</span><div class="stepper"><button data-act="step" data-k="f" data-d="-1" aria-label="Меньше">−</button><input id="lf" class="num-in" type="number" inputmode="numeric" min="1" max="${n}" value="${setup.f}" aria-label="С аята"><button data-act="step" data-k="f" data-d="1" aria-label="Больше">+</button></div></div>
+      <div class="field"><span class="flabel">По аят</span><div class="stepper"><button data-act="step" data-k="t" data-d="-1" aria-label="Меньше">−</button><input id="lt" class="num-in" type="number" inputmode="numeric" min="1" max="${n}" value="${setup.t}" aria-label="По аят"><button data-act="step" data-k="t" data-d="1" aria-label="Больше">+</button></div></div>
+    </div>
+    <div class="field"><span class="flabel">Что скрыть</span><div class="chips">${hideBtn("all", "Все слова")}${hideBtn("first", "Кроме первого слова")}${hideBtn("alt", "Через слово")}${hideBtn("none", "Ничего, только проверка")}</div></div>
+    <label class="toggle" for="lcue"><span>Показывать перевод как подсказку</span><input type="checkbox" id="lcue"${S.set.cue ? " checked" : ""}></label>
+    <button class="btn btn-primary" data-act="start-drill" id="start-btn">Начать · ${esc(sName(setup.s))}, ${setup.f}–${setup.t}</button>
+    <p class="credits">Читайте аят по памяти вслух или про себя. После каждого слова нажимайте «Помню», а если забыли или ошиблись — «Ошибся». ${VOICE ? "Кнопка микрофона включает проверку голосом." : ""} Аят считается выученным после трёх прочтений без ошибок.</p>
+  </div>
+  ${rev.length ? `<h2 class="sec">Пора повторить</h2><div class="list">${rev.slice(0, 5).map(r => `<button class="srow" data-act="drill" data-s="${r.s}" data-f="${r.lo}" data-t="${r.hi}"><span class="star${r.l === CNT(r.s) ? " done" : ""}"><span>${r.s}</span></span><span class="sname"><b>${esc(sName(r.s))}, ${r.lo}–${r.hi}</b><small>Повторяли ${agoText(today - r.last)} · выучено ${r.l} из ${CNT(r.s)}</small></span><span class="sar">${esc(META.ch[r.s-1][0])}</span></button>`).join("")}</div>` : ""}
+  ${hard.length ? `<h2 class="sec">Трудные аяты</h2><div class="list">${hard.map(([k, x]) => { const [s, v] = k.split(":").map(Number); return `<button class="mrow" data-act="drill" data-s="${s}" data-f="${v}" data-t="${v}"><span class="star"><span>${v}</span></span><span><b>${esc(sName(s))}, ${s}:${v}</b><br><small>Без ошибок ${x[0]} из 3 раз</small></span><span class="badge">${x[2]} ${plural(x[2], OSH)}</span></button>`; }).join("")}</div>` : ""}
+  ${!rev.length ? `<div class="card"><div class="eyebrow">С чего начать</div><p style="margin:6px 0 12px">Многие начинают хифз с конца Корана: короткие суры 30-го джуза легче запоминаются.</p><div class="chips">${[1, 112, 113, 114, 103, 108].map(s => `<button class="chip" data-act="pick" data-s="${s}">${esc(sName(s))}</button>`).join("")}</div></div>` : ""}`;
+}
+function readSetup(){
+  const s = +$("#ls").value, n = CNT(s);
+  let f = Math.max(1, Math.min(n, parseInt($("#lf").value) || 1));
+  let t = Math.max(1, Math.min(n, parseInt($("#lt").value) || f));
+  if (t < f) t = f;
+  setup = { s, f, t };
+  return setup;
+}
+function syncSetupUI(){
+  $("#lf").value = setup.f; $("#lt").value = setup.t;
+  $("#lf").max = $("#lt").max = CNT(setup.s);
+  $("#start-btn").textContent = `Начать · ${sName(setup.s)}, ${setup.f}–${setup.t}`;
+}
+
+/* ---------- DRILL ---------- */
+let D = null, wake = null;
+async function startDrill(s, f, t){
+  if (D) endDrill();
+  const n = CNT(s); f = Math.max(1, Math.min(n, f)); t = Math.max(f, Math.min(n, t));
+  overlay = "drill"; show("drill");
+  $("#d-title").textContent = sName(s);
+  $("#d-sub").textContent = `аяты ${f}–${t}`;
+  $("#d-body").innerHTML = `<div class="loading">Загружаю…</div>`;
+  $("#d-mic").hidden = !VOICE; $("#d-ctl").classList.toggle("has-mic", VOICE);
+  if (P.s) pStop();
+  pRender();
+  let data;
+  try { data = await loadSurah(s); } catch (e) { $("#d-body").innerHTML = `<div class="loading">Не удалось загрузить суру. Проверьте соединение.</div>`; return; }
+  const items = [];
+  for (let v = f; v <= t; v++){
+    const ws = data.a[v-1], ks = data.k[v-1];
+    ws.forEach((w, i) => {
+      let test = true;
+      if (S.set.hide === "first" && i === 0 && ws.length > 1) test = false;
+      if (S.set.hide === "alt" && i % 2 === 0 && ws.length > 1) test = false;
+      const key = ks[i] || normAr(w).replace(/\s/g, "");
+      const alt = (i === 0 && (v === 1 || (s === 42 && v === 2)) && MUQ.has(key)) ? spelled(key) : null;
+      items.push({ v, i, w, key, alt, test });
+    });
+  }
+  const test = items.map((x, i) => x.test ? i : -1).filter(i => i >= 0);
+  D = { s, f, t, data, items, test, st: new Int8Array(items.length), cur: 0, hist: [], voiceUsed: false, started: Date.now(), saved: false };
+  items.forEach((x, i) => { if (!x.test) D.st[i] = 3; });
+  S.lastDrill = { s, f, t }; save();
+  renderDrill();
+  try { wake = await navigator.wakeLock?.request("screen"); } catch (e) { wake = null; }
+}
+function renderDrill(){
+  const { items, s, data } = D;
+  let h = "", v0 = 0;
+  items.forEach((x, idx) => {
+    if (x.v !== v0){
+      if (v0) h += ` ${amarker(s, v0)}</p>${S.set.cue ? `<p class="cue">${esc(data.t[v0-1])}</p>` : ""}</div>`;
+      v0 = x.v; h += `<div class="dverse" data-v="${v0}"><p class="ar" lang="ar">`;
+    }
+    h += `<span class="w" data-i="${idx}">${x.w}</span> `;
+  });
+  if (v0) h += ` ${amarker(s, v0)}</p>${S.set.cue ? `<p class="cue">${esc(data.t[v0-1])}</p>` : ""}</div>`;
+  if (VOICE) h = `<div class="mic-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Нажмите на микрофон внизу и читайте вслух. Слова будут открываться по мере чтения, ошибки подсветятся красным.</span></div>` + h;
+  $("#d-body").innerHTML = h;
+  $("#d-body").classList.toggle("show-all", S.set.hide === "none");
+  paintAll();
+  scrollCur(true);
+}
+function wordClass(idx){
+  const st = D.st[idx];
+  if (st === 3) return "w giv";
+  if (st === 1) return "w ok";
+  if (st === 2) return "w err";
+  return "w hid" + (D.test[D.cur] === idx ? " cur" : "");
+}
+function paintAll(){ $$("#d-body .w").forEach(el => el.className = wordClass(+el.dataset.i)); updateDrillHeader(); }
+function paint(idxs){ for (const i of idxs){ const el = $(`#d-body .w[data-i="${i}"]`); if (el) el.className = wordClass(i); } }
+function updateDrillHeader(){
+  const total = D.test.length, done = D.cur;
+  let errs = 0; for (const i of D.test) if (D.st[i] === 2) errs++;
+  $("#d-sub").textContent = `аяты ${D.f}–${D.t} · ${done} из ${total} ${plural(total, SLOV)}${errs ? " · " + errs + " " + plural(errs, OSH) : ""}`;
+  $("#d-prog").style.width = (total ? 100 * done / total : 0) + "%";
+  $("#d-undo").disabled = !D.hist.length || !!rec;
+}
+function scrollCur(instant){
+  const idx = D.test[D.cur]; if (idx == null) return;
+  const el = $(`#d-body .w[data-i="${idx}"]`); if (!el) return;
+  const sc = $("#d-scroll"), r = el.getBoundingClientRect(), b = sc.getBoundingClientRect();
+  if (r.top < b.top + 30 || r.bottom > b.bottom - 60){
+    sc.scrollTo({ top: sc.scrollTop + (r.top - b.top) - b.height * 0.35, behavior: instant ? "auto" : "smooth" });
+  }
+}
+function mark(status, count = 1){
+  if (!D || D.cur >= D.test.length) return;
+  const group = [];
+  for (let k = 0; k < count && D.cur < D.test.length; k++){ const idx = D.test[D.cur]; D.st[idx] = status; group.push(idx); D.cur++; }
+  D.hist.push(group);
+  const nextIdx = D.test[D.cur];
+  paint(nextIdx != null ? [...group, nextIdx] : group);
+  if (status === 1) for (const i of group){ const el = $(`#d-body .w[data-i="${i}"]`); if (el){ el.classList.add("fresh"); setTimeout(() => el.classList.remove("fresh"), 500); } }
+  updateDrillHeader(); scrollCur();
+  if (D.cur >= D.test.length) finishDrill();
+}
+function markVerse(){
+  if (!D || D.cur >= D.test.length) return;
+  const v = D.items[D.test[D.cur]].v; let c = 0;
+  for (let k = D.cur; k < D.test.length && D.items[D.test[k]].v === v; k++) c++;
+  mark(1, c);
+}
+function undo(){
+  if (!D || !D.hist.length || rec) return;
+  const g = D.hist.pop(); const prevCur = D.test[D.cur];
+  for (const i of g) D.st[i] = 0;
+  D.cur = D.test.indexOf(g[0]);
+  paint(prevCur != null ? [...g, prevCur] : g); updateDrillHeader(); scrollCur();
+}
+function tapWord(idx){
+  if (!D) return;
+  const st = D.st[idx];
+  if (st === 0 && D.test[D.cur] === idx){ mark(2); return; }
+  if (st === 1 || st === 2){ D.st[idx] = st === 1 ? 2 : 1; paint([idx]); updateDrillHeader(); }
+}
+function commitDrill(){
+  if (!D || D.saved) return null;
+  const marked = D.test.filter(i => D.st[i] === 1 || D.st[i] === 2);
+  if (!marked.length) return null;
+  D.saved = true;
+  const today = dnum(), dk = dkey();
+  const per = new Map();
+  D.items.forEach((x, idx) => {
+    if (!x.test) return;
+    const p = per.get(x.v) || { tot: 0, ok: 0, err: 0, errW: [] }; p.tot++;
+    if (D.st[idx] === 1) p.ok++;
+    if (D.st[idx] === 2){ p.err++; p.errW.push(idx); }
+    per.set(x.v, p);
+  });
+  let versesDone = 0, words = 0, errs = 0;
+  for (const [v, p] of per){
+    words += p.ok + p.err; errs += p.err;
+    const complete = p.ok + p.err === p.tot;
+    const key = D.s + ":" + v, x = S.vp[key] || [0, 0, 0];
+    if (complete){ versesDone++; if (!p.err) x[0] += 1; }
+    x[1] = today; x[2] = (x[2] || 0) + p.err;
+    S.vp[key] = x;
+    for (const idx of p.errW){ const it = D.items[idx]; const mk = D.s + ":" + it.v + ":" + it.i; S.mist[mk] = (S.mist[mk] || 0) + 1; }
+  }
+  const day = S.days[dk] || { v: 0, w: 0, e: 0 };
+  day.v += versesDone; day.w += words; day.e += errs; S.days[dk] = day;
+  S.sess.unshift({ id: Date.now(), s: D.s, f: D.f, t: D.t, w: words, e: errs, m: D.voiceUsed ? "voice" : "self", c: D.cur >= D.test.length ? 1 : 0 });
+  save();
+  return { per, words, errs };
+}
+function finishDrill(){
+  if (rec) stopVoice();
+  const res = commitDrill(); if (!res) return;
+  const acc = res.words ? Math.floor(100 * (res.words - res.errs) / res.words) : 100;
+  const chips = [...res.per].map(([v, p]) => `<span class="vchip ${p.err ? "bad" : p.ok + p.err < p.tot ? "part" : "good"}">${v}${p.err ? " · " + p.err : " ✓"}</span>`).join("");
+  const errWords = D.test.filter(i => D.st[i] === 2).map(i => `<span>${D.items[i].w}</span>`).join("");
+  const n = CNT(D.s), len = D.t - D.f + 1;
+  const nf = D.t < n ? D.t + 1 : null;
+  openSheet(`
+    <div class="grab"></div>
+    <div class="eyebrow">${esc(sName(D.s))}, аяты ${D.f}–${D.t}</div>
+    <div class="big-acc"><b class="acc ${accClass(acc)}">${acc}%</b><span class="muted">${res.words - res.errs} из ${res.words} ${plural(res.words, SLOV)} без ошибок</span></div>
+    <div class="field"><span class="flabel">По аятам</span><div class="vchips">${chips}</div></div>
+    ${errWords ? `<div class="field"><span class="flabel">Где были ошибки</span><div class="errwords" lang="ar">${errWords}</div></div>` : `<p style="margin:0">Без единой ошибки. Каждый аят засчитан как прочтение без ошибок.</p>`}
+    <div class="sheet-actions">
+      <button class="btn btn-primary wide" data-act="drill" data-s="${D.s}" data-f="${D.f}" data-t="${D.t}">Повторить ещё раз</button>
+      ${nf ? `<button class="btn btn-soft" data-act="drill" data-s="${D.s}" data-f="${nf}" data-t="${Math.min(n, nf + len - 1)}">Дальше: ${nf}–${Math.min(n, nf + len - 1)}</button>` : `<button class="btn btn-soft" data-act="open" data-s="${D.s}" data-v="${D.f}">Читать суру</button>`}
+      <button class="btn btn-line" data-act="drill-done">Готово</button>
+    </div>`);
+}
+function endDrill(){
+  if (rec) stopVoice();
+  if (P.s) pStop();
+  const res = commitDrill();
+  try { wake && wake.release(); } catch (e) {}
+  wake = null; D = null;
+  return res;
+}
+function closeDrill(){
+  if (endDrill()) toast("Занятие сохранено");
+  closeSheet(); goTab(tab);
+}
+
+/* ---------- voice (works when the page is opened directly in Chrome/Safari) ---------- */
+let rec = null, vbase = null, listening = false;
+function startVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR || !D) return;
+  if (P.s) pStop();
+  rec = new SR(); rec.lang = "ar-SA"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  listening = true; D.voiceUsed = true; let starts = 0;
+  $("#d-mic").classList.add("on"); $("#d-hear").hidden = false; $("#d-hear").textContent = "Слушаю… начните читать";
+  const begin = () => { vbase = { start: D.cur > 0 ? D.test[D.cur - 1] + 1 : 0, cur: D.cur, st: D.st.slice(), touched: [] }; };
+  begin();
+  rec.onstart = () => { starts++; };
+  rec.onresult = e => {
+    // Some browsers resend the whole utterance in every result; keep the longest version instead of appending duplicates.
+    let txt = "", fin = true;
+    for (let i = 0; i < e.results.length; i++){
+      const t = e.results[i][0].transcript.trim(); if (!e.results[i].isFinal) fin = false; if (!t) continue;
+      const nt = toTokens(t).join(" "), nx = toTokens(txt).join(" ");
+      if (nx && nt.startsWith(nx)) txt = t; else if (nx && nx.endsWith(nt)) continue; else txt += " " + t;
+    }
+    $("#d-hear").textContent = txt.trim() || "…";
+    const toks = toTokens(txt);
+    const { marks } = runMatch(D.items, vbase.start, toks, fin);
+    let errsBefore = 0; for (const i of D.test) if (D.st[i] === 2) errsBefore++;
+    D.st = vbase.st.slice();
+    const touched = new Set(vbase.touched);
+    for (const [i, st] of marks){ if (D.items[i].test){ D.st[i] = st; touched.add(i); } }
+    vbase.touched = [...touched];
+    let errsAfter = 0; for (const i of D.test) if (D.st[i] === 2) errsAfter++;
+    if (errsAfter > errsBefore) try { navigator.vibrate && navigator.vibrate(60); } catch (err) {}
+    let c = 0; while (c < D.test.length && D.st[D.test[c]] !== 0) c++;
+    const prevCurIdx = D.test[D.cur]; D.cur = c;
+    paint([...touched, prevCurIdx, D.test[D.cur]].filter(i => i != null));
+    updateDrillHeader(); scrollCur();
+    if (D.cur >= D.test.length){ stopVoice(); finishDrill(); }
+  };
+  rec.onerror = e => {
+    if (e.error === "no-speech" || e.error === "aborted") return;
+    listening = false;
+    const denied = e.error === "not-allowed" || e.error === "service-not-allowed";
+    toast(denied && starts > 1 ? "Микрофон выключился. Нажмите на него, чтобы продолжить." : denied ? "Нет доступа к микрофону. Разрешите его для этого сайта в настройках браузера." : e.error === "network" ? "Для распознавания речи нужен интернет." : e.error === "language-not-supported" ? "Браузер не распознаёт арабский язык. На iPhone включите диктовку в Настройки → Основные → Клавиатура." : "Распознавание речи остановилось. Нажмите на микрофон, чтобы продолжить.");
+  };
+  rec.onend = () => {
+    if (listening && D && D.cur < D.test.length){
+      if (D.hist) { const g = vbase.touched.filter(i => vbase.st[i] === 0 && D.st[i] !== 0); if (g.length) D.hist.push(g.sort((a, b) => a - b)); }
+      begin(); try { rec.start(); } catch (e) { stopVoice(); }
+    } else stopVoice();
+  };
+  try { rec.start(); } catch (e) { stopVoice(); toast("Не удалось включить микрофон."); }
+}
+function stopVoice(){
+  listening = false;
+  if (rec){ const r = rec; rec = null; r.onend = null; r.onresult = null; try { r.abort(); } catch (e) {}
+    if (D && vbase){ const g = vbase.touched.filter(i => vbase.st[i] === 0 && D.st[i] !== 0); if (g.length) D.hist.push(g.sort((a, b) => a - b)); } }
+  vbase = null;
+  $("#d-mic").classList.remove("on"); $("#d-hear").hidden = true;
+  if (D) updateDrillHeader();
+}
+
+/* ---------- PROGRESS ---------- */
+function renderSyncNote(){ $("#sync-note").textContent = Remote.ok ? "Сохраняется в вашем аккаунте Claude" : "Сохраняется на этом устройстве"; }
+async function renderProgress(){
+  renderSyncNote();
+  const learned = totalLearned(), st = streak(), acc = accuracy(7);
+  const el = $("#progress-body");
+  const pct = (100 * learned / 6236);
+  // heatmap: 16 weeks ending this week, Monday-first
+  const weeks = 16, today = new Date(); const dow = (today.getDay() + 6) % 7;
+  const start = new Date(today); start.setDate(today.getDate() - dow - (weeks - 1) * 7);
+  let cells = "";
+  for (let w = 0; w < weeks; w++) for (let d = 0; d < 7; d++){
+    const dt = new Date(start); dt.setDate(start.getDate() + w * 7 + d);
+    if (dt > today){ cells += `<i style="visibility:hidden"></i>`; continue; }
+    const x = S.days[dkey(dt)] || {}, v = x.w ? Math.max(1, x.v || 0) : 0;
+    const lv = !x.w ? 0 : v < 5 ? 1 : v < 10 ? 2 : v < 20 ? 3 : 4;
+    cells += `<i class="${lv ? "l" + lv : ""}${dkey(dt) === dkey() ? " today" : ""}" title="${dt.toLocaleDateString("ru-RU")}: ${x.v || 0} ${plural(x.v || 0, AYAT)}"></i>`;
+  }
+  const rows = [];
+  for (let s = 1; s <= 114; s++){ const x = surahStats(s); if (x.l || x.p || x.errs) rows.push({ s, ...x }); }
+  rows.sort((a, b) => b.last - a.last);
+  const hist = S.sess.slice(0, 10);
+  const mistakes = Object.entries(S.mist).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const empty = !S.sess.length;
+  el.innerHTML = `
+    <div class="tiles">
+      <div class="tile"><b>${learned}</b><span>${plural(learned, AYAT)} выучено из 6236 (${pct < 1 && learned ? pct.toFixed(2) : pct.toFixed(1)}%)</span></div>
+      <div class="tile"><b>${st}</b><span>${plural(st, DNEY)} подряд с занятиями</span></div>
+      <div class="tile"><b class="${acc != null ? "acc " + accClass(acc) : ""}">${acc != null ? acc + "%" : "—"}</b><span>точность за 7 дней</span></div>
+    </div>
+    <div class="card">
+      <div class="list-head" style="margin-bottom:10px"><div class="eyebrow">Занятия за 16 недель</div><span class="muted" style="font-size:12px">аятов в день</span></div>
+      <div class="heat" role="img" aria-label="Календарь занятий">${cells}</div>
+      <div class="legend">0 <i style="background:var(--veil)"></i><i style="background:color-mix(in srgb,var(--lapis) 28%,var(--surface))"></i><i style="background:color-mix(in srgb,var(--lapis) 52%,var(--surface))"></i><i style="background:color-mix(in srgb,var(--lapis) 76%,var(--surface))"></i><i style="background:var(--lapis)"></i> 20+</div>
+    </div>
+    ${empty ? `<div class="card empty"><p style="margin:0 0 12px">Здесь появятся выученные суры, трудные слова и история занятий после первого заучивания.</p><button class="btn btn-primary" data-tab-go="learn">Начать заучивание</button></div>` : ""}
+    ${rows.length ? `<h2 class="sec">По сурам</h2><div class="list">${rows.map(r => { const n = CNT(r.s); return `<button class="prow" data-act="drill" data-s="${r.s}" data-f="${r.lo || 1}" data-t="${r.hi || Math.min(n, 5)}"><span><b>${esc(sName(r.s))}</b> <span class="muted">${r.s}</span></span><span class="cnt">${r.l} / ${n}</span><span class="pbar"><span class="l" style="width:${(100 * r.l / n).toFixed(1)}%"></span><span class="p" style="width:${(100 * r.p / n).toFixed(1)}%"></span></span></button>`; }).join("")}</div><div class="legend" style="justify-content:flex-start"><i style="background:var(--gold)"></i> выучено <i style="background:color-mix(in srgb,var(--gold) 40%,var(--surface));margin-left:8px"></i> в процессе</div>` : ""}
+    ${mistakes.length ? `<h2 class="sec">Трудные слова</h2><div class="list" id="mist-list"><div class="loading">Загружаю…</div></div>` : ""}
+    ${hist.length ? `<h2 class="sec">Последние занятия</h2><div class="list">${hist.map(x => { const a = x.w ? Math.floor(100 * (x.w - x.e) / x.w) : 0; const d = new Date(x.id); return `<div class="hrow"><span><b>${esc(sName(x.s))}, ${x.f}–${x.t}</b></span><span class="acc ${accClass(a)}">${a}%</span><small>${d.toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}, ${d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })} · ${x.w} ${plural(x.w, SLOV)}${x.m === "voice" ? " · голосом" : ""}${x.c ? "" : " · не до конца"}</small><small>${x.e} ${plural(x.e, OSH)}</small></div>`; }).join("")}</div>` : ""}`;
+  if (mistakes.length){
+    const need = [...new Set(mistakes.map(([k]) => +k.split(":")[0]))];
+    try {
+      const datas = Object.fromEntries(await Promise.all(need.map(async s => [s, await loadSurah(s)])));
+      const ml = $("#mist-list"); if (!ml) return;
+      ml.innerHTML = mistakes.map(([k, c]) => { const [s, v, i] = k.split(":").map(Number); const w = datas[s].a[v-1][i] || ""; return `<button class="mrow" data-act="drill" data-s="${s}" data-f="${v}" data-t="${v}"><span class="ar" lang="ar">${w}</span><span><b>${esc(sName(s))}</b><br><small>аят ${s}:${v} · слово ${i + 1}</small></span><span class="badge">×${c}</span></button>`; }).join("");
+    } catch (e) { const ml = $("#mist-list"); if (ml) ml.innerHTML = `<div class="empty">Не удалось загрузить слова.</div>`; }
+  }
+}
+
+/* ---------- settings sheet ---------- */
+function settingsSheet(confirmReset){
+  const goalBtn = g => `<button class="chip" data-act="goal" data-g="${g}" aria-pressed="${S.set.goal === g}">${g}</button>`;
+  openSheet(`
+    <div class="grab"></div>
+    <h3>Настройки</h3>
+    <div class="field"><label for="fs">Размер арабского текста: <span id="fs-val">${S.set.fs}</span> px</label><input type="range" id="fs" min="22" max="44" step="1" value="${S.set.fs}"><p class="preview-ar" lang="ar">${BISMILLAH}</p></div>
+    <div class="field"><span class="flabel">Вид при чтении</span><div class="chips"><button class="chip" data-act="layout" data-k="mushaf" aria-pressed="${S.set.layout === "mushaf"}">Мушаф по страницам</button><button class="chip" data-act="layout" data-k="verses" aria-pressed="${S.set.layout === "verses"}">Аяты с переводом</button></div></div>
+    <div class="field"><span class="flabel">Цель на день, аятов</span><div class="chips">${[3, 5, 10, 20, 30].map(goalBtn).join("")}</div></div>
+    ${AUDIO ? `<button class="btn btn-line" data-act="p-reciter">Чтец: ${esc(reciter().name)} · повтор ${repLabel(S.set.rep)}</button>` : ""}
+    <p class="credits">${Remote.ok ? "Прогресс хранится в вашем аккаунте Claude и доступен с любого устройства, где вы открываете это приложение." : "Прогресс хранится в этом браузере. Если очистить данные Safari, он пропадёт."}</p>
+    ${confirmReset ? `<div class="confirm"><b>Удалить весь прогресс?</b><span class="muted">Выученные аяты, ошибки и история занятий будут стёрты. Это нельзя отменить.</span><div class="sheet-actions"><button class="btn btn-danger" data-act="reset-yes">Удалить</button><button class="btn btn-line" data-act="settings">Отмена</button></div></div>` : `<button class="btn btn-line" data-act="reset-ask" style="color:var(--err)">Сбросить прогресс</button>`}
+    <p class="credits">Текст Корана: Tanzil Project, Усмани, чтение Хафс от Асыма (<a href="https://tanzil.net" target="_blank" rel="noopener">tanzil.net</a>). Перевод смыслов: Абу Адель, версия 1.0.0, через QuranEnc (<a href="https://quranenc.com/ru/browse/russian_aboadel" target="_blank" rel="noopener">quranenc.com</a>). Разметка страниц и джузов — Мединский мушаф, 604 страницы.</p>`);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const tabBtn = e.target.closest("[data-tab]");
+  if (tabBtn){ const again = tabBtn.dataset.tab === tab && !overlay; goTab(tabBtn.dataset.tab); if (again) $("#v-" + tab + " .scroll").scrollTop = 0; return; }
+  const tg = e.target.closest("[data-tab-go]"); if (tg){ goTab(tg.dataset.tabGo); return; }
+  if (e.target.id === "sheet"){ closeSheet(); if (D && D.saved) closeDrill(); return; }
+  const w = e.target.closest("#d-body .w"); if (w){ tapWord(+w.dataset.i); return; }
+  const a = e.target.closest("[data-act]");
+  if (!a){
+    const ay = e.target.closest("#r-body .ayah"); if (ay && R) verseSheet(R.s, +ay.dataset.v);
+    return;
+  }
+  const d = a.dataset, act = d.act;
+  switch (act){
+    case "settings": settingsSheet(false); break;
+    case "reset-ask": settingsSheet(true); break;
+    case "reset-yes": { const set = S.set; S = DEF(); S.set = set; save(); closeSheet(); renderAll(); toast("Прогресс удалён"); break; }
+    case "goal": S.set.goal = +d.g; save(); settingsSheet(false); renderAll(); break;
+    case "layout": S.set.layout = d.k; save(); settingsSheet(false); if (overlay === "reader" && R) openReader(R.s, S.last && S.last.s === R.s ? S.last.v : 1); break;
+    case "open": closeSheet(); if (D) endDrill(); openReader(+d.s, +d.v || 1); break;
+    case "continue-read": { const L = S.last || { s: 1, v: 1 }; openReader(L.s, L.v); break; }
+    case "close-reader": if (P.s) pStop(); goTab(tab); break;
+    case "p-toggle": pToggle(); break;
+    case "p-next": pSkip(1); break;
+    case "p-reciter": reciterSheet(); break;
+    case "p-rep": { const i = REPS.indexOf(S.set.rep); S.set.rep = REPS[(i + 1) % REPS.length]; P.left = S.set.rep || 1; save(); pRender(); toast(S.set.rep === 0 ? "Аят повторяется без конца" : S.set.rep === 1 ? "Без повтора" : "Каждый аят " + S.set.rep + " " + plural(S.set.rep, ["раз","раза","раз"])); break; }
+    case "set-rc": S.set.rc = d.k; save(); reciterSheet(); if (P.s) pLoad(); pRender(); break;
+    case "set-rep": S.set.rep = +d.k; P.left = S.set.rep || 1; save(); reciterSheet(); pRender(); break;
+    case "set-rate": S.set.rate = +d.k; save(); if (P.el) P.el.playbackRate = S.set.rate; reciterSheet(); break;
+    case "listen-from": closeSheet(); pPlay(+d.s, +d.v, CNT(+d.s), "reader"); break;
+    case "d-listen": { if (!D) break; if (P.s && P.ctx === "drill"){ pStop(); break; } const idx = D.test[D.cur]; const v = idx != null ? D.items[idx].v : D.t; pPlay(D.s, v, v, "drill"); break; }
+    case "toggle-layout": { S.set.layout = S.set.layout === "mushaf" ? "verses" : "mushaf"; save(); const v = S.last && R && S.last.s === R.s ? S.last.v : 1; openReader(R.s, v); break; }
+    case "verse": if (R) verseSheet(R.s, +d.v); break;
+    case "toggle-learned": { const k = d.s + ":" + d.v, x = S.vp[k] || [0, 0, 0]; if (x[0] >= 3) x[0] = 0; else x[0] = 3; x[1] = dnum(); S.vp[k] = x; save(); closeSheet(); if (R) { const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; } toast(x[0] >= 3 ? "Отмечен как выученный" : "Отметка снята"); break; }
+    case "toggle-bm": { const k = d.s + ":" + d.v; S.bm = S.bm.includes(k) ? S.bm.filter(x => x !== k) : [k, ...S.bm].slice(0, 30); save(); closeSheet(); if (R && S.set.layout === "verses") { const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; } toast(S.bm.includes(k) ? "Добавлено в закладки" : "Закладка удалена"); break; }
+    case "copy": { const s = +d.s, v = +d.v; const txt = `${R.data.a[v-1].join(" ")}\n\n${R.data.t[v-1]}\n— ${sName(s)}, ${s}:${v}`; try { navigator.clipboard.writeText(txt).then(() => toast("Скопировано"), () => toast("Не удалось скопировать")); } catch (err) { toast("Не удалось скопировать"); } break; }
+    case "drill-from": { closeSheet(); const s = R.s, f = +d.v, n = CNT(s); startDrill(s, f, Math.min(n, f + (n - f + 1 > 10 ? 4 : n - f))); break; }
+    case "drill": closeSheet(); startDrill(+d.s, +d.f, +d.t); break;
+    case "drill-done": closeDrill(); break;
+    case "close-drill": closeDrill(); break;
+    case "drill-restart": if (D) { const { s, f, t } = D; startDrill(s, f, t); } break;
+    case "d-ok": mark(1); break;
+    case "d-err": mark(2); break;
+    case "d-verse": markVerse(); break;
+    case "d-undo": undo(); break;
+    case "d-mic": if (rec) stopVoice(); else startVoice(); break;
+    case "hide": S.set.hide = d.k; save(); $$("[data-act=hide]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === d.k)); break;
+    case "pick": setup = { s: +d.s, f: 1, t: Math.min(CNT(+d.s), 7) }; $("#ls").value = setup.s; syncSetupUI(); break;
+    case "step": { readSetup(); const n = CNT(setup.s); setup[d.k] = Math.max(1, Math.min(n, setup[d.k] + +d.d)); if (setup.t < setup.f) { if (d.k === "f") setup.t = setup.f; else setup.f = setup.t; } syncSetupUI(); break; }
+    case "start-drill": { const x = readSetup(); startDrill(x.s, x.f, x.t); break; }
+    case "list": break;
+  }
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-list]"); if (!b) return;
+  listMode = b.dataset.list; $$("[data-list]").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#list-title").textContent = listMode === "juz" ? "Джузы" : "Суры"; renderList();
+});
+document.addEventListener("input", e => {
+  if (e.target.id === "q"){ query = e.target.value; renderList(); }
+  else if (e.target.id === "fs"){ S.set.fs = +e.target.value; $("#fs-val").textContent = S.set.fs; applySettings(); }
+  else if (e.target.id === "lcue"){ S.set.cue = e.target.checked; save(); }
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "fs") save();
+  else if (e.target.id === "ls"){ const s = +e.target.value, st = surahStats(s), n = CNT(s); let f = 1; for (let v = 1; v <= n; v++){ if (!isLearned(s, v)){ f = v; break; } } setup = { s, f, t: Math.min(n, f + Math.min(4, n - f)) }; syncSetupUI(); }
+  else if (e.target.id === "lf" || e.target.id === "lt"){ readSetup(); syncSetupUI(); }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("#sheet").hidden){ closeSheet(); return; }
+  if (overlay === "drill" && $("#sheet").hidden && !e.target.closest("input,select")){
+    if (e.key === "ArrowLeft" || e.key === " " ){ e.preventDefault(); mark(1); }
+    else if (e.key === "ArrowRight" || e.key === "x"){ e.preventDefault(); mark(2); }
+    else if (e.key === "Backspace"){ e.preventDefault(); undo(); }
+  }
+});
+$("#r-scroll").addEventListener("scroll", onReaderScroll, { passive: true });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") Remote.flush(); else if (overlay === "drill" && D && !wake) navigator.wakeLock?.request("screen").then(w => wake = w, () => {}); });
+
+function renderAll(){
+  if (overlay === "reader" && R){ const sc = $("#r-scroll").scrollTop; renderReader(); $("#r-scroll").scrollTop = sc; }
+  if (tab === "home") renderHome(); else if (tab === "learn"){ setup = setup || null; renderLearn(); } else renderProgress();
+}
+
+/* ---------- boot ---------- */
+loadLocal(); applySettings(); renderSyncNote(); goTab("home");
+Remote.init();
+</script>
+
+<script>try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}</script>
+</body></html>
