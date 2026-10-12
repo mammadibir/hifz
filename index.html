@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1791804461";</script>
+<script>window.APP_VERSION="1791805176";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -191,6 +191,14 @@ a.btn{text-decoration:none;color:inherit}
 .pbtn svg{width:22px;height:22px}
 .pinfo{min-width:0;text-align:left;display:flex;flex-direction:column}
 .pinfo b{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinfo .pt{display:flex;align-items:center;gap:3px;min-width:0}
+.pinfo .pt span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pinfo .pt svg{width:15px;height:15px;flex:none;color:var(--muted)}
+.lsn{display:flex;flex-direction:column;gap:14px}
+.lsn-prev{display:flex;flex-direction:column;gap:2px;border:1px dashed var(--line);border-radius:12px;padding:6px 12px}
+.lsn-prev small{font-size:12px;color:var(--muted)}
+.lsn-prev p{font-family:var(--f-quran);direction:rtl;text-align:right;font-size:22px;line-height:1.9;margin:0;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:1.9em}
+.lsn-more{color:var(--lapis);font-size:13.5px;font-weight:600;white-space:nowrap}
 .pinfo small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pchip{min-width:44px;height:34px;padding-inline:10px;border-radius:10px;background:var(--gold-soft);color:var(--gold);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
 .icon-btn.on{background:var(--lapis);color:var(--on-lapis)}
@@ -562,7 +570,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
     <div class="scroll" id="r-scroll"><div id="r-body"></div></div>
     <div class="player" id="player" hidden>
       <button class="pbtn" data-act="p-toggle" id="p-toggle" aria-label="Слушать"></button>
-      <button class="pinfo" data-act="p-reciter"><b id="p-title">Слушать чтеца</b><small id="p-sub">&nbsp;</small></button>
+      <button class="pinfo" data-act="p-listen" aria-label="Выбрать, с какого аята слушать"><b class="pt"><span id="p-title">С какого аята слушать?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></b><small id="p-sub">&nbsp;</small></button>
       <button class="pchip" data-act="p-rep" id="p-rep" aria-label="Повтор аята">×1</button>
       <button class="icon-btn" data-act="p-next" aria-label="Следующий аят"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 6.2v11.6a.8.8 0 0 0 1.2.7L15 13v4.8a1 1 0 0 0 2 0V6.2a1 1 0 0 0-2 0V11L6.2 5.5a.8.8 0 0 0-1.2.7z"/></svg></button>
     </div>
@@ -724,7 +732,7 @@ function loadSurah(s){
 
 /* ---------- state ---------- */
 const DEF = () => ({ v: 1, upd: 0, last: null, vp: {}, mist: {}, days: {}, sess: [], bm: [], lastDrill: null,
-  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, gap: "short", font: "qpc", fv: 2, strict: true, fb: "sound", theme: "system" } });
+  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, gap: "short", loop: 1, font: "qpc", fv: 2, strict: true, fb: "sound", theme: "system" } });
 let S = DEF();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function normalizeState(o){
@@ -950,7 +958,7 @@ function bounds(el){
   if (!seg || seg.length < 4 || tail < 0) return { start: 0, end: 0 };
   return { start: Math.max(0, seg[2] - LEAD_MS) / 1000, end: (seg[seg.length - 1] + tail) / 1000 };
 }
-const P = { els: [], cur: 0, s: 0, v: 0, end: 0, left: 1, playing: false, ctx: "", raf: 0, word: "" };
+const P = { els: [], cur: 0, s: 0, v: 0, end: 0, left: 1, from: 0, loop: 1, loopLeft: 1, playing: false, ctx: "", raf: 0, word: "" };
 const pActive = () => P.els[P.cur], pOther = () => P.els[1 - P.cur];
 function pInit(){
   if (P.els.length) return;
@@ -984,7 +992,9 @@ function pPrepare(el, it){
 function pNextItem(it){
   if (!it) return null;
   if (it.bism) return { s: it.s, v: 1 };
-  return it.v < P.end ? { s: it.s, v: it.v + 1 } : null;
+  if (it.v < P.end) return { s: it.s, v: it.v + 1 };
+  /* the whole passage is repeated: after its last ayah comes its first one again */
+  return P.loop === 0 || P.loopLeft > 1 ? { s: it.s, v: P.from, again: true } : null;
 }
 function pFirstItem(s, v){ return v === 1 && s !== 1 && s !== 9 ? { s, v: 1, bism: true } : { s, v }; }
 /* Start the idle element muted for a moment, then park it at its first word. Inside the tap this unlocks it for later
@@ -1014,9 +1024,9 @@ function pCueOther(){
   if (!B._unlocked) pWarm(B);
   else B._warmT = setTimeout(() => { if (B !== pActive() && itemKey(B._it) === itemKey(nx) && B.readyState < 4) pWarm(B); }, 1200);
 }
-function pPlay(s, v, end, ctx){
+function pPlay(s, v, end, ctx, loop = 1, from = v){
   pInit(); if (rec) stopVoice();
-  Object.assign(P, { s, v, end, ctx, left: S.set.rep });
+  Object.assign(P, { s, v, end, ctx, left: S.set.rep, from, loop, loopLeft: loop });
   loadTimings(reciter().ea, s); loadTimings(reciter().ea, 1);
   const A = pActive(), it = pFirstItem(s, v);
   pPrepare(A, it);
@@ -1071,6 +1081,7 @@ function pAdvance(){
       pPrepare(A, nx); A.play().catch(() => {});
     }
     if (!nx.bism){ P.v = nx.v; P.left = S.set.rep; }
+    if (nx.again && P.loop) P.loopLeft--;
     pCueOther();
     pMeta(); pRender(); pHighlight();
   } finally { advancing = false; }
@@ -1152,9 +1163,10 @@ function pRender(){
   $("#p-toggle").innerHTML = active && P.playing ? ICON.pause : ICON.play;
   $("#p-toggle").setAttribute("aria-label", active && P.playing ? "Пауза" : "Слушать");
   const it = active && pActive() ? pActive()._it : null;
-  $("#p-title").textContent = active ? `${it && it.bism ? "Бисмиллях · " : ""}${sName(P.s)}, аят ${P.v}` : "Слушать чтеца";
+  $("#p-title").textContent = active ? `${it && it.bism ? "Бисмиллях · " : ""}${sName(P.s)}, аят ${P.v}` : "С какого аята слушать?";
   const rp = S.set.rep;
-  $("#p-sub").textContent = reciter().name + (active && rp !== 1 ? ` · повтор ${rp === 0 ? "∞" : (rp - P.left + 1) + " из " + rp}` : "");
+  $("#p-sub").textContent = reciter().name + (active && rp !== 1 ? ` · повтор ${rp === 0 ? "∞" : (rp - P.left + 1) + " из " + rp}` : "")
+    + (active && P.loop !== 1 ? ` · ${P.from}–${P.end}, круг ${P.loop === 0 ? "∞" : (P.loop - P.loopLeft + 1) + "/" + P.loop}` : "");
   $("#p-rep").textContent = repLabel(rp);
   const dl = $("#d-listen"); if (dl){ dl.hidden = !AUDIO; dl.classList.toggle("on", active && P.ctx === "drill"); }
 }
@@ -1170,7 +1182,61 @@ function reciterSheet(){
     <div class="field"><span class="flabel">Повторять каждый аят</span><div class="chips">${REPS.map(r => `<button class="chip" data-act="set-rep" data-k="${r}" aria-pressed="${S.set.rep === r}">${r === 0 ? "без конца" : r === 1 ? "1 раз" : r + " " + plural(r, ["раз","раза","раз"])}</button>`).join("")}</div></div>
     <div class="field"><span class="flabel">Паузы между аятами</span><div class="chips">${Object.keys(GAPS).map(g => `<button class="chip" data-act="set-gap" data-k="${g}" aria-pressed="${S.set.gap === g}">${GAP_LABEL[g]}</button>`).join("")}</div></div>
     <div class="field"><span class="flabel">Скорость</span><div class="chips">${[0.75, 1, 1.25].map(r => `<button class="chip" data-act="set-rate" data-k="${r}" aria-pressed="${S.set.rate === r}">${String(r).replace(".", ",")}×</button>`).join("")}</div></div>
-    <p class="credits">Следующий аят загружается заранее и включается сразу. У чтецов с пометкой «без пауз» тишина в начале и конце аятов убирается, а слово, которое читает чтец, подсвечивается в мушафе. Если покажется, что конец аята обрезается, выберите паузы «как в записи». Аудио: everyayah.com и cdn.islamic.network; разметка слов: quran-align (Collin Fair, CC BY 4.0). Нужен интернет.</p>`);
+    <p class="credits">Следующий аят загружается заранее и включается сразу. У чтецов с пометкой «без пауз» тишина в начале и конце аятов убирается, а слово, которое читает чтец, подсвечивается в мушафе. Если покажется, что конец аята обрезается, выберите паузы «как в записи». Аудио: everyayah.com и cdn.islamic.network; разметка слов: quran-align (Collin Fair, CC BY 4.0). Нужен интернет.</p>
+    ${rcBack ? `<button class="btn btn-primary" data-act="lsn-back">Готово</button>` : ""}`);
+}
+
+/* ---------- choose where to listen from: surah, first and last ayah, how many times to repeat the passage ---------- */
+let LSN = null, rcBack = false;
+const LOOPS = [1, 2, 3, 5, 0];
+function lsnDefaults(){
+  if (P.s) return { s: P.s, f: P.v, t: Math.max(P.v, P.end) };
+  let s = 1, v = 1;
+  if (PG){ [s, v] = pageFirst(PG.cur); if (S.last && pageOf(S.last.s, S.last.v) === PG.cur){ s = S.last.s; v = S.last.v; } }
+  else if (R){ s = R.s; v = S.last && S.last.s === R.s ? S.last.v : 1; }
+  else if (S.last){ s = S.last.s; v = S.last.v; }
+  return { s, f: v, t: CNT(s) };
+}
+function pageSpan(p){
+  const [s, f] = pageFirst(p); let t = f;
+  while (t < CNT(s) && pageOf(s, t + 1) === p) t++;
+  return { s, f, t };
+}
+function listenSheet(fresh){
+  if (fresh || !LSN) LSN = lsnDefaults();
+  rcBack = false;
+  const n = CNT(LSN.s);
+  const opts = RU.map((r, i) => `<option value="${i + 1}"${i + 1 === LSN.s ? " selected" : ""}>${i + 1}. ${esc(r[0])} (${META.ch[i][2]})</option>`).join("");
+  const step = (k, label) => `<div class="field"><span class="flabel">${label}</span><div class="stepper"><button data-act="lsn-step" data-k="${k}" data-d="-1" aria-label="Меньше">−</button><input id="lsn-${k}" class="num-in" type="number" inputmode="numeric" min="1" max="${n}" value="${LSN[k]}" aria-label="${label}"><button data-act="lsn-step" data-k="${k}" data-d="1" aria-label="Больше">+</button></div></div>`;
+  openSheet(`
+    <div class="grab"></div>
+    <h3>Слушать Коран</h3>
+    <div class="lsn">
+      <div class="field"><label for="lsn-s">Сура</label><select class="select" id="lsn-s">${opts}</select></div>
+      <div class="range-row">${step("f", "С аята")}${step("t", "По аят")}</div>
+      <div class="chips"><button class="chip" data-act="lsn-quick" data-k="all">Вся сура</button>${PG ? `<button class="chip" data-act="lsn-quick" data-k="page">Эта страница (${PG.cur})</button>` : ""}<button class="chip" data-act="lsn-quick" data-k="end">До конца суры</button></div>
+      <div class="lsn-prev"><small id="lsn-cap">Первый аят</small><p lang="ar" id="lsn-prev">&nbsp;</p></div>
+      <div class="field"><span class="flabel">Повторить весь отрывок</span><div class="chips">${LOOPS.map(k => `<button class="chip" data-act="lsn-loop" data-k="${k}" aria-pressed="${S.set.loop === k}">${k === 0 ? "без конца" : k === 1 ? "1 раз" : k + " " + plural(k, ["раз","раза","раз"])}</button>`).join("")}</div></div>
+      <button class="font-row" data-act="lsn-rc"><span><span class="flabel">Чтец · повтор каждого аята ${esc(repLabel(S.set.rep))}</span><b>${esc(reciter().name)}</b></span><span class="lsn-more">Изменить</span></button>
+      <button class="btn btn-primary" data-act="lsn-go" id="lsn-go">&nbsp;</button>
+    </div>`);
+  lsnSync();
+}
+function lsnRead(changed){
+  const s = +$("#lsn-s").value, n = CNT(s);
+  let f = Math.max(1, Math.min(n, parseInt($("#lsn-f").value) || 1));
+  let t = Math.max(1, Math.min(n, parseInt($("#lsn-t").value) || n));
+  if (t < f){ if (changed === "t") f = t; else t = f; }
+  LSN = { s, f, t };
+}
+function lsnSync(){
+  const fi = $("#lsn-f"), ti = $("#lsn-t"); if (!fi || !LSN) return;
+  const { s, f, t } = LSN, n = CNT(s);
+  $("#lsn-s").value = s; fi.max = ti.max = n; fi.value = f; ti.value = t;
+  $("#lsn-go").textContent = `Слушать · ${sName(s)}, ${f === t ? "аят " + f : f === 1 && t === n ? "вся сура" : "аяты " + f + "–" + t}`;
+  $("#lsn-cap").textContent = `Первый аят · ${s}:${f}`;
+  const pv = $("#lsn-prev");
+  loadSurah(s).then(d => { if (pv.isConnected && LSN.s === s && LSN.f === f) pv.textContent = d.a[f - 1].join(" "); }).catch(() => {});
 }
 
 /* ---------- accounts (website only): Firebase login + per-account progress + family ---------- */
@@ -2664,9 +2730,16 @@ document.addEventListener("click", e => {
     case "zoom-reset": S.set.mz = 1; applyMushafZoom(false); save(); break;
     case "p-toggle": pToggle(); break;
     case "p-next": pSkip(1); break;
-    case "p-reciter": reciterSheet(); break;
+    case "p-reciter": rcBack = false; reciterSheet(); break;
+    case "p-listen": listenSheet(true); break;
+    case "lsn-back": listenSheet(false); break;
+    case "lsn-rc": lsnRead(); rcBack = true; reciterSheet(); break;
+    case "lsn-step": { lsnRead(d.k); const n = CNT(LSN.s); LSN[d.k] = Math.max(1, Math.min(n, LSN[d.k] + +d.d)); if (LSN.t < LSN.f){ if (d.k === "f") LSN.t = LSN.f; else LSN.f = LSN.t; } lsnSync(); break; }
+    case "lsn-quick": { lsnRead(); const n = CNT(LSN.s); if (d.k === "all"){ LSN.f = 1; LSN.t = n; } else if (d.k === "end") LSN.t = n; else if (d.k === "page" && PG) LSN = pageSpan(PG.cur); lsnSync(); break; }
+    case "lsn-loop": S.set.loop = +d.k; save(); $$('[data-act="lsn-loop"]').forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.k === S.set.loop))); break;
+    case "lsn-go": { lsnRead(); const { s, f, t } = LSN; closeSheet(); if (overlay === "reader" && !PG && (!R || R.s !== s)) openReader(s, f); pPlay(s, f, t, "reader", S.set.loop); break; }
     case "p-rep": { const i = REPS.indexOf(S.set.rep); S.set.rep = REPS[(i + 1) % REPS.length]; P.left = S.set.rep || 1; save(); pRender(); toast(S.set.rep === 0 ? "Аят повторяется без конца" : S.set.rep === 1 ? "Без повтора" : "Каждый аят " + S.set.rep + " " + plural(S.set.rep, ["раз","раза","раз"])); break; }
-    case "set-rc": S.set.rc = d.k; save(); reciterSheet(); if (P.s) pPlay(P.s, P.v, P.end, P.ctx); pRender(); break;
+    case "set-rc": S.set.rc = d.k; save(); reciterSheet(); if (P.s) pPlay(P.s, P.v, P.end, P.ctx, P.loop, P.from); pRender(); break;
     case "set-rep": S.set.rep = +d.k; P.left = S.set.rep || 1; save(); reciterSheet(); pRender(); break;
     case "set-rate": S.set.rate = +d.k; save(); P.els.forEach(el => { el.playbackRate = S.set.rate; }); reciterSheet(); break;
     case "set-gap": S.set.gap = d.k; save(); reciterSheet(); break;
@@ -2714,6 +2787,8 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   if (e.target.id === "fs") save();
+  else if (e.target.id === "lsn-s"){ const s = +e.target.value; LSN = { s, f: 1, t: CNT(s) }; lsnSync(); }
+  else if (e.target.id === "lsn-f" || e.target.id === "lsn-t"){ lsnRead(e.target.id.slice(4)); lsnSync(); }
   else if (e.target.id === "wsurah"){ wordsSurah = +e.target.value; renderWords(); }
   else if (e.target.id === "ls"){ const s = +e.target.value, n = CNT(s); let f = 1; for (let v = 1; v <= n; v++){ if (!isLearned(s, v)){ f = v; break; } } setup = { mode: setup.mode, s, f, t: Math.min(n, f + Math.min(4, n - f)), p: pageOf(s, setup.mode === "page" ? 1 : f) }; syncSetupUI(); }
   else if (e.target.id === "lf" || e.target.id === "lt"){ readSetup(); setup.p = pageOf(setup.s, setup.f); syncSetupUI(); }
