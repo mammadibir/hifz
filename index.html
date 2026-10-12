@@ -26,7 +26,7 @@
   --f-ui:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --qsize:28px;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+@media (prefers-color-scheme: dark){:root:not([data-theme]){
   --paper:#0C111D; --surface:#141B2B; --ink:#E7EAF2; --muted:#949CB1; --line:#243049;
   --lapis:#93ABF3; --on-lapis:#0C111D; --lapis-soft:#1C2742;
   --gold:#D8B060; --gold-soft:#2D2716;
@@ -38,6 +38,24 @@
   --gold:#D8B060; --gold-soft:#2D2716;
   --ok:#53C58E; --ok-soft:#132E1F; --err:#F27B6C; --err-soft:#3A1B18; --veil:#222B43;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+:root[data-theme="sepia"]{
+  --paper:#F2E8D3; --surface:#FBF5E7; --ink:#3A2E21; --muted:#7A6A55; --line:#E1D3B7;
+  --lapis:#8E4A26; --on-lapis:#FFF8EC; --lapis-soft:#EFDCC6;
+  --gold:#9C7322; --gold-soft:#EEDFBB;
+  --ok:#3D7A49; --ok-soft:#E0EAD1; --err:#B1392A; --err-soft:#F2D8CD; --veil:#E8DCC3;
+  --shadow:0 1px 2px rgba(58,46,33,.07),0 8px 24px rgba(58,46,33,.07); color-scheme:light}
+:root[data-theme="green"]{
+  --paper:#E7EFE3; --surface:#F6FAF2; --ink:#1D2A21; --muted:#5C6E61; --line:#D0DDCC;
+  --lapis:#2D6A4A; --on-lapis:#FFFFFF; --lapis-soft:#D8E9DC;
+  --gold:#977425; --gold-soft:#ECE3C6;
+  --ok:#2C7B4D; --ok-soft:#D6EDDC; --err:#B53F2D; --err-soft:#F4DBD3; --veil:#D9E4D4;
+  --shadow:0 1px 2px rgba(29,42,33,.06),0 8px 24px rgba(29,42,33,.06); color-scheme:light}
+:root[data-theme="black"]{
+  --paper:#000000; --surface:#0D0D0C; --ink:#E7E0D1; --muted:#8F887A; --line:#24221E;
+  --lapis:#CDAA5C; --on-lapis:#0A0A0A; --lapis-soft:#29231A;
+  --gold:#CDAA5C; --gold-soft:#231E14;
+  --ok:#62C08C; --ok-soft:#0F2318; --err:#F07B6B; --err-soft:#2D1512; --veil:#1A1917;
+  --shadow:none; color-scheme:dark}
 
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -265,7 +283,8 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 
 /* Sheet & toast */
 .sheet-wrap{position:fixed;inset:0;z-index:20;background:rgba(10,14,25,.42);display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:640px;max-height:88%;overflow-y:auto;background:var(--surface);border-radius:22px 22px 0 0;padding-inline:18px;padding-block:10px calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:14px;animation:up .22s ease-out}
+.sheet{width:100%;max-width:640px;max-height:88%;max-height:min(88%,calc(100dvh - 24px));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;background:var(--surface);border-radius:22px 22px 0 0;padding-inline:18px;padding-block:10px calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:14px;animation:up .22s ease-out}
+.sheet > *{flex-shrink:0}
 .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 2px}
 @keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
 .sheet h3{margin:0;font:700 20px/1.25 var(--f-display);text-wrap:balance}
@@ -453,6 +472,11 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .cctl{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-inline:12px;padding-block:10px 12px;background:var(--surface);border-top:1px solid var(--line)}
 .cctl .wide{grid-column:1/-1}
 .c-soft{background:var(--lapis-soft);color:var(--lapis)}
+.themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.theme-chip{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink)}
+.theme-chip[aria-pressed="true"]{border-color:var(--lapis);box-shadow:inset 0 0 0 1px var(--lapis)}
+.tsw{position:relative;width:40px;height:40px;border-radius:50%;border:1px solid rgba(127,127,127,.35);overflow:hidden}
+.tsw i{position:absolute;right:5px;bottom:5px;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7)}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -688,7 +712,7 @@ function loadSurah(s){
 
 /* ---------- state ---------- */
 const DEF = () => ({ v: 1, upd: 0, last: null, vp: {}, mist: {}, days: {}, sess: [], bm: [], lastDrill: null,
-  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "qpc", fv: 2, strict: true, fb: "sound" } });
+  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "qpc", fv: 2, strict: true, fb: "sound", theme: "system" } });
 let S = DEF();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function normalizeState(o){
@@ -784,7 +808,30 @@ function accuracy(days = 7){
 const accClass = a => a >= 90 ? "good" : a >= 70 ? "mid" : "low";
 
 /* ---------- settings ---------- */
-function applySettings(){ document.documentElement.style.setProperty("--qsize", S.set.fs + "px"); applyFont(); }
+function applySettings(){ document.documentElement.style.setProperty("--qsize", S.set.fs + "px"); applyFont(); applyTheme(); }
+/* Themes. "system" follows the phone; inside Claude it keeps whatever the viewer set. */
+const THEMES = [
+  { id: "system", name: "Как в телефоне", sw: ["#F3F4F8", "#0C111D", "#2A4AA2"] },
+  { id: "light", name: "Светлая", sw: ["#F3F4F8", "#FFFFFF", "#2A4AA2"] },
+  { id: "dark", name: "Тёмная", sw: ["#0C111D", "#141B2B", "#93ABF3"] },
+  { id: "sepia", name: "Сепия", sw: ["#F2E8D3", "#FBF5E7", "#8E4A26"] },
+  { id: "green", name: "Зелёная", sw: ["#E7EFE3", "#F6FAF2", "#2D6A4A"] },
+  { id: "black", name: "Чёрная", sw: ["#000000", "#0D0D0C", "#CDAA5C"] }
+];
+const HOST_THEME = document.documentElement.getAttribute("data-theme");
+function applyTheme(){
+  const t = S.set.theme || "system", root = document.documentElement;
+  if (t === "system"){ if (HOST_THEME) root.setAttribute("data-theme", HOST_THEME); else root.removeAttribute("data-theme"); }
+  else root.setAttribute("data-theme", t);
+  requestAnimationFrame(() => {
+    const bg = getComputedStyle(root).getPropertyValue("--paper").trim();
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => { if (!m.dataset.orig) m.dataset.orig = m.getAttribute("content") || ""; m.setAttribute("content", t === "system" ? m.dataset.orig : bg); });
+  });
+}
+function themeChips(){
+  const cur = S.set.theme || "system";
+  return `<div class="themes">${THEMES.map(t => `<button class="theme-chip" data-act="set-theme" data-k="${t.id}" aria-pressed="${t.id === cur}"><span class="tsw" style="background:linear-gradient(135deg,${t.sw[0]} 0 50%,${t.sw[1]} 50% 100%)"><i style="background:${t.sw[2]}"></i></span>${esc(t.name)}</button>`).join("")}</div>`;
+}
 /* Quran fonts. Each has its own Madina line layout (folder), so mushaf pages keep the printed line breaks in every font. */
 const HOSTED = window.top === window.self;
 const QFONTS_ALL = [
@@ -2355,7 +2402,8 @@ function fontSheet(){
   QFONTS.forEach(f => loadQFont(f).catch(() => {}));
   openSheet(`
     <div class="grab"></div>
-    <h3>Шрифт Корана</h3>
+    <h3>Шрифт и оформление</h3>
+    <div class="field"><span class="flabel">Тема</span>${themeChips()}</div>
     <div class="rlist">${QFONTS.map(f => `<button class="frow" data-act="set-font" data-k="${f.id}" aria-pressed="${f.id === qfont().id}"><span class="fmeta"><b>${esc(f.name)}</b><small>${esc(f.note)}</small></span>${f.page ? `<span class="fsample" lang="ar" style="font-family:QBSML,serif;font-size:30px">\uFB51\uFB52</span>` : `<span class="fsample" lang="ar" style="font-family:'QF-${f.id}','Amiri Quran',serif">${BISMILLAH}</span>`}</button>`).join("")}</div>
     <div class="field"><label for="fs">Размер текста при чтении с переводом и в заучивании по аятам: <span id="fs-val">${S.set.fs}</span> px</label><input type="range" id="fs" min="18" max="56" step="1" value="${S.set.fs}"><p class="preview-ar" lang="ar">${BISMILLAH}</p></div>
     <p class="credits">Размер можно менять и двумя пальцами прямо на тексте. На страницах мушафа в обычном размере строки как в печатном мушафе, а крупный шрифт переносится по ширине экрана. Оригинальные страницы: шрифты QCF Мединского мушафа (1405 г. х.), Комплекс короля Фахда по печати Корана, бесплатны для личного использования. Шрифты: Amiri (Khaled Hosny), KFGQPC Uthmanic Hafs и Uthman Taha Naskh (Комплекс короля Фахда), me_quran, через проект quran-madina-html.</p>`);
@@ -2367,6 +2415,7 @@ function settingsSheet(confirmReset){
   openSheet(`
     <div class="grab"></div>
     <h3>Настройки</h3>
+    <div class="field"><span class="flabel">Оформление</span>${themeChips()}</div>
     <button class="font-row" data-act="font-sheet"><span><span class="flabel">Шрифт и размер</span><b>${esc(qfont().name)} · ${S.set.fs} px</b></span><span class="ar">${BISMILLAH}</span></button>
     <div class="field"><span class="flabel">Вид при чтении</span><div class="chips"><button class="chip" data-act="layout" data-k="mushaf" aria-pressed="${S.set.layout === "mushaf"}">Страницы мушафа</button><button class="chip" data-act="layout" data-k="verses" aria-pressed="${S.set.layout === "verses"}">Аяты с переводом</button></div></div>
     <div class="field"><span class="flabel">Цель на день, аятов</span><div class="chips">${[3, 5, 10, 20, 30].map(goalBtn).join("")}</div></div>
@@ -2425,6 +2474,7 @@ document.addEventListener("click", e => {
     }
     case "import-no": try { localStorage.setItem("hifz.imported." + Cloud.user.uid, "1"); } catch (err) {} closeSheet(); break;
     case "font-sheet": fontSheet(); break;
+    case "set-theme": S.set.theme = d.k; save(); applyTheme(); $$("[data-act=set-theme]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === d.k)); break;
     case "set-font": {
       S.set.font = d.k; save(); applyFont();
       $$("#sheet .frow").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === d.k));
