@@ -1,0 +1,5 @@
+build/
+out/
+ipa/
+ios/Hifz.xcodeproj/
+.DS_Store
