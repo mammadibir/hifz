@@ -67,6 +67,8 @@ jobs:
           shot 03-listen 'openReader(112,1); setTimeout(function(){ listenSheet(true) }, 2500)' 18
           shot 04-learn 'goTab("learn")' 14
           shot 05-drill 'goTab("learn"); setTimeout(function(){ var b = document.querySelector("#start-btn"); if (b) b.click(); }, 1500)' 18
+          xcrun simctl privacy "$UDID" grant microphone "$BUNDLE_ID" || true
+          shot 06-mic 'startDrill(112,1,4); setTimeout(function(){ document.querySelector("#d-mic").click(); }, 2000)' 16
           xcrun simctl spawn "$UDID" log show --last 3m --predicate 'process == "Hifz"' --style compact 2>/dev/null | tail -200 > out/app.log || true
 
       - name: Unsigned IPA (for installing with a free Apple ID)
