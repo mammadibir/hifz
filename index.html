@@ -127,7 +127,7 @@ a.btn{text-decoration:none;color:inherit}
 .empty{padding:22px 16px;text-align:center;color:var(--muted)}
 
 /* Tabs */
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-top:1px solid var(--line)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line)}
 .tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding-block:9px 8px;font-size:11.5px;font-weight:600;color:var(--muted)}
 .tabs svg{width:23px;height:23px}
 .tabs button[aria-current="page"]{color:var(--lapis)}
@@ -402,6 +402,57 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .qh-name{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.62em;color:var(--ink)}
 .flow .mframe.q .ml.mw > .lt{display:inline}
 .flow .mframe.q{text-align:justify;text-align-last:start}
+/* Words */
+.wsum{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.wsum-num{display:flex;flex-direction:column;min-width:0}
+.wsum-num b{font:700 34px/1 var(--f-display);color:var(--lapis);font-variant-numeric:tabular-nums}
+.wsum-num span{font-size:12.5px;color:var(--muted)}
+.wsum-side{display:flex;gap:12px;font-size:12.5px;color:var(--muted)}
+.wsum-side b{display:block;font:700 18px/1.1 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums}
+.wbar{height:6px;border-radius:3px;background:var(--veil);margin-top:12px;overflow:hidden}
+.wbar i{display:block;height:100%;background:var(--gold)}
+.wrow{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+.wrow:last-child{border-bottom:0}
+.wrow:hover{background:var(--lapis-soft)}
+.wst{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line)}
+.wst.learning{background:color-mix(in srgb,var(--gold) 45%,var(--surface));border-color:var(--gold)}
+.wst.known{background:var(--ok);border-color:var(--ok)}
+.wru{min-width:0}
+.wru b{display:block;font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wru small{color:var(--muted);font-size:12px}
+.war{font-family:var(--f-quran);font-size:22px;direction:rtl;line-height:1.6;white-space:nowrap}
+.whead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.war-big{font-family:var(--f-quran);font-size:40px;line-height:1.7;direction:rtl}
+.icon-btn.say{background:var(--lapis-soft);color:var(--lapis);width:46px;height:46px;border-radius:50%}
+.root{font-family:var(--f-quran);font-size:1.15em}
+.wforms{display:flex;flex-wrap:wrap;gap:6px 10px;direction:rtl}
+.wforms span{font-family:var(--f-quran);font-size:22px;line-height:1.8;background:var(--veil);border-radius:10px;padding-inline:10px}
+.wex{border-top:1px dashed var(--line);padding-block:8px}
+.wex .ar{font-family:var(--f-quran);font-size:22px;line-height:2;direction:rtl;text-align:right;margin:0}
+.wex mark{background:var(--gold-soft);color:inherit;border-radius:6px;padding-inline:2px}
+.wex .tr{margin:2px 0 4px;font-size:13.5px;line-height:1.5}
+.vwords{display:flex;flex-wrap:wrap;gap:6px;direction:rtl}
+.vw{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 10px 6px;border-radius:12px;background:var(--veil);text-align:center}
+.vw span{font-family:var(--f-quran);font-size:20px;line-height:1.7}
+.vw small{direction:ltr;font-size:11.5px;color:var(--muted);max-width:120px}
+.fcard{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;min-height:52vh;justify-content:center}
+.fcard.flipped{justify-content:flex-start}
+.fc-tag{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.fc-ar{font-family:var(--f-quran);font-size:52px;line-height:1.7;direction:rtl}
+.fc-say{min-height:38px;padding:6px 14px;font-size:13.5px}
+.fc-hint{color:var(--muted);margin:8px 0 0;font-size:14px}
+.fc-back{width:100%;text-align:left;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:12px}
+.fc-ru{font:700 24px/1.2 var(--f-display);text-align:center}
+.fc-back .sub{text-align:center;margin:0;color:var(--muted);font-size:13px}
+.fc-back .trn{margin:0;font-size:14.5px;line-height:1.55}
+.qopts{display:grid;gap:8px;width:100%;margin-top:6px}
+.qopt{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px;font-weight:500;text-align:left;background:var(--surface)}
+.qopt.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:600}
+.qopt.wrong{border-color:var(--err);background:var(--err-soft);color:var(--err)}
+.qopt.dim{opacity:.55}
+.cctl{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-inline:12px;padding-block:10px 12px;background:var(--surface);border-top:1px solid var(--line)}
+.cctl .wide{grid-column:1/-1}
+.c-soft{background:var(--lapis-soft);color:var(--lapis)}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -438,6 +489,24 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
   <section class="view" id="v-learn" hidden>
     <header class="top"><div class="brand"><div><h1>Заучивание</h1><p>Читайте по памяти и открывайте слова по одному</p></div></div></header>
     <div class="scroll"><div class="pad" id="learn-body"></div></div>
+  </section>
+
+  <!-- WORDS -->
+  <section class="view" id="v-words" hidden>
+    <header class="top"><div class="brand"><div><h1>Слова Корана</h1><p>Перевод и объяснение самых частых слов</p></div></div></header>
+    <div class="scroll"><div class="pad" id="words-body"></div></div>
+  </section>
+
+  <!-- WORD CARDS -->
+  <section class="view" id="v-cards" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-act="wc-close" aria-label="Закончить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <div class="bar-title"><b id="c-title">&nbsp;</b><small id="c-sub">&nbsp;</small></div>
+      <span style="width:40px"></span>
+    </header>
+    <div class="pline"><i id="c-prog"></i></div>
+    <div class="scroll" id="c-scroll"><div class="dbody" id="c-body"></div></div>
+    <div class="cctl" id="c-ctl"></div>
   </section>
 
   <!-- PROGRESS -->
@@ -488,6 +557,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
   <nav class="tabs" id="tabs" aria-label="Разделы">
     <button data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.6-4.7-2-8-2v14c3.3 0 6 .4 8 2 2-1.6 4.7-2 8-2V4c-3.3 0-6 .4-8 2z"/><path d="M12 6v14"/></svg>Коран</button>
     <button data-tab="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="7" height="4" rx="1.5"/><rect x="13" y="5" width="8" height="4" rx="1.5" fill="currentColor" opacity=".25"/><rect x="3" y="12" width="10" height="4" rx="1.5" fill="currentColor" opacity=".25"/><rect x="16" y="12" width="5" height="4" rx="1.5"/><path d="M3 20h9"/></svg>Заучивание</button>
+    <button data-tab="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="13" height="16" rx="2"/><path d="M19 7v13a1 1 0 0 1-1 1H7"/><path d="M7 9h5M7 13h3"/></svg>Слова</button>
     <button data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Прогресс</button>
   </nav>
 </div>
@@ -610,7 +680,7 @@ const cache = new Map(), SC = {};
 function loadSurah(s){
   if (cache.has(s)) return cache.get(s);
   const prom = (window.QDATA ? Promise.resolve(window.QDATA[s]) : fetch("s/" + pad3(s) + ".json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }))
-    .then(d => (SC[s] = { a: d.a.map(x => x.split(" ")), k: d.k.map(x => x.split(" ")), t: d.t }));
+    .then(d => (SC[s] = { a: d.a.map(x => x.split(" ")), k: d.k.map(x => x.split(" ")), t: d.t, l: d.l || null }));
   cache.set(s, prom);
   prom.catch(() => cache.delete(s));
   return prom;
@@ -625,6 +695,7 @@ function normalizeState(o){
   const d = DEF(); const r = Object.assign(d, o || {}); r.set = Object.assign(DEF().set, (o && o.set) || {});
   for (const k of ["vp","mist","days"]) if (!r[k] || typeof r[k] !== "object" || Array.isArray(r[k])) r[k] = {};
   if (!Array.isArray(r.sess)) r.sess = []; if (!Array.isArray(r.bm)) r.bm = [];
+  if (!r.voc || typeof r.voc !== "object" || Array.isArray(r.voc)) r.voc = {};
   if (r.mv !== 2){ for (const k in r.mist) r.mist[k] = 5; r.mv = 2; }
   if (r.set.fv !== 2){ r.set.font = "qpc"; r.set.fv = 2; }
   return r;
@@ -638,6 +709,7 @@ function mergeStates(a, b){
   const base = normalizeState(clone((b.upd || 0) > (a.upd || 0) ? b : a));
   for (const src of [a, b]){
     for (const [k, x] of Object.entries(src.vp || {})){ const y = base.vp[k]; base.vp[k] = y ? [Math.max(y[0], x[0]), Math.max(y[1], x[1]), Math.max(y[2] || 0, x[2] || 0)] : x.slice(); }
+    for (const [k, x] of Object.entries(src.voc || {})){ const y = base.voc[k]; if (!y || (x[2] || 0) > (y[2] || 0)) base.voc[k] = x.slice(); }
     for (const [k, x] of Object.entries(src.days || {})){ const y = base.days[k] || {}; base.days[k] = { v: Math.max(y.v || 0, x.v || 0), w: Math.max(y.w || 0, x.w || 0), e: Math.max(y.e || 0, x.e || 0) }; }
   }
   const seen = new Map(); for (const x of [...(a.sess || []), ...(b.sess || [])]) seen.set(x.id, x);
@@ -914,7 +986,7 @@ function cloudErr(e){
 function summary(){
   const last = S.sess[0];
   return {
-    learned: totalLearned(), streak: streak(), today: (S.days[dkey()] || {}).v || 0, dayKey: dkey(), acc7: accuracy(7),
+    learned: totalLearned(), words: Object.values(S.voc || {}).filter(x => x[0] >= 3).length, streak: streak(), today: (S.days[dkey()] || {}).v || 0, dayKey: dkey(), acc7: accuracy(7),
     sess: S.sess.length, last: last ? last.id : 0,
     lastLabel: last ? (last.k === "page" ? "Страница " + last.p : sName(last.s) + ", " + last.f + "–" + last.t) : "",
     updated: Date.now()
@@ -1125,7 +1197,7 @@ function familyHTML(){
     <div class="list-head" style="margin-bottom:8px"><div class="eyebrow">Семья · ${esc(Cloud.profile.family)}</div><button class="link-btn" data-act="copy-invite">Пригласить</button></div>
     <div class="fam-list">${rows.map(r => { const isMe = r.id === me, t = r.dayKey === today ? (r.today || 0) : 0; return `<div class="fam-row${isMe ? " me" : ""}">
       <span class="avatar">${esc((r.name || "?").slice(0, 1).toUpperCase())}</span>
-      <span class="fam-main"><b>${esc(r.name || "Без имени")}${isMe ? ` <small>вы</small>` : ""}</b><small>${t ? `сегодня ${nAyat(t)}` : ago(r.last)}${r.lastLabel ? " · " + esc(r.lastLabel) : ""}</small></span>
+      <span class="fam-main"><b>${esc(r.name || "Без имени")}${isMe ? ` <small>вы</small>` : ""}</b><small>${t ? `сегодня ${nAyat(t)}` : ago(r.last)}${r.lastLabel ? " · " + esc(r.lastLabel) : ""}${r.words ? ` · ${r.words} ${plural(r.words, ["слово", "слова", "слов"])}` : ""}</small></span>
       <span class="fam-num"><b>${r.learned || 0}</b><small>выучено</small></span>
       <span class="fam-num"><b>${r.streak || 0}</b><small>${plural(r.streak || 0, DNEY)}</small></span>
     </div>`; }).join("")}</div>
@@ -1195,16 +1267,267 @@ function attachPinch(el){
   ["gesturestart", "gesturechange", "gestureend"].forEach(t => el.addEventListener(t, e => e.preventDefault()));
 }
 
+/* ---------- WORDS: the most frequent Quranic words with translation ---------- */
+let WORDS = null, WMAP = null, wordsLoad = null;
+const QURAN_WORDS = 77429;
+const VBOX_DAYS = [0, 1, 3, 7, 16, 35];
+function loadWords(){
+  if (!wordsLoad){
+    wordsLoad = fetch("v/words.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(w => { WORDS = w; WMAP = new Map(w.map(x => [x.id, x])); return w; });
+    wordsLoad.catch(() => { wordsLoad = null; });
+  }
+  return wordsLoad;
+}
+const vget = id => (S.voc || {})[id];
+const vstate = id => { const x = vget(id); return !x ? "new" : x[0] >= 3 ? "known" : "learning"; };
+const VSTATE_RU = { new: "новое", learning: "учу", known: "выучено" };
+function vocStats(){
+  let known = 0, learning = 0, due = 0, cover = 0; const today = dnum();
+  for (const w of WORDS || []){
+    const x = vget(w.id); if (!x) continue;
+    if (x[0] >= 3){ known++; cover += w.n; } else learning++;
+    if (x[1] <= today) due++;
+  }
+  return { known, learning, due, cover: Math.round(1000 * cover / QURAN_WORDS) / 10 };
+}
+function newToday(){ const d = S.vocDay || {}; return d.d === dkey() ? d.n : 0; }
+function vocGrade(id, ok){
+  S.voc = S.voc || {};
+  const x = S.voc[id] || [0, 0, 0, 0], today = dnum();
+  if (!S.voc[id]){ const d = S.vocDay && S.vocDay.d === dkey() ? S.vocDay : { d: dkey(), n: 0 }; d.n++; S.vocDay = d; }
+  if (ok){ x[0] = Math.min(5, x[0] + 1); x[1] = today + VBOX_DAYS[x[0]]; }
+  else { x[0] = 0; x[1] = today; x[3] = (x[3] || 0) + 1; }
+  x[2] = (x[2] || 0) + 1;
+  S.voc[id] = x;
+}
+let wordsFilter = "all", wordsQuery = "", wordsSurah = 1, surahWordIds = null;
+async function renderWords(){
+  const el = $("#words-body");
+  if (!WORDS){
+    el.innerHTML = `<div class="loading">Загружаю слова…</div>`;
+    try { await loadWords(); } catch (e) { el.innerHTML = `<div class="loading">Не удалось загрузить слова. Проверьте соединение.</div>`; return; }
+    if (tab !== "words") return;
+  }
+  const st = vocStats(), nt = newToday(), lim = S.set.vnew || 10;
+  const newAvail = Math.max(0, lim - nt);
+  const lexicon = WORDS.filter(w => !w.g);
+  const pct = Math.round(100 * st.known / lexicon.length);
+  let list = WORDS;
+  if (wordsFilter === "g") list = WORDS.filter(w => w.g);
+  else if (wordsFilter === "surah"){
+    if (!surahWordIds || surahWordIds.s !== wordsSurah){
+      el.innerHTML = `<div class="loading">Собираю слова суры…</div>`;
+      try {
+        const d = await loadSurah(wordsSurah), cnt = new Map();
+        (d.l || []).forEach(v => v.forEach(id => { if (id) cnt.set(id, (cnt.get(id) || 0) + 1); }));
+        surahWordIds = { s: wordsSurah, cnt };
+      } catch (e) { el.innerHTML = `<div class="loading">Не удалось загрузить суру.</div>`; return; }
+      if (tab !== "words") return;
+    }
+    list = [...surahWordIds.cnt.keys()].map(id => WMAP.get(id)).filter(Boolean).sort((a, b) => surahWordIds.cnt.get(b.id) - surahWordIds.cnt.get(a.id));
+  } else if (wordsFilter === "learning") list = WORDS.filter(w => vstate(w.id) === "learning");
+  else if (wordsFilter === "known") list = WORDS.filter(w => vstate(w.id) === "known");
+  else list = WORDS.filter(w => !w.g);
+  const q = wordsQuery.trim().toLowerCase().replace(/ё/g, "е");
+  if (q){
+    const aq = normAr(q).replace(/\s/g, "");
+    list = list.filter(w => w.ru.toLowerCase().replace(/ё/g, "е").includes(q) || (aq && (normAr(w.ar).replace(/\s/g, "").includes(aq) || w.forms.some(f => normAr(f).includes(aq)))));
+  }
+  const opts = RU.map((r, i) => `<option value="${i + 1}"${i + 1 === wordsSurah ? " selected" : ""}>${i + 1}. ${esc(r[0])}</option>`).join("");
+  const chip = (k, l) => `<button class="chip" data-act="wfilter" data-k="${k}" aria-pressed="${wordsFilter === k}">${l}</button>`;
+  el.innerHTML = `
+    <div class="card">
+      <div class="wsum">
+        <div class="wsum-num"><b>${st.cover}%</b><span>слов Корана вы уже понимаете</span></div>
+        <div class="wsum-side"><span><b>${st.known}</b> выучено</span><span><b>${st.learning}</b> учу</span><span><b>${st.due}</b> повторить</span></div>
+      </div>
+      <div class="wbar" aria-label="Выучено ${st.known} из ${lexicon.length}"><i style="width:${pct}%"></i></div>
+      <p class="credits" style="margin:8px 0 12px">${lexicon.length} самых частых слов покрывают около 72% текста Корана. Слово считается выученным, когда вы вспомнили его несколько раз с перерывами в несколько дней.</p>
+      <div class="actions" style="margin-top:0">
+        <button class="btn btn-primary btn-col" data-act="wstudy">Учить<small>${st.due ? st.due + " повторить · " : ""}${newAvail} ${plural(newAvail, ["новое", "новых", "новых"])}</small></button>
+        <button class="btn btn-soft btn-col" data-act="wquiz">Тест<small>10 вопросов</small></button>
+      </div>
+      <div class="field" style="margin-top:12px"><span class="flabel">Новых слов в день</span><div class="chips">${[5, 10, 15, 20].map(n => `<button class="chip" data-act="wnew" data-k="${n}" aria-pressed="${lim === n}">${n}</button>`).join("")}</div></div>
+    </div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="wq" type="search" placeholder="Слово по-русски или по-арабски" autocomplete="off" aria-label="Поиск слова" value="${esc(wordsQuery)}"></div>
+    <div class="chips">${chip("all", "Все слова")}${chip("surah", "Слова суры")}${chip("learning", "Учу")}${chip("known", "Выученные")}${chip("g", "Частицы и местоимения")}</div>
+    ${wordsFilter === "surah" ? `<select class="select" id="wsurah" aria-label="Сура">${opts}</select>` : ""}
+    ${wordsFilter === "surah" ? `<button class="btn btn-soft" data-act="wstudy-surah">Учить слова этой суры · ${list.length}</button>` : ""}
+    <div class="list" id="wlist">${list.length ? list.slice(0, 400).map(w => {
+      const s = vstate(w.id), extra = wordsFilter === "surah" ? `${surahWordIds.cnt.get(w.id)} в суре` : w.n ? `${w.n} раз` : "";
+      return `<button class="wrow" data-act="word" data-id="${w.id}"><span class="wst ${s}" title="${VSTATE_RU[s]}"></span><span class="wru"><b>${esc(w.ru)}</b><small>${esc(w.pos)}${extra ? " · " + extra : ""}</small></span><span class="war" lang="ar">${w.ar}</span></button>`;
+    }).join("") : `<div class="empty">${wordsFilter === "learning" ? "Пока нет слов в изучении. Нажмите «Учить»." : wordsFilter === "known" ? "Выученных слов пока нет." : "Ничего не нашлось."}</div>`}</div>`;
+}
+const wbwUrl = (s, v, w) => `https://audio.qurancdn.com/wbw/${pad3(s)}_${pad3(v)}_${pad3(w + 1)}.mp3`;
+let wAudio = null;
+function sayWord(id){
+  const w = WMAP && WMAP.get(id); if (!w || !w.ex.length) return;
+  const [s, v, i] = w.ex[0];
+  try {
+    if (!wAudio){ wAudio = new Audio(); wAudio.addEventListener("error", () => toast("Не удалось воспроизвести слово. Проверьте интернет.")); }
+    wAudio.src = wbwUrl(s, v, i); wAudio.play().catch(() => {});
+  } catch (e) {}
+}
+function exampleHTML(w, max){
+  return w.ex.slice(0, max).map(([s, v, i]) => {
+    const d = SC[s]; if (!d) return "";
+    const ar = d.a[v-1].map((x, k) => k === i ? `<mark>${x}</mark>` : x).join(" ");
+    return `<div class="wex"><p class="ar" lang="ar">${ar}</p><p class="tr">${esc(d.t[v-1])}</p><button class="link-btn" data-act="open" data-s="${s}" data-v="${v}">${esc(sName(s))}, ${s}:${v} — открыть</button></div>`;
+  }).join("");
+}
+async function wordSheet(id){
+  await loadWords().catch(() => {});
+  const w = WMAP && WMAP.get(+id); if (!w) return;
+  await Promise.all(w.ex.map(([s]) => loadSurah(s).catch(() => null)));
+  const st = vstate(w.id);
+  openSheet(`
+    <div class="grab"></div>
+    <div class="whead">
+      <div class="war-big" lang="ar">${w.ar}</div>
+      ${AUDIO && w.ex.length ? `<button class="icon-btn say" data-act="say" data-id="${w.id}" aria-label="Произношение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>` : ""}
+    </div>
+    <h3>${esc(w.ru)}</h3>
+    <p class="sub">${esc(w.pos)}${w.root ? ` · корень <span lang="ar" class="root">${w.root}</span>` : ""}${w.n ? ` · встречается ${w.n} раз` : ""} · ${VSTATE_RU[st]}</p>
+    <p class="trn">${esc(w.note)}</p>
+    ${w.forms.length ? `<div class="field"><span class="flabel">Как встречается в тексте</span><div class="wforms" lang="ar">${w.forms.map(f => `<span>${f}</span>`).join("")}</div></div>` : ""}
+    ${w.ex.length ? `<div class="field"><span class="flabel">Примеры из Корана</span>${exampleHTML(w, 3)}</div>` : ""}
+    <div class="sheet-actions">
+      <button class="btn btn-primary" data-act="wmark" data-id="${w.id}" data-k="${st === "known" ? "reset" : "known"}">${st === "known" ? "Учить заново" : "Я это знаю"}</button>
+      <button class="btn btn-line" data-act="close-sheet">Закрыть</button>
+    </div>`);
+}
+
+/* Flashcards: due reviews first, then new words */
+let WC = null;
+async function startWordStudy(ids, title){
+  await loadWords();
+  const today = dnum();
+  let queue;
+  if (ids) queue = ids.slice();
+  else {
+    const due = WORDS.filter(w => { const x = vget(w.id); return x && x[1] <= today; }).sort((a, b) => vget(a.id)[0] - vget(b.id)[0]).map(w => w.id);
+    const lim = Math.max(0, (S.set.vnew || 10) - newToday());
+    const fresh = WORDS.filter(w => !w.g && !vget(w.id)).slice(0, lim).map(w => w.id);
+    queue = [...due.slice(0, 40), ...fresh];
+  }
+  if (!queue.length){ toast("На сегодня всё повторено. Можно пройти тест или увеличить число новых слов."); return; }
+  const need = new Set(); queue.forEach(id => { const w = WMAP.get(id); if (w && w.ex[0]) need.add(w.ex[0][0]); });
+  await Promise.all([...need].map(s => loadSurah(s).catch(() => null)));
+  WC = { queue, i: 0, flipped: false, ok: 0, bad: 0, total: queue.length, title: title || "Слова Корана", mode: "cards", again: new Set() };
+  overlay = "cards"; show("cards");
+  renderCard();
+}
+function renderCard(){
+  const id = WC.queue[WC.i], w = WMAP.get(id);
+  const done = Math.min(WC.i, WC.total);
+  $("#c-title").textContent = WC.title;
+  $("#c-sub").textContent = `${done} из ${WC.total}`;
+  $("#c-prog").style.width = (100 * done / WC.total) + "%";
+  const isNew = !vget(id);
+  $("#c-body").innerHTML = `
+    <div class="fcard${WC.flipped ? " flipped" : ""}">
+      <div class="fc-tag">${isNew ? "новое слово" : VSTATE_RU[vstate(id)]}${w.n ? ` · ${w.n} раз в Коране` : ""}</div>
+      <div class="fc-ar" lang="ar">${w.ar}</div>
+      ${AUDIO && w.ex.length ? `<button class="btn btn-line fc-say" data-act="say" data-id="${w.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>Послушать</button>` : ""}
+      ${WC.flipped ? `<div class="fc-back">
+        <div class="fc-ru">${esc(w.ru)}</div>
+        <p class="sub">${esc(w.pos)}${w.root ? ` · корень <span lang="ar" class="root">${w.root}</span>` : ""}</p>
+        <p class="trn">${esc(w.note)}</p>
+        ${exampleHTML(w, 1)}
+      </div>` : `<p class="fc-hint">Вспомните перевод, затем откройте карточку</p>`}
+    </div>`;
+  $("#c-ctl").innerHTML = WC.flipped
+    ? `<button class="cbtn c-err" data-act="wc-grade" data-k="0">Не помнил<small>повторить снова</small></button><button class="cbtn c-ok" data-act="wc-grade" data-k="1">Помнил<small>дальше</small></button>`
+    : `<button class="cbtn c-ok wide" data-act="wc-flip">Показать перевод</button>`;
+  $("#c-scroll").scrollTop = 0;
+}
+function gradeCard(ok){
+  const id = WC.queue[WC.i];
+  if (!WC.again.has(id)) vocGrade(id, ok);
+  if (ok) WC.ok++; else { WC.bad++; if (!WC.again.has(id)){ WC.again.add(id); WC.queue.splice(Math.min(WC.queue.length, WC.i + 4), 0, id); WC.total++; } }
+  save();
+  WC.i++; WC.flipped = false;
+  if (WC.i >= WC.queue.length) finishCards(); else renderCard();
+}
+function finishCards(){
+  const st = vocStats();
+  $("#c-prog").style.width = "100%";
+  $("#c-sub").textContent = "Готово";
+  $("#c-body").innerHTML = `<div class="fcard done"><div class="fc-tag">Занятие завершено</div><div class="big-acc" style="justify-content:center"><b class="acc good">${WC.ok}</b><span class="muted">вспомнили сразу из ${WC.ok + WC.bad}</span></div><p class="trn" style="text-align:center">Теперь вы понимаете около <b>${st.cover}%</b> слов Корана. Выучено слов: ${st.known}.</p></div>`;
+  $("#c-ctl").innerHTML = `<button class="cbtn c-ghost wide" data-act="wc-close">Готово</button>`;
+}
+
+/* Quiz: Arabic word -> pick the translation */
+function startQuiz(){
+  loadWords().then(() => {
+    const pool = WORDS.filter(w => !w.g);
+    const seen = pool.filter(w => vget(w.id));
+    const base = seen.length >= 10 ? seen : pool.slice(0, 60);
+    const qs = shuffle(base.slice()).slice(0, 10).map(w => {
+      const others = shuffle(pool.filter(o => o.id !== w.id && o.ru !== w.ru && (o.pos === w.pos || Math.random() < .3))).slice(0, 3);
+      return { id: w.id, opts: shuffle([w, ...others].map(o => o.id)) };
+    });
+    WC = { mode: "quiz", qs, i: 0, ok: 0, bad: 0, total: qs.length, title: "Тест по словам", picked: null };
+    overlay = "cards"; show("cards");
+    renderQuiz();
+  }, () => toast("Не удалось загрузить слова."));
+}
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function renderQuiz(){
+  const q = WC.qs[WC.i], w = WMAP.get(q.id);
+  $("#c-title").textContent = WC.title;
+  $("#c-sub").textContent = `${WC.i + 1} из ${WC.total} · верно ${WC.ok}`;
+  $("#c-prog").style.width = (100 * WC.i / WC.total) + "%";
+  const picked = WC.picked;
+  $("#c-body").innerHTML = `
+    <div class="fcard">
+      <div class="fc-tag">Что значит это слово?</div>
+      <div class="fc-ar" lang="ar">${w.ar}</div>
+      <div class="qopts">${q.opts.map(id => { const o = WMAP.get(id); const cls = picked == null ? "" : id === q.id ? " right" : id === picked ? " wrong" : " dim"; return `<button class="qopt${cls}" data-act="wq-pick" data-id="${id}"${picked != null ? " disabled" : ""}>${esc(o.ru)}</button>`; }).join("")}</div>
+      ${picked != null ? `<p class="trn" style="margin-top:12px">${esc(w.note)}</p>` : ""}
+    </div>`;
+  $("#c-ctl").innerHTML = picked != null ? `<button class="cbtn c-ok wide" data-act="wq-next">${WC.i + 1 < WC.total ? "Следующий вопрос" : "Результат"}</button>` : `<button class="cbtn c-ghost wide" data-act="wq-skip">Не знаю</button>`;
+}
+function pickQuiz(id){
+  const q = WC.qs[WC.i]; if (WC.picked != null) return;
+  WC.picked = id;
+  const ok = id === q.id;
+  if (ok) WC.ok++; else { WC.bad++; feedbackError(); }
+  const x = vget(q.id);
+  if (!ok) vocGrade(q.id, false);
+  else if (!x){ S.voc = S.voc || {}; S.voc[q.id] = [1, dnum() + VBOX_DAYS[1], 1, 0]; }
+  save();
+  renderQuiz();
+}
+function nextQuiz(){
+  WC.i++; WC.picked = null;
+  if (WC.i < WC.total){ renderQuiz(); return; }
+  const pct = Math.round(100 * WC.ok / WC.total);
+  $("#c-prog").style.width = "100%"; $("#c-sub").textContent = "Готово";
+  $("#c-body").innerHTML = `<div class="fcard done"><div class="fc-tag">Результат теста</div><div class="big-acc" style="justify-content:center"><b class="acc ${accClass(pct)}">${WC.ok} из ${WC.total}</b></div><p class="trn" style="text-align:center">${pct >= 90 ? "Отлично!" : pct >= 60 ? "Хороший результат. Слова с ошибками добавлены в повторение." : "Слова с ошибками добавлены в повторение — пройдите карточки."}</p></div>`;
+  $("#c-ctl").innerHTML = `<button class="cbtn c-soft" data-act="wquiz">Ещё тест</button><button class="cbtn c-ghost" data-act="wc-close">Готово</button>`;
+}
+function closeCards(){ WC = null; goTab("words"); }
+
+/* Words of one ayah, for the verse sheet */
+function verseWordsHTML(s, v){
+  const d = SC[s]; if (!d || !d.l || !WMAP) return "";
+  const ids = d.l[v-1] || [];
+  const rows = ids.map((id, i) => id ? `<button class="vw" data-act="word" data-id="${id}"><span lang="ar">${d.a[v-1][i]}</span><small>${esc(WMAP.get(id).ru)}</small></button>` : "").join("");
+  return rows ? `<div class="field"><span class="flabel">Слова аята</span><div class="vwords">${rows}</div></div>` : "";
+}
+
 /* ---------- navigation ---------- */
 let tab = "home", overlay = null;
 function show(viewId){
-  for (const v of ["home","learn","progress","reader","drill"]) $("#v-" + v).hidden = v !== viewId;
-  $("#tabs").hidden = viewId === "reader" || viewId === "drill";
+  for (const v of ["home","learn","words","progress","reader","drill","cards"]) $("#v-" + v).hidden = v !== viewId;
+  $("#tabs").hidden = viewId === "reader" || viewId === "drill" || viewId === "cards";
 }
 function goTab(t){
   tab = t; overlay = null; show(t);
   $$("#tabs button").forEach(b => { if (b.dataset.tab === t) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
-  if (t === "home") renderHome(); else if (t === "learn") renderLearn(); else renderProgress();
+  if (t === "home") renderHome(); else if (t === "learn") renderLearn(); else if (t === "words") renderWords(); else renderProgress();
 }
 
 /* ---------- HOME ---------- */
@@ -1541,7 +1864,7 @@ function refreshReader(){
 /* Verse sheet */
 async function verseSheet(s, v){
   s = +s; v = +v;
-  let d; try { d = await loadSurah(s); } catch (e) { toast("Не удалось загрузить аят. Проверьте соединение."); return; }
+  let d; try { [d] = await Promise.all([loadSurah(s), loadWords().catch(() => null)]); } catch (e) { toast("Не удалось загрузить аят. Проверьте соединение."); return; }
   const x = vpGet(s, v), ref = s + ":" + v, bm = S.bm.includes(ref);
   const status = isLearned(s, v) ? `Выучен · повторён ${x[0]} раз` : x && x[0] ? `В процессе · без ошибок ${x[0]} из 3 раз` : x && x[2] ? `Были ошибки: ${x[2]}` : "Ещё не учили";
   openSheet(`
@@ -1550,6 +1873,7 @@ async function verseSheet(s, v){
     <p class="sub">${ref} · стр. ${pageOf(s, v)} · джуз ${juzOf(s, v)} · ${status}</p>
     <p class="ar-big" lang="ar">${wordsHTML(s, v, d.a[v-1])}</p>
     <p class="trn">${esc(d.t[v-1])}</p>
+    ${verseWordsHTML(s, v)}
     <div class="sheet-actions">
       <button class="btn btn-primary" data-act="drill-from" data-s="${s}" data-v="${v}">Учить с этого аята</button>
       <button class="btn btn-primary" data-act="drill-page" data-p="${pageOf(s, v)}">Учить страницу ${pageOf(s, v)}</button>
@@ -2068,6 +2392,21 @@ document.addEventListener("click", e => {
   const d = a.dataset, act = d.act;
   switch (act){
     case "settings": settingsSheet(false); break;
+    case "word": wordSheet(d.id); break;
+    case "say": sayWord(+d.id); break;
+    case "close-sheet": closeSheet(); break;
+    case "wmark": { const id = +d.id; S.voc = S.voc || {}; if (d.k === "known") S.voc[id] = [4, dnum() + VBOX_DAYS[4], ((vget(id) || [])[2] || 0) + 1, 0]; else S.voc[id] = [0, dnum(), ((vget(id) || [])[2] || 0) + 1, 0]; save(); wordSheet(id); if (tab === "words" && !overlay) renderWords(); toast(d.k === "known" ? "Отмечено как выученное" : "Слово снова в изучении"); break; }
+    case "wfilter": wordsFilter = d.k; renderWords(); break;
+    case "wnew": S.set.vnew = +d.k; save(); renderWords(); break;
+    case "wstudy": startWordStudy(null); break;
+    case "wstudy-surah": if (surahWordIds) startWordStudy([...surahWordIds.cnt.keys()].sort((a, b) => surahWordIds.cnt.get(b) - surahWordIds.cnt.get(a)), "Слова суры " + sName(surahWordIds.s)); break;
+    case "wquiz": startQuiz(); break;
+    case "wc-flip": if (WC){ WC.flipped = true; renderCard(); } break;
+    case "wc-grade": if (WC) gradeCard(d.k === "1"); break;
+    case "wc-close": closeCards(); break;
+    case "wq-pick": if (WC) pickQuiz(+d.id); break;
+    case "wq-skip": if (WC) pickQuiz(-1); break;
+    case "wq-next": if (WC) nextQuiz(); break;
     case "account": accountSheet(Cloud.user ? "profile" : "login"); break;
     case "acc-mode": accountSheet(d.k); break;
     case "acc-family": accountSheet("family"); break;
@@ -2145,12 +2484,14 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("input", e => {
   if (e.target.id === "q"){ query = e.target.value; renderList(); }
+  else if (e.target.id === "wq"){ wordsQuery = e.target.value; clearTimeout(window.__wqT); window.__wqT = setTimeout(() => { const pos = e.target.selectionStart; renderWords().then(() => { const i = $("#wq"); if (i){ i.focus(); try { i.setSelectionRange(pos, pos); } catch (er) {} } }); }, 250); }
   else if (e.target.id === "fs"){ S.set.fs = +e.target.value; $("#fs-val").textContent = S.set.fs; applySettings(); }
   else if (e.target.id === "lcue"){ S.set.cue = e.target.checked; save(); }
   else if (e.target.id === "lstrict"){ S.set.strict = e.target.checked; save(); }
 });
 document.addEventListener("change", e => {
   if (e.target.id === "fs") save();
+  else if (e.target.id === "wsurah"){ wordsSurah = +e.target.value; renderWords(); }
   else if (e.target.id === "ls"){ const s = +e.target.value, n = CNT(s); let f = 1; for (let v = 1; v <= n; v++){ if (!isLearned(s, v)){ f = v; break; } } setup = { mode: setup.mode, s, f, t: Math.min(n, f + Math.min(4, n - f)), p: pageOf(s, setup.mode === "page" ? 1 : f) }; syncSetupUI(); }
   else if (e.target.id === "lf" || e.target.id === "lt"){ readSetup(); setup.p = pageOf(setup.s, setup.f); syncSetupUI(); }
   else if (e.target.id === "lp"){ readSetup(); const [s, v] = pageFirst(setup.p); setup.s = s; setup.f = v; setup.t = Math.min(CNT(s), v + 4); syncSetupUI(); }
@@ -2171,7 +2512,8 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 
 function renderAll(){
   refreshReader();
-  if (tab === "home") renderHome(); else if (tab === "learn"){ setup = setup || null; renderLearn(); } else renderProgress();
+  if (overlay) return;
+  if (tab === "home") renderHome(); else if (tab === "learn"){ setup = setup || null; renderLearn(); } else if (tab === "words") renderWords(); else renderProgress();
 }
 
 /* ---------- boot ---------- */
