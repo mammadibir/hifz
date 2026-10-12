@@ -9,6 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
+<script>window.APP_VERSION="1791802365";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -477,6 +478,8 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .theme-chip[aria-pressed="true"]{border-color:var(--lapis);box-shadow:inset 0 0 0 1px var(--lapis)}
 .tsw{position:relative;width:40px;height:40px;border-radius:50%;border:1px solid rgba(127,127,127,.35);overflow:hidden}
 .tsw i{position:absolute;right:5px;bottom:5px;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7)}
+.update-bar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top, 0px));z-index:40;display:flex;align-items:center;gap:12px;background:var(--lapis);color:var(--on-lapis);border-radius:999px;padding:8px 8px 8px 16px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow);white-space:nowrap;max-width:calc(100% - 24px)}
+.update-bar button{background:var(--on-lapis);color:var(--lapis);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -588,6 +591,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 
 <div class="sheet-wrap" id="sheet" hidden><div class="sheet" id="sheet-body" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" role="status" hidden></div>
+<div class="update-bar" id="update-bar" hidden><span>Вышло обновление приложения</span><button data-act="app-update">Обновить</button></div>
 <div class="zoom-badge" id="zoom-badge" hidden></div>
 
 <script>
@@ -2441,6 +2445,7 @@ document.addEventListener("click", e => {
   const d = a.dataset, act = d.act;
   switch (act){
     case "settings": settingsSheet(false); break;
+    case "app-update": { Cloud.flush && Cloud.flush(); saveLocal(); location.replace(location.pathname + "?v=" + ($("#update-bar").dataset.v || Date.now())); break; }
     case "word": wordSheet(d.id); break;
     case "say": sayWord(+d.id); break;
     case "close-sheet": closeSheet(); break;
@@ -2566,11 +2571,25 @@ function renderAll(){
   if (tab === "home") renderHome(); else if (tab === "learn"){ setup = setup || null; renderLearn(); } else if (tab === "words") renderWords(); else renderProgress();
 }
 
+/* ---------- updates: the website build carries a version, so a phone with an old cached copy offers a reload ---------- */
+let updLast = 0;
+async function checkUpdate(){
+  if (!HOSTED || !window.APP_VERSION || Date.now() - updLast < 120000) return;
+  updLast = Date.now();
+  try {
+    const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+    const j = await r.json();
+    if (j && j.v && String(j.v) !== String(window.APP_VERSION)){ const b = $("#update-bar"); b.dataset.v = j.v; b.hidden = false; }
+  } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkUpdate(); });
+
 /* ---------- boot ---------- */
 loadLocal(); applySettings(); renderSyncNote(); goTab("home");
 attachPinch($("#r-scroll")); attachPinch($("#d-scroll"));
 Remote.init();
 Cloud.init();
+setTimeout(checkUpdate, 1500);
 </script>
 
 <script>try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}</script>
