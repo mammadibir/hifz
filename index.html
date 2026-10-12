@@ -383,6 +383,25 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .fam-num b{font:700 18px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
 .fam-num small{font-size:11px;color:var(--muted)}
 .link-btn{color:var(--lapis);font-weight:600;font-size:13.5px;padding:4px 2px}
+/* Original mushaf pages (QCF page fonts) */
+.mpg{--pr:1}
+.mframe.q{font-size:calc(var(--mfs,20px) * var(--pr,1))}
+.mframe.q .ml{line-height:var(--mlh,2em)}
+.mframe.q .ml.mw > .lt{display:flex;justify-content:space-between;align-items:baseline;width:100%;transform:none!important}
+.mframe.q .ml.mw.short > .lt{justify-content:center;gap:.2em}
+.mpg.open .mframe.q .ml.mw > .lt{justify-content:center;gap:.2em}
+.mframe.q .vs{display:contents}
+.mframe.q .dec{color:inherit}
+.mframe.q .vs.playing .w,.mframe.q .vs.playing .am-q,.mframe.q .vs.playing .dec{background:var(--lapis-soft)}
+.mframe.q .vs.flash .w,.mframe.q .vs.flash .am-q{background:var(--gold-soft)}
+.am-q.learned{color:var(--gold)}
+.am-q.prog{color:color-mix(in srgb,var(--gold) 55%,var(--ink))}
+.qbsm{font-family:QBSML,serif;font-size:1.05em}
+.qh{position:relative;display:inline-block;font-family:QBSML,serif;line-height:1.15;white-space:nowrap}
+.qh-frame{color:var(--gold)}
+.qh-name{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.62em;color:var(--ink)}
+.flow .mframe.q .ml.mw > .lt{display:inline}
+.flow .mframe.q{text-align:justify;text-align-last:start}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -599,7 +618,7 @@ function loadSurah(s){
 
 /* ---------- state ---------- */
 const DEF = () => ({ v: 1, upd: 0, last: null, vp: {}, mist: {}, days: {}, sess: [], bm: [], lastDrill: null,
-  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "amiri", strict: true, fb: "sound" } });
+  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "qpc", fv: 2, strict: true, fb: "sound" } });
 let S = DEF();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function normalizeState(o){
@@ -607,6 +626,7 @@ function normalizeState(o){
   for (const k of ["vp","mist","days"]) if (!r[k] || typeof r[k] !== "object" || Array.isArray(r[k])) r[k] = {};
   if (!Array.isArray(r.sess)) r.sess = []; if (!Array.isArray(r.bm)) r.bm = [];
   if (r.mv !== 2){ for (const k in r.mist) r.mist[k] = 5; r.mv = 2; }
+  if (r.set.fv !== 2){ r.set.font = "qpc"; r.set.fv = 2; }
   return r;
 }
 function trimState(){
@@ -694,16 +714,34 @@ const accClass = a => a >= 90 ? "good" : a >= 70 ? "mid" : "low";
 /* ---------- settings ---------- */
 function applySettings(){ document.documentElement.style.setProperty("--qsize", S.set.fs + "px"); applyFont(); }
 /* Quran fonts. Each has its own Madina line layout (folder), so mushaf pages keep the printed line breaks in every font. */
-const QFONTS = [
+const HOSTED = window.top === window.self;
+const QFONTS_ALL = [
+  { id: "qpc", name: "Оригинальный мушаф", note: "Страницы печатного Мединского мушафа, шрифты Комплекса короля Фахда", db: "mo", lw: 343, page: true },
   { id: "amiri", name: "Амири", note: "Классический насх, по умолчанию", file: "AmiriQuran.woff2", db: "m", lw: 410 },
   { id: "hafs", name: "Хафс", note: "Шрифт Мединского мушафа", file: "Hafs.woff2", db: "mh", lw: 410 },
   { id: "uthman", name: "Усман Таха", note: "Насх с простыми формами букв", file: "UthmanTN_v2-0.woff2", db: "mu", lw: 400 },
   { id: "mequran", name: "Me Quran", note: "Крупные чёткие огласовки", file: "me_quran-Regular.woff2", db: "mq", lw: 450 },
   { id: "amiric", name: "Амири цветной", note: "Огласовки и знаки выделены цветом", file: "AmiriQuranColored.woff2", db: "mc", lw: 410 }
 ];
+/* The original pages need one font file per page, so they exist only on the website build. */
+const QFONTS = QFONTS_ALL.filter(f => !f.page || HOSTED);
 const qfont = () => QFONTS.find(f => f.id === S.set.font) || QFONTS[0];
+const textFont = () => { const f = qfont(); return f.page ? QFONTS.find(x => x.id === "hafs") : f; };
 const fontLoads = {};
+const pad3s = n => String(n).padStart(3, "0");
+function loadFontFace(key, family, url){
+  if (!fontLoads[key]){
+    fontLoads[key] = new FontFace(family, `url(${url})`).load().then(ff => { document.fonts.add(ff); return ff; });
+    fontLoads[key].catch(() => { delete fontLoads[key]; });
+  }
+  return fontLoads[key];
+}
+const loadPageFont = p => loadFontFace("p" + p, "QCFP" + p, "qpc/QCF_P" + pad3s(p) + ".woff2");
+const loadBSML = () => loadFontFace("bsml", "QBSML", "qpc/QCF_BSML.woff2");
+/* Surah name glyphs in the QCF header font: 1–37 follow U+FB8C, 38–114 start at U+FBD3. */
+const surahGlyph = s => String.fromCharCode(s <= 37 ? 0xFB8C + s : 0xFBD3 + s - 38);
 function loadQFont(f){
+  if (f.page) return Promise.all([loadBSML(), loadQFont(textFont())]);
   if (!fontLoads[f.id]){
     fontLoads[f.id] = fetch("fonts/" + f.file).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); })
       .then(buf => new FontFace("QF-" + f.id, buf).load()).then(ff => { document.fonts.add(ff); return ff; });
@@ -712,12 +750,11 @@ function loadQFont(f){
   return fontLoads[f.id];
 }
 function applyFont(){
-  const f = qfont();
+  const f = textFont();
   document.documentElement.style.setProperty("--f-quran", `"QF-${f.id}","Amiri Quran","Amiri","Scheherazade New",serif`);
   loadQFont(f).then(() => refitAll(), () => {});
 }
 /* Microphone and reciter audio only work when the page is opened as a normal website, not inside a frame. */
-const HOSTED = window.top === window.self;
 const VOICE = HOSTED && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 const AUDIO = HOSTED;
 
@@ -1367,7 +1404,7 @@ async function fillPage(p){
   const el = $(`#pager .mp[data-p="${p}"]`); if (!el || el.dataset.ready || el.dataset.loading) return;
   el.dataset.loading = "1";
   try {
-    const lines = await loadPage(p);
+    const [lines] = await Promise.all([loadPage(p), isQ() ? Promise.all([loadPageFont(p), loadBSML()]) : null]);
     if (!el.isConnected) return;
     el.innerHTML = pageHTML(p, lines); el.dataset.ready = "1";
     fitPage(el); markPage(el);
@@ -1375,38 +1412,66 @@ async function fillPage(p){
     el.innerHTML = `<div class="loading">Не удалось загрузить страницу. Проверьте соединение.<br><br><button class="btn btn-soft" data-act="page-retry" data-p="${p}">Повторить</button></div>`;
   } finally { delete el.dataset.loading; }
 }
-function mushafRows(lines, wordSpan){
+function mushafRows(lines, wordSpan, q){
   return lines.map(line => {
     if (!line.length) return `<div class="ml"></div>`;
     const sc = line[0], items = line.slice(1);
-    if (items[0][0] === "t"){ const s = items[0][1]; return `<div class="ml mt mc"><span class="lt"><span class="mt-frame">سُورَةُ ${esc(META.ch[s-1][0])}</span></span></div>`; }
-    if (items[0][0] === "b") return `<div class="ml mb mc"><span class="lt">${BISMILLAH}</span></div>`;
+    if (items[0][0] === "t"){
+      const s = items[0][1];
+      if (q) return `<div class="ml mt mc"><span class="lt"><span class="qh"><span class="qh-frame">\uFC20</span><span class="qh-name">\uFB8C ${surahGlyph(s)}</span></span></span></div>`;
+      return `<div class="ml mt mc"><span class="lt"><span class="mt-frame">سُورَةُ ${esc(META.ch[s-1][0])}</span></span></div>`;
+    }
+    if (items[0][0] === "b") return q ? `<div class="ml mb mc"><span class="lt qbsm">\uFB51\uFB52</span></div>` : `<div class="ml mb mc"><span class="lt">${BISMILLAH}</span></div>`;
     let h = "";
-    for (const [s, v, i0, text, end] of items){
+    for (const [s, v, i0, text, end, endGlyph] of items){
       let i = i0;
       h += `<span class="vs" data-s="${s}" data-v="${v}">`;
       for (const t of text.split(" ")){
         if (!t) continue;
-        if (/^[\u06DE\u06E9]+$/.test(t)) h += `<span class="dec">${t}</span> `;
-        else { h += wordSpan(s, v, i, t) + " "; i++; }
+        if (q && t[0] === "~") h += `<span class="dec">${t.slice(1)}</span> `;
+        else if (!q && /^[\u06DE\u06E9]+$/.test(t)) h += `<span class="dec">${t}</span> `;
+        else { h += wordSpan(s, v, i, t === "_" ? "" : t) + " "; i++; }
       }
-      if (end) h += amarker(s, v);
+      if (end) h += q ? `<span class="am-q${isLearned(s, v) ? " learned" : inProgress(s, v) ? " prog" : ""}">${endGlyph}</span>` : amarker(s, v);
       h += `</span> `;
     }
     return `<div class="ml mw${sc < 0 ? " mc" : ""}"><span class="lt">${h.trim()}</span> </div>`;
   }).join("");
 }
+const isQ = () => !!qfont().page;
+function frameAttrs(p){ return isQ() ? ` class="mframe q" style="font-family:'QCFP${p}',serif"` : ` class="mframe"`; }
 function pageHTML(p, lines){
   const [s0, v0] = pageFirst(p);
-  const rows = mushafRows(lines, (s, v, i, t) => `<span class="w${mcls(s, v, i)}">${t}</span>`);
+  const rows = mushafRows(lines, (s, v, i, t) => `<span class="w${mcls(s, v, i)}">${t}</span>`, isQ());
   return `<div class="mpg${p <= 2 ? " open" : ""}">
     <div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div>
-    <div class="mframe" lang="ar">${rows}</div>
+    <div${frameAttrs(p)} lang="ar">${rows}</div>
     <div class="mfoot"><button class="pnav" data-act="page-go" data-d="-1" aria-label="Предыдущая страница"${p === 1 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button class="mnum-btn" data-act="drill-page" data-p="${p}" aria-label="Учить страницу ${p}"><span class="mnum">${arNum(p)}</span><small>учить страницу</small></button><button class="pnav" data-act="page-go" data-d="1" aria-label="Следующая страница"${p === 604 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
   </div>`;
 }
 /* Like the printed mushaf, each justified line is stretched or squeezed horizontally to the full width; centred lines only shrink if too long. */
+/* Original pages: pick the font size at which the page's longest line fills the width, then spread words like the print. */
+function fitQ(el){
+  const m = el.querySelector(".mpg"), fr = el.querySelector(".mframe.q"); if (!m || !fr) return;
+  const ml = fr.querySelector(".ml"); const W = ml ? ml.clientWidth : 0; if (!W) return;
+  const flow = !!el.closest(".flow") || el.classList.contains("flow"), z = flow ? (S.set.mz || 1) : 1;
+  const nat = l => { let w = 0; l.querySelectorAll(".w, .dec, .am-q").forEach(x => { w += x.getBoundingClientRect().width; }); return w; };
+  const lines = [...fr.querySelectorAll(".ml.mw")].map(l => ({ l, w: nat(l) }));
+  const M = Math.max(1, ...lines.map(x => x.w));
+  // pages 1–2 sit inside an ornament in the print, so their lines are narrower
+  const target = m.classList.contains("open") ? 0.8 : 0.985;
+  const pr0 = parseFloat(m.style.getPropertyValue("--pr")) || 1;
+  const pr = clampN(pr0 * (W * target * z) / M, 0.4, 2.2);
+  m.style.setProperty("--pr", pr.toFixed(4));
+  const k = pr / pr0;
+  for (const x of lines) x.l.classList.toggle("short", x.w * k < W * 0.9 * z);
+  fr.querySelectorAll(".qh").forEach(h => {
+    const f = h.querySelector(".qh-frame"); h.style.fontSize = ""; const fw = f.getBoundingClientRect().width;
+    if (fw) h.style.fontSize = (parseFloat(getComputedStyle(h).fontSize) * Math.min(W * 0.98, W) / fw).toFixed(2) + "px";
+  });
+}
 function fitPage(el){
+  if (el.querySelector(".mframe.q")) return fitQ(el);
   if (el.closest(".flow") || el.classList.contains("flow")) return;
   el.querySelectorAll(".ml > .lt").forEach(t => {
     const l = t.parentElement; t.style.transform = "";
@@ -1637,7 +1702,7 @@ async function startPageDrill(p){
   openDrillView(`Страница ${p}`, pageLabel(p));
   let lines; const datas = {};
   try {
-    lines = await loadPage(p);
+    [lines] = await Promise.all([loadPage(p), isQ() ? Promise.all([loadPageFont(p), loadBSML()]) : null]);
     const ss = [...new Set(lines.flatMap(l => l.slice(1).filter(it => typeof it[0] === "number").map(it => it[0])))];
     for (const s of ss) datas[s] = await loadSurah(s);
   } catch (e) { $("#d-body").innerHTML = `<div class="loading">Не удалось загрузить страницу. Проверьте соединение.</div>`; return; }
@@ -1646,7 +1711,7 @@ async function startPageDrill(p){
   for (const line of lines) for (const it of line.slice(1)){
     if (typeof it[0] !== "number") continue;
     const [s, v, i0, text] = it; let i = i0; const n = datas[s].a[v-1].length;
-    for (const t of text.split(" ")){ if (!t || DEC_RE.test(t)) continue; items.push(drillItem(s, v, i, t, datas[s], n)); i++; }
+    for (const t of text.split(" ")){ if (!t || DEC_RE.test(t) || t[0] === "~") continue; items.push(drillItem(s, v, i, t === "_" ? "" : t, datas[s], n)); i++; }
   }
   const first = items[0], last = items[items.length - 1];
   beginDrill({ kind: "page", p, lines, s: first.s, f: first.v, s2: last.s, t: last.v, datas, range: pageLabel(p) }, items);
@@ -1671,8 +1736,8 @@ function renderDrill(){
 function renderDrillPage(){
   const idxOf = new Map(D.items.map((x, k) => [x.s + ":" + x.v + ":" + x.i, k]));
   const [s0, v0] = pageFirst(D.p);
-  const rows = mushafRows(D.lines, (s, v, i, t) => `<span class="w" data-i="${idxOf.get(s + ":" + v + ":" + i)}">${t}</span>`);
-  let h = `<div class="mpg dpg${D.p <= 2 ? " open" : ""}"><div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div><div class="mframe" lang="ar">${rows}</div><div class="mfoot"><span></span><span class="mnum">${arNum(D.p)}</span><span></span></div></div>`;
+  const rows = mushafRows(D.lines, (s, v, i, t) => `<span class="w" data-i="${idxOf.get(s + ":" + v + ":" + i)}">${t}</span>`, isQ());
+  let h = `<div class="mpg dpg${D.p <= 2 ? " open" : ""}"><div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div><div${frameAttrs(D.p)} lang="ar">${rows}</div><div class="mfoot"><span></span><span class="mnum">${arNum(D.p)}</span><span></span></div></div>`;
   if (VOICE) h = micHint() + h;
   const body = $("#d-body");
   body.innerHTML = h; body.classList.add("dpage-body"); body.classList.toggle("show-all", S.set.hide === "none");
@@ -1803,7 +1868,7 @@ function finishDrill(){
   const acc = res.words ? Math.floor(100 * (res.words - res.errs) / res.words) : 100;
   const multi = D.s !== D.s2;
   const chips = [...res.per.values()].map(p => `<span class="vchip ${p.err ? "bad" : p.ok + p.err < p.tot ? "part" : "good"}">${multi ? p.s + ":" : ""}${p.v}${p.err ? " · " + p.err : " ✓"}</span>`).join("");
-  const errWords = D.test.filter(i => D.st[i] === 2 || D.st[i] === 4).map(i => `<span>${D.items[i].w}</span>`).join("");
+  const errWords = D.test.filter(i => D.st[i] === 2 || D.st[i] === 4).map(i => { const it = D.items[i]; return `<span>${D.datas[it.s].a[it.v-1][it.i]}</span>`; }).join("");
   let again, next, third;
   if (D.kind === "page"){
     again = `<button class="btn btn-primary wide" data-act="drill-page" data-p="${D.p}">Повторить страницу ещё раз</button>`;
@@ -1967,9 +2032,9 @@ function fontSheet(){
   openSheet(`
     <div class="grab"></div>
     <h3>Шрифт Корана</h3>
-    <div class="rlist">${QFONTS.map(f => `<button class="frow" data-act="set-font" data-k="${f.id}" aria-pressed="${f.id === qfont().id}"><span class="fmeta"><b>${esc(f.name)}</b><small>${esc(f.note)}</small></span><span class="fsample" lang="ar" style="font-family:'QF-${f.id}','Amiri Quran',serif">${BISMILLAH}</span></button>`).join("")}</div>
+    <div class="rlist">${QFONTS.map(f => `<button class="frow" data-act="set-font" data-k="${f.id}" aria-pressed="${f.id === qfont().id}"><span class="fmeta"><b>${esc(f.name)}</b><small>${esc(f.note)}</small></span>${f.page ? `<span class="fsample" lang="ar" style="font-family:QBSML,serif;font-size:30px">\uFB51\uFB52</span>` : `<span class="fsample" lang="ar" style="font-family:'QF-${f.id}','Amiri Quran',serif">${BISMILLAH}</span>`}</button>`).join("")}</div>
     <div class="field"><label for="fs">Размер текста при чтении с переводом и в заучивании по аятам: <span id="fs-val">${S.set.fs}</span> px</label><input type="range" id="fs" min="18" max="56" step="1" value="${S.set.fs}"><p class="preview-ar" lang="ar">${BISMILLAH}</p></div>
-    <p class="credits">Размер можно менять и двумя пальцами прямо на тексте. На страницах мушафа в обычном размере строки как в печатном мушафе, а крупный шрифт переносится по ширине экрана. Шрифты: Amiri (Khaled Hosny), KFGQPC Uthmanic Hafs и Uthman Taha Naskh (Комплекс короля Фахда), me_quran, через проект quran-madina-html.</p>`);
+    <p class="credits">Размер можно менять и двумя пальцами прямо на тексте. На страницах мушафа в обычном размере строки как в печатном мушафе, а крупный шрифт переносится по ширине экрана. Оригинальные страницы: шрифты QCF Мединского мушафа (1405 г. х.), Комплекс короля Фахда по печати Корана, бесплатны для личного использования. Шрифты: Amiri (Khaled Hosny), KFGQPC Uthmanic Hafs и Uthman Taha Naskh (Комплекс короля Фахда), me_quran, через проект quran-madina-html.</p>`);
 }
 
 /* ---------- settings sheet ---------- */
