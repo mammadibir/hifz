@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1791802781";</script>
+<script>window.APP_VERSION="1791804461";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -196,6 +196,7 @@ a.btn{text-decoration:none;color:inherit}
 .icon-btn.on{background:var(--lapis);color:var(--on-lapis)}
 .rlist{display:flex;flex-direction:column;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
 .rrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14.5px}
+.rrow small{display:block;font-size:11.5px;color:var(--ok);font-weight:600;margin-top:2px}
 .rrow:last-child{border-bottom:0}
 .rrow i{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none}
 .rrow[aria-pressed="true"]{background:var(--lapis-soft)}
@@ -485,6 +486,8 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .mpg.open .mframe .ml{height:calc(var(--mlh,2em) * 1.45);line-height:calc(var(--mlh,2em) * 1.45)}
 .mpg.open .mframe .ml.mt{display:flex;align-items:center;justify-content:center}
 .mpg.open .qbsm{font-size:.88em}
+.w.reading{background:var(--gold-soft);border-radius:6px;box-shadow:0 0 0 2px var(--gold-soft)}
+.mframe .w.reading,.mframe.q .vs.playing .w.reading{background:linear-gradient(transparent 18%,color-mix(in srgb,var(--gold) 38%,var(--surface)) 18% 82%,transparent 82%);box-shadow:none}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -721,7 +724,7 @@ function loadSurah(s){
 
 /* ---------- state ---------- */
 const DEF = () => ({ v: 1, upd: 0, last: null, vp: {}, mist: {}, days: {}, sess: [], bm: [], lastDrill: null,
-  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, font: "qpc", fv: 2, strict: true, fb: "sound", theme: "system" } });
+  set: { fs: 28, layout: "mushaf", hide: "all", cue: false, goal: 10, rc: "alafasy", rep: 1, rate: 1, gap: "short", font: "qpc", fv: 2, strict: true, fb: "sound", theme: "system" } });
 let S = DEF();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function normalizeState(o){
@@ -899,7 +902,12 @@ const RECITERS = [
   { id: "hudhaify", name: "Али аль-Хузайфи", ea: "Hudhaify_128kbps", isn: "128/ar.hudhaify" },
   { id: "ayyoub", name: "Мухаммад Аюб", ea: "Muhammad_Ayyoub_128kbps", isn: "128/ar.muhammadayyoub" },
   { id: "ghamadi", name: "Саад аль-Гамиди", ea: "Ghamadi_40kbps" },
-  { id: "dussary", name: "Ясир ад-Даусари", ea: "Yasser_Ad-Dussary_128kbps" }
+  { id: "dussary", name: "Ясир ад-Даусари", ea: "Yasser_Ad-Dussary_128kbps" },
+  { id: "shaatree", name: "Абу Бакр аш-Шатри", ea: "Abu_Bakr_Ash-Shaatree_128kbps", isn: "128/ar.shaatree" },
+  { id: "rifai", name: "Хани ар-Рифаи", ea: "Hani_Rifai_192kbps", isn: "192/ar.hanirifai" },
+  { id: "tablaway", name: "Мухаммад ат-Таблави", ea: "Mohammad_al_Tablaway_128kbps" },
+  { id: "minshawi_mj", name: "Миншави, муджаввад", ea: "Minshawy_Mujawwad_192kbps" },
+  { id: "abdulbasit_mj", name: "Абдуль-Басит, муджаввад", ea: "Abdul_Basit_Mujawwad_128kbps" }
 ];
 const REPS = [1, 2, 3, 5, 10, 0];
 const repLabel = r => r === 0 ? "∞" : "×" + r;
@@ -909,14 +917,53 @@ function audioUrls(s, v){
   if (r.isn) u.push(`https://cdn.islamic.network/quran/audio/${r.isn}/${gid(s, v)}.mp3`);
   return u;
 }
-const P = { el: null, pre: null, s: 0, v: 0, end: 0, left: 1, playing: false, bism: false, ctx: "", urls: [] };
+/* Gapless player: two audio elements take turns. While one plays an ayah, the other already holds the next one,
+   cued past its leading silence using word timings (quran-align, CC BY 4.0), so the next ayah starts at once. */
+const TIMED = {
+  Alafasy_128kbps: "Alafasy_128kbps", Husary_128kbps: "Husary_64kbps", Husary_Muallim_128kbps: "Husary_Muallim_128kbps",
+  Minshawy_Murattal_128kbps: "Minshawy_Murattal_128kbps", Abdul_Basit_Murattal_192kbps: "Abdul_Basit_Murattal_64kbps",
+  "Abdurrahmaan_As-Sudais_192kbps": "Abdurrahmaan_As-Sudais_192kbps", "Saood_ash-Shuraym_128kbps": "Saood_ash-Shuraym_128kbps",
+  "Abu_Bakr_Ash-Shaatree_128kbps": "Abu_Bakr_Ash-Shaatree_128kbps", Hani_Rifai_192kbps: "Hani_Rifai_192kbps",
+  Minshawy_Mujawwad_192kbps: "Minshawy_Mujawwad_192kbps", Abdul_Basit_Mujawwad_128kbps: "Abdul_Basit_Mujawwad_128kbps",
+  Mohammad_al_Tablaway_128kbps: "Mohammad_al_Tablaway_128kbps"
+};
+/* How much of the reciter's own pause is kept after the last word: "min" and "short" cut the rest of the silence, "full" plays the file as recorded. */
+const LEAD_MS = 150, GAPS = { min: 200, short: 500, full: -1 };
+const GAP_LABEL = { min: "минимальные", short: "короткие", full: "как в записи" };
+const tcache = new Map();
+function loadTimings(folder, s){
+  const t = TIMED[folder]; if (!t) return Promise.resolve(null);
+  const k = t + "/" + s;
+  if (!tcache.has(k)){
+    const pr = fetch("t/" + t + "/" + pad3(s) + ".json").then(r => r.ok ? r.json() : null).catch(() => null);
+    tcache.set(k, { pr, data: null }); pr.then(d => { tcache.get(k).data = d; });
+  }
+  return tcache.get(k).pr;
+}
+function timingSync(folder, s, v){ const t = TIMED[folder]; const c = t && tcache.get(t + "/" + s); return c && c.data ? c.data[v-1] : null; }
+const itemKey = it => it ? (it.bism ? "b" : "") + it.s + ":" + it.v : "";
+function itemRef(it){ return it.bism ? [1, 1] : [it.s, it.v]; }
+function bounds(el){
+  const it = el._it; if (!it || el._alt) return { start: 0, end: 0 };
+  const [s, v] = itemRef(it), seg = timingSync(el._folder, s, v);
+  const tail = GAPS[S.set.gap] ?? GAPS.short;
+  if (!seg || seg.length < 4 || tail < 0) return { start: 0, end: 0 };
+  return { start: Math.max(0, seg[2] - LEAD_MS) / 1000, end: (seg[seg.length - 1] + tail) / 1000 };
+}
+const P = { els: [], cur: 0, s: 0, v: 0, end: 0, left: 1, playing: false, ctx: "", raf: 0, word: "" };
+const pActive = () => P.els[P.cur], pOther = () => P.els[1 - P.cur];
 function pInit(){
-  if (P.el) return;
-  P.el = new Audio(); P.el.preload = "auto"; P.pre = new Audio(); P.pre.preload = "auto";
-  P.el.addEventListener("ended", pEnded);
-  P.el.addEventListener("error", pError);
-  P.el.addEventListener("playing", () => { P.playing = true; pRender(); });
-  P.el.addEventListener("pause", () => { P.playing = false; pRender(); });
+  if (P.els.length) return;
+  for (let k = 0; k < 2; k++){
+    const el = new Audio(); el.preload = "auto";
+    el.addEventListener("loadedmetadata", () => { const b = bounds(el); if (b.start && el.currentTime < b.start - 0.05) try { el.currentTime = b.start; } catch (e) {} });
+    el.addEventListener("ended", () => { if (el === pActive() && P.s) pAdvance(); });
+    el.addEventListener("timeupdate", () => { if (el === pActive()) pCheck(); });
+    el.addEventListener("error", () => pElError(el));
+    el.addEventListener("playing", () => { if (el === pActive()){ P.playing = true; pRender(); pLoop(); } });
+    el.addEventListener("pause", () => { if (el === pActive()){ P.playing = false; pRender(); } });
+    P.els.push(el);
+  }
   if ("mediaSession" in navigator){
     try {
       navigator.mediaSession.setActionHandler("play", () => pToggle());
@@ -926,38 +973,123 @@ function pInit(){
     } catch (e) {}
   }
 }
+function pPrepare(el, it){
+  const [s, v] = itemRef(it), r = reciter();
+  el._it = it; el._alt = false; el._folder = r.ea; el._ready = false;
+  el._urls = audioUrls(s, v);
+  el.src = el._urls.shift();
+  el.playbackRate = S.set.rate;
+  loadTimings(r.ea, s).then(() => { const b = bounds(el); if (b.start && el.readyState >= 1 && el.currentTime < b.start - 0.05) try { el.currentTime = b.start; } catch (e) {} });
+}
+function pNextItem(it){
+  if (!it) return null;
+  if (it.bism) return { s: it.s, v: 1 };
+  return it.v < P.end ? { s: it.s, v: it.v + 1 } : null;
+}
+function pFirstItem(s, v){ return v === 1 && s !== 1 && s !== 9 ? { s, v: 1, bism: true } : { s, v }; }
+/* Start the idle element muted for a moment, then park it at its first word. Inside the tap this unlocks it for later
+   playback on iOS; afterwards it makes Safari buffer the file, since iOS treats preload="auto" as metadata only. */
+let warmTok = 0;
+function pWarm(B){
+  if (B === pActive() || !B._it || !B.paused) return;
+  const tok = B._tok = ++warmTok;
+  B.muted = true;
+  const pr = B.play();
+  const park = () => {
+    if (B._tok !== tok) return;
+    B._tok = 0;
+    if (B !== pActive()){ B.pause(); const b = bounds(B); try { B.currentTime = b.start; } catch (e) {} }
+    B.muted = false;
+  };
+  if (pr) pr.then(() => { B._unlocked = true; setTimeout(park, 80); }, () => { if (B._tok === tok){ B._tok = 0; B.muted = false; } });
+}
+/* Prepare the idle element with the following ayah */
+function pCueOther(){
+  const B = pOther(), nx = pNextItem(pActive()._it);
+  clearTimeout(B._warmT);
+  if (!nx){ B._it = null; return; }
+  if (itemKey(B._it) === itemKey(nx) && !B._failed) return;
+  B._failed = false;
+  pPrepare(B, nx);
+  if (!B._unlocked) pWarm(B);
+  else B._warmT = setTimeout(() => { if (B !== pActive() && itemKey(B._it) === itemKey(nx) && B.readyState < 4) pWarm(B); }, 1200);
+}
 function pPlay(s, v, end, ctx){
   pInit(); if (rec) stopVoice();
-  Object.assign(P, { s, v, end, ctx, left: S.set.rep, bism: v === 1 && s !== 1 && s !== 9 });
-  pLoad();
+  Object.assign(P, { s, v, end, ctx, left: S.set.rep });
+  loadTimings(reciter().ea, s); loadTimings(reciter().ea, 1);
+  const A = pActive(), it = pFirstItem(s, v);
+  pPrepare(A, it);
+  const pr = A.play();
+  if (pr) pr.then(() => { A._unlocked = true; }, err => { if (err && err.name === "NotAllowedError"){ P.playing = false; pRender(); toast("Нажмите ▶, чтобы включить звук"); } });
+  pCueOther();
+  pMeta(); pRender(); pHighlight();
 }
-function pLoad(){
-  const [s, v] = P.bism ? [1, 1] : [P.s, P.v];
-  P.urls = audioUrls(s, v);
-  P.el.src = P.urls.shift();
-  P.el.playbackRate = S.set.rate;
-  P.el.play().catch(err => { if (err && err.name === "NotAllowedError"){ P.playing = false; pRender(); toast("Нажмите ▶, чтобы включить звук"); } });
-  if (!P.bism && P.v < P.end){ P.pre.src = audioUrls(P.s, P.v + 1)[0]; }
+function pMeta(){
   if ("mediaSession" in navigator && window.MediaMetadata){
     try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${sName(P.s)} ${P.s}:${P.v}`, artist: reciter().name, album: "Коран" }); } catch (e) {}
   }
-  pRender(); pHighlight();
 }
-function pError(){
+function pLoop(){
+  cancelAnimationFrame(P.raf);
+  const tick = () => { if (!P.s || !P.playing) return; pCheck(); P.raf = requestAnimationFrame(tick); };
+  P.raf = requestAnimationFrame(tick);
+}
+function pCheck(){
+  const A = pActive(); if (!A || !P.s || A.paused) return;
+  const b = bounds(A);
+  if (b.end && A.currentTime >= b.end){ pAdvance(); return; }
+  pWords(A);
+}
+let advancing = false;
+function pAdvance(){
+  if (advancing) return; advancing = true;
+  try {
+    const A = pActive(), it = A._it;
+    if (!it){ pStop(); return; }
+    if (!it.bism && (S.set.rep === 0 || P.left > 1)){
+      if (S.set.rep) P.left--;
+      try { A.currentTime = bounds(A).start; } catch (e) {}
+      A.play().catch(() => {}); pRender(); return;
+    }
+    const nx = pNextItem(it);
+    if (!nx){ pStop(); return; }
+    const B = pOther();
+    if (itemKey(B._it) === itemKey(nx) && !B._failed && B._unlocked){
+      const b = bounds(B);
+      if (b.start && Math.abs(B.currentTime - b.start) > 0.3) try { B.currentTime = b.start; } catch (e) {}
+      B._tok = 0; clearTimeout(B._warmT); B.muted = false; B.playbackRate = S.set.rate;
+      const pr = B.play();
+      A.pause();
+      P.cur = 1 - P.cur;
+      /* If Safari refuses to start the second element (e.g. with the screen locked), carry on with the first one */
+      if (pr) pr.catch(err => {
+        if (!err || err.name !== "NotAllowedError" || pActive() !== B || !P.s) return;
+        P.cur = 1 - P.cur; pPrepare(A, B._it); A.play().catch(() => {}); B._it = null; pCueOther();
+      });
+    } else {
+      pPrepare(A, nx); A.play().catch(() => {});
+    }
+    if (!nx.bism){ P.v = nx.v; P.left = S.set.rep; }
+    pCueOther();
+    pMeta(); pRender(); pHighlight();
+  } finally { advancing = false; }
+}
+function pElError(el){
   if (!P.s) return;
-  if (P.urls.length){ P.el.src = P.urls.shift(); P.el.playbackRate = S.set.rate; P.el.play().catch(() => {}); return; }
+  if (el._urls && el._urls.length){
+    el._alt = true; el.src = el._urls.shift(); el.playbackRate = S.set.rate;
+    if (el === pActive()) el.play().catch(() => {});
+    return;
+  }
+  if (el !== pActive()){ el._failed = true; return; }
   toast("Не удалось загрузить аудио. Проверьте интернет или выберите другого чтеца.");
   pStop();
 }
-function pEnded(){
-  if (P.bism){ P.bism = false; pLoad(); return; }
-  if (S.set.rep === 0 || P.left > 1){ if (S.set.rep) P.left--; P.el.currentTime = 0; P.el.play().catch(() => {}); pRender(); return; }
-  if (P.v < P.end){ P.v++; P.left = S.set.rep; pLoad(); }
-  else pStop();
-}
 function pStop(){
-  if (P.el){ P.el.pause(); P.el.removeAttribute("src"); try { P.el.load(); } catch (e) {} }
-  P.s = 0; P.playing = false; pHighlight(); pRender();
+  cancelAnimationFrame(P.raf);
+  for (const el of P.els){ el.pause(); el._it = null; el.removeAttribute("src"); try { el.load(); } catch (e) {} }
+  P.s = 0; P.playing = false; P.word = ""; pHighlight(); pRender();
 }
 function pToggle(){
   if (!P.s){
@@ -965,16 +1097,39 @@ function pToggle(){
     else if (overlay === "reader" && R){ const v = S.last && S.last.s === R.s ? S.last.v : 1; pPlay(R.s, v, R.data.a.length, "reader"); }
     return;
   }
-  if (P.el.paused) P.el.play().catch(() => {}); else P.el.pause();
+  const A = pActive();
+  if (A.paused) A.play().catch(() => {}); else A.pause();
 }
 function pSkip(d){
   if (!P.s) return;
   const n = CNT(P.s), v = Math.max(1, Math.min(n, P.v + d));
-  P.v = v; P.bism = false; P.left = S.set.rep; if (P.end < v) P.end = v; pLoad();
+  P.v = v; P.left = S.set.rep; if (P.end < v) P.end = v;
+  const A = pActive(); pPrepare(A, { s: P.s, v }); A.play().catch(() => {});
+  pCueOther(); pMeta(); pRender(); pHighlight();
 }
+/* Follow the reciter word by word in the reader */
+function pWords(A){
+  const it = A._it;
+  if (!it || it.bism || A._alt || P.ctx !== "reader" || overlay !== "reader"){ pWordMark(null); return; }
+  const seg = timingSync(A._folder, it.s, it.v); if (!seg){ pWordMark(null); return; }
+  const ms = A.currentTime * 1000; let ws = -1, we = -1;
+  for (let k = 0; k < seg.length; k += 4){ if (seg[k + 2] <= ms + 40){ ws = seg[k]; we = seg[k + 1]; } else break; }
+  pWordMark(ws < 0 ? null : [it.s, it.v, ws, we]);
+}
+function pWordMark(m){
+  const key = m ? m.join(":") : "";
+  if (key === P.word) return;
+  P.word = key;
+  $$(".w.reading").forEach(x => x.classList.remove("reading"));
+  if (!m) return;
+  const [s, v, ws, we] = m;
+  const words = PG ? $$(`#pager .vs[data-s="${s}"][data-v="${v}"] .w`) : $$(`#r-body .vcard[data-v="${v}"] .w`);
+  for (let k = ws; k < we && k < words.length; k++) words[k].classList.add("reading");
+}
+
 function pHighlight(){
   $$(".playing").forEach(el => el.classList.remove("playing"));
-  if (!P.s) return;
+  if (!P.s){ pWordMark(null); return; }
   if (P.ctx === "reader" && overlay === "reader" && PG){
     const p = pageOf(P.s, P.v);
     if (PG.cur !== p) goPage(p, true);
@@ -996,7 +1151,8 @@ function pRender(){
   const active = !!P.s;
   $("#p-toggle").innerHTML = active && P.playing ? ICON.pause : ICON.play;
   $("#p-toggle").setAttribute("aria-label", active && P.playing ? "Пауза" : "Слушать");
-  $("#p-title").textContent = active ? `${P.bism ? "Бисмиллях · " : ""}${sName(P.s)}, аят ${P.v}` : "Слушать чтеца";
+  const it = active && pActive() ? pActive()._it : null;
+  $("#p-title").textContent = active ? `${it && it.bism ? "Бисмиллях · " : ""}${sName(P.s)}, аят ${P.v}` : "Слушать чтеца";
   const rp = S.set.rep;
   $("#p-sub").textContent = reciter().name + (active && rp !== 1 ? ` · повтор ${rp === 0 ? "∞" : (rp - P.left + 1) + " из " + rp}` : "");
   $("#p-rep").textContent = repLabel(rp);
@@ -1010,10 +1166,11 @@ function reciterSheet(){
   openSheet(`
     <div class="grab"></div>
     <h3>Чтец и повтор</h3>
-    <div class="rlist">${RECITERS.map(r => `<button class="rrow" data-act="set-rc" data-k="${r.id}" aria-pressed="${r.id === reciter().id}"><span>${esc(r.name)}</span><i></i></button>`).join("")}</div>
+    <div class="rlist">${RECITERS.map(r => `<button class="rrow" data-act="set-rc" data-k="${r.id}" aria-pressed="${r.id === reciter().id}"><span>${esc(r.name)}${TIMED[r.ea] ? `<small>без пауз · подсветка слов</small>` : ""}</span><i></i></button>`).join("")}</div>
     <div class="field"><span class="flabel">Повторять каждый аят</span><div class="chips">${REPS.map(r => `<button class="chip" data-act="set-rep" data-k="${r}" aria-pressed="${S.set.rep === r}">${r === 0 ? "без конца" : r === 1 ? "1 раз" : r + " " + plural(r, ["раз","раза","раз"])}</button>`).join("")}</div></div>
+    <div class="field"><span class="flabel">Паузы между аятами</span><div class="chips">${Object.keys(GAPS).map(g => `<button class="chip" data-act="set-gap" data-k="${g}" aria-pressed="${S.set.gap === g}">${GAP_LABEL[g]}</button>`).join("")}</div></div>
     <div class="field"><span class="flabel">Скорость</span><div class="chips">${[0.75, 1, 1.25].map(r => `<button class="chip" data-act="set-rate" data-k="${r}" aria-pressed="${S.set.rate === r}">${String(r).replace(".", ",")}×</button>`).join("")}</div></div>
-    <p class="credits">Аудио: everyayah.com и cdn.islamic.network. Для прослушивания нужен интернет.</p>`);
+    <p class="credits">Следующий аят загружается заранее и включается сразу. У чтецов с пометкой «без пауз» тишина в начале и конце аятов убирается, а слово, которое читает чтец, подсвечивается в мушафе. Если покажется, что конец аята обрезается, выберите паузы «как в записи». Аудио: everyayah.com и cdn.islamic.network; разметка слов: quran-align (Collin Fair, CC BY 4.0). Нужен интернет.</p>`);
 }
 
 /* ---------- accounts (website only): Firebase login + per-account progress + family ---------- */
@@ -2509,9 +2666,10 @@ document.addEventListener("click", e => {
     case "p-next": pSkip(1); break;
     case "p-reciter": reciterSheet(); break;
     case "p-rep": { const i = REPS.indexOf(S.set.rep); S.set.rep = REPS[(i + 1) % REPS.length]; P.left = S.set.rep || 1; save(); pRender(); toast(S.set.rep === 0 ? "Аят повторяется без конца" : S.set.rep === 1 ? "Без повтора" : "Каждый аят " + S.set.rep + " " + plural(S.set.rep, ["раз","раза","раз"])); break; }
-    case "set-rc": S.set.rc = d.k; save(); reciterSheet(); if (P.s) pLoad(); pRender(); break;
+    case "set-rc": S.set.rc = d.k; save(); reciterSheet(); if (P.s) pPlay(P.s, P.v, P.end, P.ctx); pRender(); break;
     case "set-rep": S.set.rep = +d.k; P.left = S.set.rep || 1; save(); reciterSheet(); pRender(); break;
-    case "set-rate": S.set.rate = +d.k; save(); if (P.el) P.el.playbackRate = S.set.rate; reciterSheet(); break;
+    case "set-rate": S.set.rate = +d.k; save(); P.els.forEach(el => { el.playbackRate = S.set.rate; }); reciterSheet(); break;
+    case "set-gap": S.set.gap = d.k; save(); reciterSheet(); break;
     case "listen-from": closeSheet(); pPlay(+d.s, +d.v, CNT(+d.s), "reader"); break;
     case "d-listen": { if (!D) break; if (P.s && P.ctx === "drill"){ pStop(); break; } const idx = D.test[Math.min(D.cur, D.test.length - 1)]; const it = D.items[idx != null ? idx : D.items.length - 1]; pPlay(it.s, it.v, it.v, "drill"); break; }
     case "toggle-layout": { S.set.layout = S.set.layout === "mushaf" ? "verses" : "mushaf"; save(); const L = S.last || { s: 1, v: 1 }; openReader(L.s, L.v); break; }
