@@ -1,0 +1,718 @@
+Command line invocation:
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild -project Hifz.xcodeproj -scheme Hifz -configuration Debug -sdk iphonesimulator -destination "generic/platform=iOS Simulator" -derivedDataPath ../build/sim CODE_SIGNING_ALLOWED=NO build
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    SDKROOT = iphonesimulator26.5
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'Hifz' in project 'Hifz' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/runner/work/hifz/hifz/ios/Hifz/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 1d0552e94a10dc2d606bd32ce482c949
+Build description path: /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/XCBuildData/1d0552e94a10dc2d606bd32ce482c949.xcbuilddata
+CreateBuildDirectory /Users/runner/work/hifz/hifz/build/sim/Build/Products
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    builtin-create-build-directory /Users/runner/work/hifz/hifz/build/sim/Build/Products
+
+CreateBuildDirectory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    builtin-create-build-directory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex
+
+ClangStatCache /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -o /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache
+
+CreateBuildDirectory /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    builtin-create-build-directory /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz-5e7de5a5d5ec6e36db3fea719d58a831-VFS-iphonesimulator/all-product-headers.yaml
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz-5e7de5a5d5ec6e36db3fea719d58a831-VFS-iphonesimulator/all-product-headers.yaml
+
+CreateBuildDirectory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    builtin-create-build-directory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    builtin-create-build-directory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd /Users/runner/work/hifz/hifz/ios/Hifz.xcodeproj
+    builtin-create-build-directory /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_const_extract_protocols.json (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftConstValuesFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.LinkFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.LinkFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-OutputFileMap.json (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_const_extract_protocols.json (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftConstValuesFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.LinkFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.LinkFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-OutputFileMap.json (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.hmap (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.hmap
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyStaticMetadataFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyMetadataFileList (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-non-framework-target-headers.hmap (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibPath-normal-x86_64.txt (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibPath-normal-x86_64.txt
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibPath-normal-arm64.txt (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibInstallName-normal-x86_64.txt (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibInstallName-normal-x86_64.txt
+
+WriteAuxiliaryFile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibInstallName-normal-arm64.txt (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    write-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibInstallName-normal-arm64.txt
+
+MkDir /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /bin/mkdir -p /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app
+
+Ld /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/__preview.dylib normal arm64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -L/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -install_name @rpath/Hifz.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_dependency_info.dat -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/__preview.dylib
+
+Ld /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/__preview.dylib normal x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -L/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -install_name @rpath/Hifz.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_dependency_info.dat -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/__preview.dylib
+
+MkDir /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/unthinned (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /bin/mkdir -p /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/unthinned
+
+MkDir /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /bin/mkdir -p /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned
+
+GenerateAssetSymbols /Users/runner/work/hifz/hifz/ios/Hifz/Assets.xcassets (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/actool /Users/runner/work/hifz/hifz/ios/Hifz/Assets.xcassets --compile /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app --output-format human-readable-text --notices --warnings --export-dependency-info /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_dependencies --output-partial-info-plist /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist --app-icon AppIcon --compress-pngs --enable-on-demand-resources YES --development-region ru --target-device iphone --target-device ipad --minimum-deployment-target 16.0 --platform iphonesimulator --bundle-identifier io.github.mammadibir.hifz --generate-swift-asset-symbol-extensions NO --generate-swift-asset-symbols /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+CreateUniversalBinary /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/__preview.dylib normal arm64\ x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/__preview.dylib /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/__preview.dylib -output /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/__preview.dylib
+
+CompileAssetCatalogVariant thinned /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app /Users/runner/work/hifz/hifz/ios/Hifz/Assets.xcassets (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/actool /Users/runner/work/hifz/hifz/ios/Hifz/Assets.xcassets --compile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --compress-pngs --enable-on-demand-resources YES --development-region ru --target-device iphone --target-device ipad --minimum-deployment-target 16.0 --platform iphonesimulator
+/* com.apple.actool.compilation-results */
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist_thinned
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned/AppIcon60x60@2x.png
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned/AppIcon76x76@2x~ipad.png
+/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned/Assets.car
+
+
+SwiftDriver Hifz normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-SwiftDriver -- /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Hifz -Onone @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target arm64-apple-ios16.0-simulator -g -module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/hifz/hifz/build/sim/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache -output-file-map /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-Swift.h -working-directory /Users/runner/work/hifz/hifz/ios -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver Hifz normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-SwiftDriver -- /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Hifz -Onone @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target x86_64-apple-ios16.0-simulator -g -module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/hifz/hifz/build/sim/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache -output-file-map /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources-normal/x86_64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/x86_64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-Swift.h -working-directory /Users/runner/work/hifz/hifz/ios -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stddef-25NB15CEJ8J9VM2M1MXM4PF9L.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ptrcheck-9KH7BZC4GDUSUNHAA8LO30D2Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdarg-8O8UAU9XUZO0SE9R3EKR8ON8J.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/DeveloperToolsSupport-BBCV721JQF53UGBOB30V6H3KU.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdbool-19Z5EJSPZQRUWIB3MEXJJVH6N.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/DeveloperToolsSupport-B8VB22JW5WUI84AW5TFPEK7MP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_SwiftConcurrencyShims-E6Q3DLKVA27W4BX1GQI9OXRH5.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_AvailabilityInternal-7JP0M1FRLW5X9THMBILLC1UYR.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SwiftShims-7SIDNRZFSHZPFG2P1MKQP7QWN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_float-7QZG3C8MG1UMWHSZHN0VMCWW5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_AvailabilityInternal-2U9UOST2JWPB64DOHU9WT7O7K.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_DarwinFoundation1-CXWCLEDS3R5JG90M1Z3DIGIV7.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_float-CLYCLFZP5WXP41DJ6Q41HEJ3H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ptrcheck-7NU00DLL4DCDP2K5W5NLFLYES.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SwiftShims-9TTEAWI3N0QWIK4DWYX7G8B2M.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_SwiftConcurrencyShims-4L0AX1HUVEC592OKY4IF7CQ78.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_DarwinFoundation1-28FV0HQWJ57DX4THHBOWEO88T.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ptrauth-A9GKK9CI7Z303QRUV7VO8NVFF.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdarg-E47NM4EOGL6LW97OF876MEH9J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ptrauth-A1NP0MNDGXZI3C0OFR7CA3VQ5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_limits-AE4T919U3ELDO2V35PRIPX0UZ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_DarwinFoundation2-A40KIIFQL86ZSOXZ592AM12DI.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_limits-33TXYWS3RSBYUFBMD81WF6KXO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdbool-BY0J1P90UY79546YYEZX1J60D.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/sys_types-PA9GZUX7RS6IKAHQKWPYG3YJ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_tgmath-9ETYXX5DF5EMD6KUWRW1X8G0C.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdint-1B27IU6JCIDXKS6XG0KMAUU47.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stddef-ATBU2TSYV4IFHGKMP33A0C8K6.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdatomic-37MRP024MYC4I321N4U7N7QCE.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_DarwinFoundation3-HM8AJ6HT0UODU72F8VRLHLKL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_DarwinFoundation2-3M4W34YROWFU6X0ABTKURDJRD.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_intrinsics-4MCS7AFUH80RA3WEHCH7PLHDD.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_inttypes-5QUCBZGJKWKO7VAJMMUNT584M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/sys_types-5MX4Q67T0H46PVJLVN1I1KDSE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_tgmath-3XD4RBZHNOJO5UCQLVVN8FU83.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdint-465GAETO24QKKA2LYDVNJUXIL.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Darwin-BFEVORQ6FBSXLLFX0C2WGFUOX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_DarwinFoundation3-2DA0JGSGT1WCSII8C52A9NY18.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_stdatomic-DPXXPZQ5OUG7NL1CZKJ3QUDOI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_inttypes-82ESD19YU0V3PZQLAAE0CSUSP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/simd-3XDZZN9KMXDIYNS56KFKRF65I.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Darwin-2E8KOVNJNGC0KIZL4FXMCYFRX.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/MachO-BRJ04VK1OSMXZ7E8HENBI4GFC.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Spatial-5O1PMWI7AE6VHJB0IAMA8CY07.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ObjectiveC-EH2LFLIVPH3SASC6V2BF3V47E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/_Builtin_intrinsics-BW9P0DFR5B4G1QQ32AJY5M224.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/MachO-5TAMLMUX86U21KES2L81C8I9W.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/os_object-B0CGSGGSMTCM7GC0BATXCQ3XL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ObjectiveC-26MVJYLTXBIB7YDU9EXGOCXNV.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/os_workgroup-D7VV2UTKCINHWYD1NUA1G02N2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/simd-7UW3YNKN7V8ZTJATACLIXSB64.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/os_object-19779I81X8RG0SOTJZR981UIU.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Dispatch-76EKGNX12HZGTRLYV2RNTDZPO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/os_workgroup-3UH8XHXV4NVBJHPUZGJPDYSO5.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/dnssd-ASL1VKI20I3IRQ6DBTX1F1JW3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Dispatch-7SZPQBRKM6NB3PGQXWP1BSQM7.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/XPC-7IDKX6ARO04FALJF6304ZR9PI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/XPC-6LXL4QN43RTD8UDTYGLWFFM2P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Spatial-4H1G7173CPD0H4XJLD91K83QJ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/os-4K0C37144KFZ9TOPIPY25DY6N.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/os-3MOP1Y2AO976OVWGFKPUHVP9Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/dnssd-4JKFBV5WZBYUM0RE1CQ7JWKZT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreFoundation-9S5DA4O98LOCTOX450F66VNG4.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreFoundation-EVKLYH59Q801UWIOP3OCNCU95.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreAudioTypes-2BU1NZUX7PWHXJ27W9AWB3BBY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreGraphics-6L710A6Y8EXK0P2IXUU8SI1KH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Security-3M2JCHJHJ7O3LPOM9O9L26WSL.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CFNetwork-4IP12Y9BFPZMI5IUZ32GFR6JP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreGraphics-ECMVGUBUZRP1V7501YHT3S33B.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreAudioTypes-C0LLP6UZS1MY77FW6S8URE21H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreAudio-5X6NSVPYI81S6G9WDS72FVIZA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreText-9SV8P5U053YH7BK3OW35EWQD7.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ImageIO-72C1RB8Z5L8BM2DPY4WKWP5XZ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreAudio-4H5UGUZJ3P29CO1L30PQFGXG3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/ImageIO-5TB6ZE1J0BIATQHFCM5L0MC59.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CFNetwork-C4P00ONV5I63UA4XL2HA3UW0K.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Security-3Y3RY8OP0PKC5PRROS6PQ4PW6.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreText-CA8HXZFOR25VLKI3TDNF4S22M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Foundation-DRIZKQAB4H7UNOX16U8B2YFZZ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Foundation-DHX1QPRM18PT1BN8Q028RTK20.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreMIDI-3944TTP57Z5GDA1QRBWLR5AYN.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/OSLog-A8CL6VR3QDPCI7F9Z3ZUOW5T1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UIUtilities-AKY1MMBDRSRYHM93UT9U56981.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Network-73ZA0GZG31XYEA0PB2CSRLXDH.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/FileProvider-3C5ARMTXO0DAFO7DBKYZJS08C.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Network-GM5YY6ZVYW26UTWY7HN0RGT4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreTransferable-15ATMQ3YG04KCDAOXOHYI1FQ3.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/LocalAuthentication-5ZD0DRZT7CV0BW83YG0N8WRVP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/OpenGLES-C8CDOTXJJHGXN4QQMVUH6VQ5Z.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AVRouting-5YWLWPLB42SVL2W98SPG65JJ1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Symbols-4EU0JM326X5VA6CLQ004T8KUN.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UIUtilities-8V3FCW4OYNFNSLNZO168FFW00.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UniformTypeIdentifiers-3XWKA2MLL6DVK1L6Q7G1MLAMI.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreData-APCM5J2ENBM6117WPGDWONPGY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AVRouting-3R4Y8KD47KE3TMC55RAKR1ELX.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/DataDetection-8E5H7J3MWBJYBNTKW06R2IYB3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreMIDI-6XG0MS4DDAYL5JEE1J0Q2Y6HJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UniformTypeIdentifiers-3LFZOD7J3MEK8ZA860HWMFHZ1.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Symbols-9FMXOQ8TB4MWWKT7FLLJQX8OQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AudioToolbox-AYX6LXG27J9GCCZEPY3VQNXRD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UserNotifications-7VJI1C1PG0OT4NTYWOH9HQB2C.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/IOSurface-2OUHTOEVKCN3TDECMQ2HJIEX3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/LocalAuthentication-DT9QAG8QHBV9J6QOMAV4G98M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/IOSurface-9BUUHBRICV7342MTAXMOH9VZ7.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Metal-VJKG8RQESOO5WGKP15G78ZKH.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AudioToolbox-C77T0IMHGG7TBPZOEVLWHZ0FH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/DataDetection-7PZ0RSTVSOT382LIH6328M1K9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/FileProvider-EZW74UMO4VF4KPNXF5UJTHXRP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreData-5OXVYKGA8AC7XFS2FM5ZQAQC5.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreTransferable-17C22SF65VI3R3D5APITBNUK7.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Accessibility-41JWE97G6A5C3ZN9J8T3ZNT2F.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Accessibility-3QQU6MSD7OCB567TABZ69YU57.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/OSLog-4OAYAJB82FF8Q4ETIHPKSL1U0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Metal-2GEWXG5X3IOCOTF5EFCR57OAI.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/OpenGLES-3DRW96L8XQEAA5CALRFSX664T.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UserNotifications-D12XXCTQWTROYTEXVHJNDB8CK.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreVideo-DHXOHF04XEYMEGYELR8CPYOJB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreVideo-5F3L8CBWP95HJNA8NNTWW45P7.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreMedia-BF7RCBXSKAWAZH61XJRPQLCU1.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/QuartzCore-EFNBVTEJQS6UWBY9344H58LJO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/QuartzCore-5KQ8QQMURXBONLIG8YW1FWQXS.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreImage-6I7TY0GQODPU8XLKFISR7U4XR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreImage-CHN11QY7JNNJW2DTD8VHGHU5Q.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SwiftUICore-C14RBCH8NB2VNMSBMLUD6CCPC.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UIKit-2K0N7IO3GHTPR0KTIJ8PCDKGW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/CoreMedia-2TZPR33MGU2D976J907UBWQIA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AVFAudio-8QIFHK4UW07C8S89UM5UMQ9Y3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/MediaToolbox-7NXRTUV0AF08PQ1M4KTJ7K3YL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AVFAudio-AZ7C1ZUHED4YQPUEPM25EEXAC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/UIKit-52TSY6U6C0C541JEA7JG0E97L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AVFoundation-5LLZN30AZJMVWAIAZYQYZXZ9Z.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/WebKit-8LMS3F7IB1Y0A6IZPSWA9M4ZT.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SwiftUI-BV4QRZI3IASVHBJYBY5U1AJV6.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AuthenticationServices-B3SOBYNGLX5WULUT5SX2BGKQ8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SwiftUI-1BNLWCEV1PFQD6VLJM52I33O3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/WebKit-8APOF40GPGD462NPQ5A8G9HH2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SafariServices-6LDFCJMC4EF3OHRSX7VLZ166L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AuthenticationServices-4LGE9GZ270H31OBK1WT8IKAI7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Speech-BCJ5AWI3R71N0TPPB58R73LQ0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SafariServices-DVS0CINQRTVGBLQOGMDZ8X90F.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/MediaToolbox-E37268X9VYLRM531V2OL5ZS1U.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/SwiftUICore-5VHZB8FNNGWFH5GIWCQ5OENGK.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/AVFoundation-7VTT4HN6EOI4CJ07LI9B272JD.pcm
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Hifz (in target 'Hifz' from project 'Hifz')
+EmitSwiftModule normal arm64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal arm64 Compiling\ App.swift,\ AudioSessionManager.swift,\ BridgeScript.swift /Users/runner/work/hifz/hifz/ios/Hifz/App.swift /Users/runner/work/hifz/hifz/ios/Hifz/AudioSessionManager.swift /Users/runner/work/hifz/hifz/ios/Hifz/BridgeScript.swift (in target 'Hifz' from project 'Hifz')
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/ios/Hifz/App.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/ios/Hifz/AudioSessionManager.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/ios/Hifz/BridgeScript.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftExplicitDependencyGeneratePcm x86_64 /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Speech-2JLMJULPH44KFIP5KWCS8WF8R.pcm
+
+LinkAssetCatalog /Users/runner/work/hifz/hifz/ios/Hifz/Assets.xcassets (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-linkAssetCatalog --thinned /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/thinned --thinned-dependencies /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist_unthinned --output /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app --plist-output /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist
+note: Emplaced /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/AppIcon60x60@2x.png (in target 'Hifz' from project 'Hifz')
+note: Emplaced /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Assets.car (in target 'Hifz' from project 'Hifz')
+note: Emplaced /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/AppIcon76x76@2x~ipad.png (in target 'Hifz' from project 'Hifz')
+
+SwiftEmitModule normal x86_64 Emitting\ module\ for\ Hifz (in target 'Hifz' from project 'Hifz')
+
+EmitSwiftModule normal x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal x86_64 Compiling\ Feedback.swift,\ SpeechBridge.swift /Users/runner/work/hifz/hifz/ios/Hifz/Feedback.swift /Users/runner/work/hifz/hifz/ios/Hifz/SpeechBridge.swift (in target 'Hifz' from project 'Hifz')
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/ios/Hifz/Feedback.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/ios/Hifz/SpeechBridge.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Hifz (in target 'Hifz' from project 'Hifz')
+
+SwiftDriver\ Compilation\ Requirements Hifz normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Hifz -Onone @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target arm64-apple-ios16.0-simulator -g -module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/hifz/hifz/build/sim/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache -output-file-map /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-Swift.h -working-directory /Users/runner/work/hifz/hifz/ios -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal x86_64 Emitting module for Hifz (in target 'Hifz' from project 'Hifz')
+
+SwiftDriver\ Compilation\ Requirements Hifz normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Hifz -Onone @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target x86_64-apple-ios16.0-simulator -g -module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/hifz/hifz/build/sim/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache -output-file-map /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources-normal/x86_64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/x86_64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-Swift.h -working-directory /Users/runner/work/hifz/hifz/ios -experimental-emit-module-separately -disable-cmo
+
+ProcessInfoPlistFile /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Info.plist /Users/runner/work/hifz/hifz/ios/Hifz/Info.plist (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-infoPlistUtility /Users/runner/work/hifz/hifz/ios/Hifz/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/assetcatalog_generated_info.plist -o /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Info.plist
+
+SwiftMergeGeneratedHeaders /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/Hifz-Swift.h /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-Swift.h /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-Swift.h (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-Swift.h -arch x86_64 /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-Swift.h -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/Hifz-Swift.h
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/x86_64-apple-ios-simulator.swiftmodule /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftmodule (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftmodule /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/x86_64-apple-ios-simulator.swiftmodule
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/x86_64-apple-ios-simulator.swiftdoc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftdoc (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftdoc /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/x86_64-apple-ios-simulator.swiftdoc
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/x86_64-apple-ios-simulator.abi.json /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.abi.json (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.abi.json /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/x86_64-apple-ios-simulator.abi.json
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/arm64-apple-ios-simulator.swiftmodule /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftmodule (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftmodule /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/arm64-apple-ios-simulator.swiftdoc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftdoc (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftdoc /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/arm64-apple-ios-simulator.abi.json /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.abi.json (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.abi.json /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftsourceinfo (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftsourceinfo /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo
+
+Copy /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftsourceinfo (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftsourceinfo /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ Feedback.swift,\ SpeechBridge.swift /Users/runner/work/hifz/hifz/ios/Hifz/Feedback.swift /Users/runner/work/hifz/hifz/ios/Hifz/SpeechBridge.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/ios/Hifz/Feedback.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/ios/Hifz/SpeechBridge.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling App.swift, AudioSessionManager.swift, BridgeScript.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftCompile normal x86_64 Compiling\ WebViewController.swift,\ GeneratedAssetSymbols.swift /Users/runner/work/hifz/hifz/ios/Hifz/WebViewController.swift /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Hifz' from project 'Hifz')
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/ios/Hifz/WebViewController.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal arm64 Compiling\ WebViewController.swift,\ GeneratedAssetSymbols.swift /Users/runner/work/hifz/hifz/ios/Hifz/WebViewController.swift /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/ios/Hifz/WebViewController.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal arm64 /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Feedback.swift, SpeechBridge.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftCompile normal x86_64 Compiling\ App.swift,\ AudioSessionManager.swift,\ BridgeScript.swift /Users/runner/work/hifz/hifz/ios/Hifz/App.swift /Users/runner/work/hifz/hifz/ios/Hifz/AudioSessionManager.swift /Users/runner/work/hifz/hifz/ios/Hifz/BridgeScript.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/ios/Hifz/App.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/ios/Hifz/AudioSessionManager.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/hifz/hifz/ios/Hifz/BridgeScript.swift (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    
+
+SwiftDriverJobDiscovery normal x86_64 Compiling Feedback.swift, SpeechBridge.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftDriverJobDiscovery normal x86_64 Compiling App.swift, AudioSessionManager.swift, BridgeScript.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftDriverJobDiscovery normal arm64 Compiling WebViewController.swift, GeneratedAssetSymbols.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftDriverJobDiscovery normal x86_64 Compiling WebViewController.swift, GeneratedAssetSymbols.swift (in target 'Hifz' from project 'Hifz')
+
+SwiftDriver\ Compilation Hifz normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-Swift-Compilation -- /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Hifz -Onone @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target arm64-apple-ios16.0-simulator -g -module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/hifz/hifz/build/sim/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache -output-file-map /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-Swift.h -working-directory /Users/runner/work/hifz/hifz/ios -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver\ Compilation Hifz normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-Swift-Compilation -- /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Hifz -Onone @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target x86_64-apple-ios16.0-simulator -g -module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/hifz/hifz/build/sim/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/hifz/hifz/build/sim/SDKStatCaches.noindex/iphonesimulator26.5-23F81a-688ef53f1462e2c8f657fdc38a81448ff45c64a1807a658693f2a61704f17a36.sdkstatcache -output-file-map /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/work/hifz/hifz/build/sim/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-generated-files.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-own-target-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-project-headers.hmap -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources-normal/x86_64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources/x86_64 -Xcc -I/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-Swift.h -working-directory /Users/runner/work/hifz/hifz/ios -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz.debug.dylib normal arm64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -L/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -filelist /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.LinkFileList -install_name @rpath/Hifz.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.swiftmodule @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz-linker-args.resp -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz.debug.dylib
+
+Ld /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz.debug.dylib normal x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -L/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -filelist /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.LinkFileList -install_name @rpath/Hifz.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.swiftmodule @/Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz-linker-args.resp -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz.debug.dylib
+
+ConstructStubExecutorLinkFileList /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-ExecutorLinkFileList-normal-arm64.txt (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    construct-stub-executor-link-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz.debug.dylib /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'Hifz' from project 'Hifz')
+
+ConstructStubExecutorLinkFileList /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-ExecutorLinkFileList-normal-x86_64.txt (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    construct-stub-executor-link-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz.debug.dylib /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-ExecutorLinkFileList-normal-x86_64.txt
+note: Using stub executor library with Swift entry point. (in target 'Hifz' from project 'Hifz')
+
+CreateUniversalBinary /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Hifz.debug.dylib normal arm64\ x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz.debug.dylib /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz.debug.dylib -output /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Hifz.debug.dylib
+
+Ld /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz normal x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios16.0-simulator -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -L/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibPath-normal-x86_64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibInstallName-normal-x86_64.txt -Xlinker -filelist -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-ExecutorLinkFileList-normal-x86_64.txt /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz.debug.dylib -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz
+
+Ld /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz normal arm64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios16.0-simulator -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -L/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -F/Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz-ExecutorLinkFileList-normal-arm64.txt /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz.debug.dylib -o /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz
+
+CreateUniversalBinary /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Hifz normal arm64\ x86_64 (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Binary/Hifz /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Binary/Hifz -output /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Hifz
+
+ExtractAppIntentsMetadata (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.UbUqYy/Metal.xctoolchain --module-name Hifz --sdk-root /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk --xcode-version 17F113 --platform-family iOS --deployment-target 16.0 --bundle-identifier io.github.mammadibir.hifz --output /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app --target-triple arm64-apple-ios16.0-simulator --target-triple x86_64-apple-ios16.0-simulator --binary-file /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Hifz --dependency-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz_dependency_info.dat --dependency-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz_dependency_info.dat --stringsdata-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --stringsdata-file /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftFileList --source-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftFileList --metadata-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyMetadataFileList --static-metadata-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/arm64/Hifz.SwiftConstValuesFileList --swift-const-vals-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Objects-normal/x86_64/Hifz.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-10-12 14:44:47.325 appintentsmetadataprocessor[2147:9905] Starting appintentsmetadataprocessor export
+2026-10-12 14:44:47.337 appintentsmetadataprocessor[2147:9905] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CopySwiftLibs /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Hifz.debug.dylib --scan-folder /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Frameworks --scan-folder /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/PlugIns --scan-folder /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/SystemExtensions --scan-folder /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.UbUqYy/Metal.xctoolchain --toolchain /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+AppIntentsSSUTraining (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Info.plist --temp-dir-path /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/ssu --bundle-id io.github.mammadibir.hifz --product-path /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app --extracted-metadata-path /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Metadata.appintents --metadata-file-list /Users/runner/work/hifz/hifz/build/sim/Build/Intermediates.noindex/Hifz.build/Debug-iphonesimulator/Hifz.build/Hifz.DependencyMetadataFileList --source-file /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app/Info.plist --archive-ssu-assets
+2026-10-12 14:44:47.391 appintentsnltrainingprocessor[2153:9918] Parsing options for appintentsnltrainingprocessor
+2026-10-12 14:44:47.392 appintentsnltrainingprocessor[2153:9918] Starting AppIntents SSU YAML Generation
+2026-10-12 14:44:47.408 appintentsnltrainingprocessor[2153:9918] No AppShortcuts found - Skipping.
+
+RegisterExecutionPolicyException /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-RegisterExecutionPolicyException /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app
+
+Validate /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    builtin-validationUtility /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app (in target 'Hifz' from project 'Hifz')
+    cd /Users/runner/work/hifz/hifz/ios
+    /usr/bin/touch -c /Users/runner/work/hifz/hifz/build/sim/Build/Products/Debug-iphonesimulator/Hifz.app
+
+** BUILD SUCCEEDED **
+
