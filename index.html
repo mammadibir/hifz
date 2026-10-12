@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1791805176";</script>
+<script>window.APP_VERSION="1791805668";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -301,6 +301,8 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .sheet .sub{margin:-8px 0 0;color:var(--muted);font-size:13px}
 .sheet .ar-big{font-family:var(--f-quran);font-size:calc(var(--qsize) * .9);direction:rtl;text-align:right;line-height:2;margin:0}
 .sheet .trn{margin:0;font-size:14.5px;line-height:1.55}
+.sheet-back{align-self:flex-start;display:inline-flex;align-items:center;gap:2px;color:var(--lapis);font-weight:600;font-size:15px;padding:6px 8px 6px 0;margin-block:-4px -8px}
+.sheet-back svg{width:20px;height:20px}
 .sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sheet-actions .wide{grid-column:1/-1}
 .big-acc{display:flex;align-items:baseline;gap:10px}
@@ -1659,9 +1661,11 @@ async function wordSheet(id){
   await loadWords().catch(() => {});
   const w = WMAP && WMAP.get(+id); if (!w) return;
   await Promise.all(w.ex.map(([s]) => loadSurah(s).catch(() => null)));
-  const st = vstate(w.id);
+  const st = vstate(w.id), bk = sheetBack;
+  const backBtn = bk ? `<button class="sheet-back" data-act="sheet-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Назад к аяту ${bk.s}:${bk.v}</button>` : "";
   openSheet(`
     <div class="grab"></div>
+    ${backBtn}
     <div class="whead">
       <div class="war-big" lang="ar">${w.ar}</div>
       ${AUDIO && w.ex.length ? `<button class="icon-btn say" data-act="say" data-id="${w.id}" aria-label="Произношение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>` : ""}
@@ -1672,9 +1676,10 @@ async function wordSheet(id){
     ${w.forms.length ? `<div class="field"><span class="flabel">Как встречается в тексте</span><div class="wforms" lang="ar">${w.forms.map(f => `<span>${f}</span>`).join("")}</div></div>` : ""}
     ${w.ex.length ? `<div class="field"><span class="flabel">Примеры из Корана</span>${exampleHTML(w, 3)}</div>` : ""}
     <div class="sheet-actions">
-      <button class="btn btn-primary" data-act="wmark" data-id="${w.id}" data-k="${st === "known" ? "reset" : "known"}">${st === "known" ? "Учить заново" : "Я это знаю"}</button>
+      <button class="btn btn-primary${bk ? " wide" : ""}" data-act="wmark" data-id="${w.id}" data-k="${st === "known" ? "reset" : "known"}">${st === "known" ? "Учить заново" : "Я это знаю"}</button>
+      ${bk ? `<button class="btn btn-soft" data-act="sheet-back">Назад</button>` : ""}
       <button class="btn btn-line" data-act="close-sheet">Закрыть</button>
-    </div>`);
+    </div>`, "word");
 }
 
 /* Flashcards: due reviews first, then new words */
@@ -2166,10 +2171,17 @@ async function verseSheet(s, v){
       ${AUDIO ? `<button class="btn btn-soft wide" data-act="listen-from" data-s="${s}" data-v="${v}">Слушать с этого аята · ${esc(reciter().name)}</button>` : ""}
       <a class="btn btn-line wide" href="${esc(azanUrl(s, v))}" target="_blank" rel="noopener">Толкование на azan.ru<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
       <button class="btn btn-line wide" data-act="copy" data-s="${s}" data-v="${v}">Копировать текст и перевод</button>
-    </div>`);
+    </div>`, "verse");
+  sheetVerse = { s, v };
 }
-function openSheet(html){ $("#sheet-body").innerHTML = html; $("#sheet").hidden = false; }
-function closeSheet(){ $("#sheet").hidden = true; $("#sheet-body").innerHTML = ""; }
+/* sheetBack: the ayah sheet a word sheet was opened from, so "Назад" can return to it at the same scroll position */
+let sheetKind = null, sheetVerse = null, sheetBack = null;
+function openSheet(html, kind = null){
+  const body = $("#sheet-body"), fresh = kind !== sheetKind;
+  sheetKind = kind; body.innerHTML = html; $("#sheet").hidden = false;
+  if (fresh) body.scrollTop = 0;   /* a different sheet starts from its top; a re-render of the same one keeps its place */
+}
+function closeSheet(){ sheetKind = null; sheetBack = null; $("#sheet").hidden = true; $("#sheet-body").innerHTML = ""; }
 
 /* ---------- LEARN (setup) ---------- */
 let setup = null;
@@ -2679,7 +2691,11 @@ document.addEventListener("click", e => {
   switch (act){
     case "settings": settingsSheet(false); break;
     case "app-update": { Cloud.flush && Cloud.flush(); saveLocal(); location.replace(location.pathname + "?v=" + ($("#update-bar").dataset.v || Date.now())); break; }
-    case "word": wordSheet(d.id); break;
+    case "word":
+      if (!$("#sheet").hidden && sheetKind === "verse" && sheetVerse) sheetBack = { ...sheetVerse, top: $("#sheet-body").scrollTop };
+      else if ($("#sheet").hidden || sheetKind !== "word") sheetBack = null;
+      wordSheet(d.id); break;
+    case "sheet-back": { const b = sheetBack; sheetBack = null; if (!b) { closeSheet(); break; } verseSheet(b.s, b.v).then(() => { $("#sheet-body").scrollTop = b.top; }); break; }
     case "say": sayWord(+d.id); break;
     case "close-sheet": closeSheet(); break;
     case "wmark": { const id = +d.id; S.voc = S.voc || {}; if (d.k === "known") S.voc[id] = [4, dnum() + VBOX_DAYS[4], ((vget(id) || [])[2] || 0) + 1, 0]; else S.voc[id] = [0, dnum(), ((vget(id) || [])[2] || 0) + 1, 0]; save(); wordSheet(id); if (tab === "words" && !overlay) renderWords(); toast(d.k === "known" ? "Отмечено как выученное" : "Слово снова в изучении"); break; }
