@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1791802365";</script>
+<script>window.APP_VERSION="1791802781";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -480,6 +480,11 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .tsw i{position:absolute;right:5px;bottom:5px;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7)}
 .update-bar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top, 0px));z-index:40;display:flex;align-items:center;gap:12px;background:var(--lapis);color:var(--on-lapis);border-radius:999px;padding:8px 8px 8px 16px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow);white-space:nowrap;max-width:calc(100% - 24px)}
 .update-bar button{background:var(--on-lapis);color:var(--lapis);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px}
+/* Pages 1–2: centred in the ornament like the print, with roomier lines and no empty rows */
+.mpg.open .mframe .ml:empty{display:none}
+.mpg.open .mframe .ml{height:calc(var(--mlh,2em) * 1.45);line-height:calc(var(--mlh,2em) * 1.45)}
+.mpg.open .mframe .ml.mt{display:flex;align-items:center;justify-content:center}
+.mpg.open .qbsm{font-size:.88em}
 .fade{display:inline-flex;gap:3px}
 .fade i{width:7px;height:7px;border-radius:50%;background:var(--veil)}
 .fade i.on{background:var(--err)}
@@ -1839,9 +1844,14 @@ function fitQ(el){
   m.style.setProperty("--pr", pr.toFixed(4));
   const k = pr / pr0;
   for (const x of lines) x.l.classList.toggle("short", x.w * k < W * 0.9 * z);
+  // surah header: as wide as the line, but never taller than its line (it used to cover the next one)
   fr.querySelectorAll(".qh").forEach(h => {
     const f = h.querySelector(".qh-frame"); h.style.fontSize = ""; const fw = f.getBoundingClientRect().width;
-    if (fw) h.style.fontSize = (parseFloat(getComputedStyle(h).fontSize) * Math.min(W * 0.98, W) / fw).toFixed(2) + "px";
+    if (!fw) return;
+    let fs = parseFloat(getComputedStyle(h).fontSize) * (W * 0.98) / fw;
+    h.style.fontSize = fs.toFixed(2) + "px";
+    const lh = h.closest(".ml").clientHeight, hh = h.getBoundingClientRect().height;
+    if (lh && hh > lh * 0.94) h.style.fontSize = (fs * lh * 0.94 / hh).toFixed(2) + "px";
   });
 }
 function fitPage(el){
