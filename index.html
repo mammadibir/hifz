@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1792185619";</script>
+<script>window.APP_VERSION="1792244870";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -518,6 +518,22 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
 .blk-head.bk0 i{background:var(--bk0-line)}
 .blk-head.bk1 i{background:var(--bk1-line)}
 .blocks-on .blk-head{display:flex}
+.mlegend{direction:ltr;display:flex;flex-direction:column;gap:8px;padding-block:14px 18px;font-family:var(--f-ui)}
+.mlegend:empty{display:none}
+.mleg-h{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding-inline:4px;display:flex;align-items:center;gap:6px}
+.mleg-h::after{content:"↓";font-size:13px}
+.mleg{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;border-radius:12px;padding:10px 12px;background:var(--surface);border:1px solid var(--line)}
+.mleg i{width:12px;height:12px;border-radius:4px;flex:none;margin-top:3px}
+.mleg.bk0 i,.blk-sum.bk0{--c:var(--bk0-line)}
+.mleg.bk1 i,.blk-sum.bk1{--c:var(--bk1-line)}
+.mleg i{background:var(--c)}
+.mleg span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mleg b{font-weight:600;font-size:13.5px;color:var(--ink)}
+.mleg small{font-size:14px;line-height:1.45;color:var(--ink)}
+.blk-sum{display:none;flex-direction:column;gap:4px;text-align:left;width:100%;border-radius:14px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);margin-top:-4px}
+.blocks-on .blk-sum:not([hidden]){display:flex}
+.blk-sum b{font-size:12.5px;font-weight:600;color:var(--muted)}
+.blk-sum small{font-size:14px;line-height:1.45;color:var(--ink)}
 .blk-info{display:flex;flex-direction:column;gap:8px;border-radius:12px;padding:10px 12px;background:var(--veil)}
 .blk-info b{font-weight:600;font-size:14px}
 .blk-info small{color:var(--muted);font-size:12.5px}
@@ -670,6 +686,11 @@ const blockId = (s, v) => BLK.length ? lastLE(BSTART, gid(s, v)) - 1 : 0;
 const blockOf = (s, v) => BLK[blockId(s, v)] || [s, v, v];
 const bkCls = (s, v) => " bk" + (blockId(s, v) % 2);
 const blockLabel = ([, f, t]) => f === t ? `аят ${f}` : `аяты ${f}–${t}`;
+const bsCache = new Map();
+function loadBlockSums(s){
+  if (!bsCache.has(s)) bsCache.set(s, fetch("b/" + pad3(s) + ".json").then(r => r.ok ? r.json() : {}).catch(() => ({})));
+  return bsCache.get(s);
+}
 const juzOf = (s, v) => lastLE(JSTART, gid(s, v));
 function dkey(d = new Date()){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
 function dnum(d = new Date()){ return Math.round(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 864e5); }
@@ -1826,9 +1847,9 @@ function nextQuiz(){
 function closeCards(){ WC = null; goTab("words"); }
 
 /* Words of one ayah, for the verse sheet */
-function blockInfoHTML(s, v){
+function blockInfoHTML(s, v, sum){
   const bk = blockOf(s, v), [, f, t] = bk;
-  return `<div class="blk-info"><span><b>Смысловой блок: ${blockLabel(bk)}</b><br><small>${f === t ? "Ас-Саади толкует этот аят отдельно" : "Ас-Саади толкует эти аяты вместе"}</small></span>
+  return `<div class="blk-info"><span><b>Смысловой блок: ${blockLabel(bk)}</b><br><small>${sum ? esc(sum) : f === t ? "Ас-Саади толкует этот аят отдельно" : "Ас-Саади толкует эти аяты вместе"}</small></span>
     <div class="chips"><button class="chip" data-act="drill" data-s="${s}" data-f="${f}" data-t="${t}">Учить блок</button>${AUDIO ? `<button class="chip" data-act="listen-range" data-s="${s}" data-f="${f}" data-t="${t}">Слушать блок</button>` : ""}</div></div>`;
 }
 function verseWordsHTML(s, v){
@@ -2013,7 +2034,7 @@ function sizePages(){
   const w = Math.min(pg.clientWidth, 560) - 2 * 12 - 2 * 10 - 4;
   const z = S.set.mz || 1;
   const fs0 = Math.max(13, w / qfont().lw * 24);
-  const lh0 = Math.max(fs0 * 1.3, Math.min(fs0 * 2.5, (pg.clientHeight - 156) / 15));
+  const lh0 = Math.max(fs0 * 1.3, Math.min(fs0 * 2.5, (pg.clientHeight - 156 - (S.set.blocks ? 30 : 0)) / 15));
   pg.classList.toggle("flow", z > 1.01);
   pg.style.setProperty("--mfs", (fs0 * z).toFixed(2) + "px");
   pg.style.setProperty("--mlh", lh0.toFixed(2) + "px");
@@ -2051,7 +2072,7 @@ async function fillPage(p){
     const [lines] = await Promise.all([loadPage(p), isQ() ? Promise.all([loadPageFont(p), loadBSML()]) : null]);
     if (!el.isConnected) return;
     el.innerHTML = pageHTML(p, lines); el.dataset.ready = "1";
-    fitPage(el); markPage(el);
+    fitPage(el); markPage(el); fillLegend(el);
   } catch (e) {
     el.innerHTML = `<div class="loading">Не удалось загрузить страницу. Проверьте соединение.<br><br><button class="btn btn-soft" data-act="page-retry" data-p="${p}">Повторить</button></div>`;
   } finally { delete el.dataset.loading; }
@@ -2091,6 +2112,7 @@ function pageHTML(p, lines){
     <div class="mhead"><span class="ar">${esc(META.ch[s0-1][0])}</span><span>Джуз ${juzOf(s0, v0)}</span></div>
     <div${frameAttrs(p)} lang="ar">${rows}</div>
     <div class="mfoot"><button class="pnav" data-act="page-go" data-d="-1" aria-label="Предыдущая страница"${p === 1 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button class="mnum-btn" data-act="drill-page" data-p="${p}" aria-label="Учить страницу ${p}"><span class="mnum">${arNum(p)}</span><small>учить страницу</small></button><button class="pnav" data-act="page-go" data-d="1" aria-label="Следующая страница"${p === 604 ? " disabled" : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+    <div class="mlegend" data-p="${p}"></div>
   </div>`;
 }
 /* Like the printed mushaf, each justified line is stretched or squeezed horizontally to the full width; centred lines only shrink if too long. */
@@ -2157,7 +2179,48 @@ function bandPage(el){
 }
 function applyBlocks(){
   document.body.classList.toggle("blocks-on", !!S.set.blocks);
-  $$("#pager .mp[data-ready], #d-body.dpage-body").forEach(bandPage);
+  if (overlay === "reader" && PG){ sizePages(); refitAll(); }
+  $$("#pager .mp[data-ready], #d-body.dpage-body").forEach(el => { bandPage(el); fillLegend(el); });
+  if (overlay === "reader" && R && !PG) fillBlockSums();
+}
+function pageBlocks(p){
+  const [s1, v1] = fromGid(PSTART[p-1]), [s2, v2] = fromGid(p < 604 ? PSTART[p] - 1 : OFF[114]);
+  const out = []; for (let k = blockId(s1, v1); k <= blockId(s2, v2); k++) out.push(k);
+  return out;
+}
+/* Under a mushaf page: each meaning block on it, in its colour, with a short note on what its ayahs are about */
+async function fillLegend(el){
+  const box = el.querySelector(".mlegend"); if (!box) return;
+  if (!S.set.blocks){ box.innerHTML = ""; return; }
+  const ids = pageBlocks(+box.dataset.p), surahs = [...new Set(ids.map(id => BLK[id][0]))];
+  const sums = new Map(await Promise.all(surahs.map(async s => [s, await loadBlockSums(s)])));
+  if (!S.set.blocks || !box.isConnected) return;
+  box.innerHTML = `<div class="mleg-h">О чём аяты на этой странице</div>` + ids.map(id => {
+    const bk = BLK[id], [s, f] = bk, txt = (sums.get(s) || {})[f];
+    return `<button class="mleg bk${id % 2}" data-act="block" data-id="${id}"><i></i><span><b>${surahs.length > 1 ? esc(sName(s)) + ", " : ""}${blockLabel(bk)}</b>${txt ? `<small>${esc(txt)}</small>` : ""}</span></button>`;
+  }).join("");
+}
+/* Translation view: after the last ayah of each block, what the block is about */
+async function fillBlockSums(){
+  if (!R) return;
+  const s = R.s, m = await loadBlockSums(s);
+  if (!R || R.s !== s) return;
+  $$("#r-body .blk-sum").forEach(x => { const t = m[x.dataset.f]; x.querySelector("small").textContent = t || ""; x.hidden = !t; });
+}
+async function blockSheet(id){
+  const bk = BLK[+id]; if (!bk) return;
+  const [s, f, t] = bk, txt = (await loadBlockSums(s))[f], p1 = pageOf(s, f), p2 = pageOf(s, t);
+  openSheet(`
+    <div class="grab"></div>
+    <h3>${esc(sName(s))}, ${blockLabel(bk)}</h3>
+    <p class="sub">Смысловой блок · стр. ${p1}${p2 !== p1 ? "–" + p2 : ""}</p>
+    ${txt ? `<p class="trn">${esc(txt)}</p>` : `<p class="trn muted">Пояснение к этому блоку ещё готовится.</p>`}
+    <p class="credits">Аяты, которые ас-Саади толкует вместе. Краткое пояснение составлено ИИ (Claude) по переводу смыслов Абу Аделя. Подробно смысл раскрывается в тафсире.</p>
+    <div class="sheet-actions">
+      <button class="btn btn-primary${AUDIO ? "" : " wide"}" data-act="drill" data-s="${s}" data-f="${f}" data-t="${t}">Учить блок</button>
+      ${AUDIO ? `<button class="btn btn-soft" data-act="listen-range" data-s="${s}" data-f="${f}" data-t="${t}">Слушать блок</button>` : ""}
+      <a class="btn btn-line wide" href="${esc(azanUrl(s, f))}" target="_blank" rel="noopener">Толкование на azan.ru<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+    </div>`, "block");
 }
 function refitAll(){ $$("#pager .mp[data-ready], #d-body.dpage-body").forEach(fitPage); }
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(refitAll);
@@ -2187,10 +2250,12 @@ function renderReader(){
     const bk = blockOf(s, v);
     if (bk[1] === v) h += `<div class="blk-head${bkCls(s, v)}"><i></i>Смысловой блок · ${blockLabel(bk)}</div>`;
     h += `<article class="vcard${bkCls(s, v)}" data-v="${v}"><div class="vhead"><span class="vref">${s}:${v}</span>${S.bm.includes(s + ":" + v) ? `<span class="vstate">закладка</span>` : ""}<span class="sp"></span>${state ? `<span class="vstate">${state}</span>` : ""}<button class="vmore" data-act="verse" data-v="${v}" aria-label="Действия с аятом ${v}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div><p class="ar" lang="ar">${wordsHTML(s, v, data.a[v-1])} ${amarker(s, v)}</p><p class="tr">${esc(data.t[v-1])}</p></article>`;
+    if (bk[2] === v) h += `<button class="blk-sum${bkCls(s, v)}" data-act="block" data-id="${blockId(s, v)}" data-f="${bk[1]}" hidden><b>О чём ${blockLabel(bk)}</b><small></small></button>`;
   }
   h += `</div>`;
   h += `<div class="reader-end">${s > 1 ? `<button class="btn btn-line" data-act="open" data-s="${s-1}" data-v="1">← ${esc(sName(s-1))}</button>` : ""}<button class="btn btn-primary" data-act="drill-from" data-s="${s}" data-v="1">Учить эту суру</button>${s < 114 ? `<button class="btn btn-line" data-act="open" data-s="${s+1}" data-v="1">${esc(sName(s+1))} →</button>` : ""}</div>`;
   $("#r-body").innerHTML = h;
+  if (S.set.blocks) fillBlockSums();
 }
 function jumpTo(v, flash){
   const sc = $("#r-scroll");
@@ -2223,7 +2288,7 @@ function refreshReader(){
 /* Verse sheet */
 async function verseSheet(s, v){
   s = +s; v = +v;
-  let d; try { [d] = await Promise.all([loadSurah(s), loadWords().catch(() => null)]); } catch (e) { toast("Не удалось загрузить аят. Проверьте соединение."); return; }
+  let d, bsum; try { [d, , bsum] = await Promise.all([loadSurah(s), loadWords().catch(() => null), loadBlockSums(s)]); } catch (e) { toast("Не удалось загрузить аят. Проверьте соединение."); return; }
   const x = vpGet(s, v), ref = s + ":" + v, bm = S.bm.includes(ref);
   const status = isLearned(s, v) ? `Выучен · повторён ${x[0]} раз` : x && x[0] ? `В процессе · без ошибок ${x[0]} из 3 раз` : x && x[2] ? `Были ошибки: ${x[2]}` : "Ещё не учили";
   openSheet(`
@@ -2232,7 +2297,7 @@ async function verseSheet(s, v){
     <p class="sub">${ref} · стр. ${pageOf(s, v)} · джуз ${juzOf(s, v)} · ${status}</p>
     <p class="ar-big" lang="ar">${wordsHTML(s, v, d.a[v-1])}</p>
     <p class="trn">${esc(d.t[v-1])}</p>
-    ${blockInfoHTML(s, v)}
+    ${blockInfoHTML(s, v, bsum[blockOf(s, v)[1]])}
     ${verseWordsHTML(s, v)}
     <div class="sheet-actions">
       <button class="btn btn-primary" data-act="drill-from" data-s="${s}" data-v="${v}">Учить с этого аята</button>
@@ -2856,6 +2921,7 @@ document.addEventListener("click", e => {
     case "copy": { const s = +d.s, v = +d.v, dd = SC[s]; if (!dd) break; const txt = `${dd.a[v-1].join(" ")}\n\n${dd.t[v-1]}\n— ${sName(s)}, ${s}:${v}`; try { navigator.clipboard.writeText(txt).then(() => toast("Скопировано"), () => toast("Не удалось скопировать")); } catch (err) { toast("Не удалось скопировать"); } break; }
     case "drill-from": { closeSheet(); const s = +d.s || (R && R.s) || 1, f = +d.v, n = CNT(s); startDrill(s, f, Math.min(n, f + (n - f + 1 > 10 ? 4 : n - f))); break; }
     case "drill": closeSheet(); startDrill(+d.s, +d.f, +d.t); break;
+    case "block": blockSheet(d.id); break;
     case "lblock": { readSetup(); const [, f, t] = blockOf(setup.s, setup.f); setup.f = f; setup.t = t; setup.p = pageOf(setup.s, f); syncSetupUI(); break; }
     case "drill-done": closeDrill(); break;
     case "close-drill": closeDrill(); break;
