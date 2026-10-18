@@ -2,10 +2,14 @@ import SafariServices
 import UIKit
 import WebKit
 
-/// The whole app is the website mammadibir.github.io/hifz shown full screen, so every update to the site
+/// The whole app is the hifz website shown full screen, so every update to the site
 /// reaches the app at once. The native side adds what the site cannot do on iPhone (see BridgeScript).
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
-    static let home = URL(string: "https://mammadibir.github.io/hifz/")!
+    /// The copy on Yandex Cloud opens in Russia without VPN; the one on GitHub is the fallback if it does not answer.
+    static let homes = [URL(string: "https://hifz-mammadibir.website.yandexcloud.net/")!,
+                        URL(string: "https://mammadibir.github.io/hifz/")!]
+    static let home = homes[0]
+    static let appHosts: Set<String> = ["hifz-mammadibir.website.yandexcloud.net", "mammadibir.github.io"]
 
     private var webView: WKWebView!
     private let speech = SpeechBridge()
@@ -14,6 +18,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var statusStyle: UIStatusBarStyle = .default
     private let offlineView = UIView()
     private var triedCache = false
+    private var homeIndex = 0
+    private var triedOtherHome = false
+    private var loadedOnce = false
     private var debugScriptRan = false
 
     override var preferredStatusBarStyle: UIStatusBarStyle { statusStyle }
@@ -25,13 +32,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     /// For screenshots in the build pipeline a different start address can be passed as a launch argument.
-    static var startURL: URL {
+    static var overrideURL: URL? {
         if let s = UserDefaults.standard.string(forKey: "hifzStartURL"), let url = URL(string: s) { return url }
-        return home
+        return nil
     }
+
+    private var startURL: URL { Self.overrideURL ?? Self.homes[homeIndex] }
 
     static func isAppPage(_ url: URL) -> Bool {
         guard let host = url.host?.lowercased() else { return false }
+        if host == "hifz-mammadibir.website.yandexcloud.net" { return true }
         return host == "mammadibir.github.io" && (url.path == "/hifz" || url.path.hasPrefix("/hifz/"))
     }
 
@@ -87,7 +97,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private func load(cacheOnly: Bool = false) {
-        var request = URLRequest(url: Self.startURL)
+        var request = URLRequest(url: startURL)
         if cacheOnly { request.cachePolicy = .returnCacheDataDontLoad }
         webView.load(request)
     }
@@ -131,6 +141,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let retry = UIButton(configuration: button, primaryAction: UIAction { [weak self] _ in
             guard let self = self else { return }
             self.triedCache = false
+            self.triedOtherHome = false
+            self.homeIndex = 0
             self.offlineView.isHidden = true
             self.load()
         })
@@ -195,7 +207,22 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         return nil
     }
 
+    /// A copy of the site that answers with an error page (not set up yet, or removed) counts as not opening.
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse,
+                 decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        if navigationResponse.isForMainFrame, !loadedOnce, !triedOtherHome, Self.overrideURL == nil,
+           let http = navigationResponse.response as? HTTPURLResponse, http.statusCode >= 400 {
+            decisionHandler(.cancel)
+            triedOtherHome = true
+            homeIndex = 1 - homeIndex
+            DispatchQueue.main.async { [weak self] in self?.load() }
+            return
+        }
+        decisionHandler(.allow)
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        loadedOnce = true
         triedCache = false
         offlineView.isHidden = true
         runDebugScriptOnce()
@@ -217,6 +244,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let e = error as NSError
         if e.domain == NSURLErrorDomain && e.code == NSURLErrorCancelled { return }
         if e.domain == "WebKitErrorDomain" && e.code == 102 { return }
+        if !triedOtherHome && !loadedOnce && Self.overrideURL == nil {
+            // The first address did not open: try the other copy of the site
+            triedOtherHome = true
+            homeIndex = 1 - homeIndex
+            load()
+            return
+        }
         if !triedCache {
             // Without internet, open the copy kept from the last visit if there is one
             triedCache = true
@@ -265,7 +299,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.frameInfo.isMainFrame,
-              message.frameInfo.securityOrigin.host.lowercased() == "mammadibir.github.io",
+              Self.appHosts.contains(message.frameInfo.securityOrigin.host.lowercased()),
               let body = message.body as? [String: Any],
               let type = body["type"] as? String else { return }
         let id = (body["id"] as? NSNumber)?.intValue ?? 0
