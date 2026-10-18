@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1792311324";</script>
+<script>window.APP_VERSION="1792327702";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1014,32 +1014,49 @@ function bounds(el){
   if (!seg || seg.length < 4 || tail < 0) return { start: 0, end: 0 };
   return { start: Math.max(0, seg[2] - LEAD_MS) / 1000, end: (seg[seg.length - 1] + tail) / 1000 };
 }
-const P = { els: [], cur: 0, s: 0, v: 0, end: 0, left: 1, from: 0, loop: 1, loopLeft: 1, playing: false, ctx: "", raf: 0, word: "" };
+const P = { els: [], cur: 0, s: 0, v: 0, end: 0, left: 1, from: 0, loop: 1, loopLeft: 1, playing: false, held: false, ctx: "", raf: 0, word: "", stall: 0, lastT: -1, watch: 0 };
 const pActive = () => P.els[P.cur], pOther = () => P.els[1 - P.cur];
+const pHidden = () => document.visibilityState === "hidden";
 function pInit(){
   if (P.els.length) return;
   for (let k = 0; k < 2; k++){
     const el = new Audio(); el.preload = "auto";
-    el.addEventListener("loadedmetadata", () => { const b = bounds(el); if (b.start && el.currentTime < b.start - 0.05) try { el.currentTime = b.start; } catch (e) {} });
+    el.addEventListener("loadedmetadata", () => {
+      if (el._resumeAt){ const t = el._resumeAt; el._resumeAt = 0; try { el.currentTime = t; } catch (e) {} return; }
+      const b = bounds(el); if (b.start && el.currentTime < b.start - 0.05) try { el.currentTime = b.start; } catch (e) {}
+    });
     el.addEventListener("ended", () => { if (el === pActive() && P.s) pAdvance(); });
     el.addEventListener("timeupdate", () => { if (el === pActive()) pCheck(); });
     el.addEventListener("error", () => pElError(el));
-    el.addEventListener("playing", () => { if (el === pActive()){ P.playing = true; pRender(); pLoop(); } });
+    /* Only the active element may ever sound. iOS can start a play() it held while the app was in the background
+       once the app is back on screen; any such stray start is silenced at once, so two ayahs never play over each other. */
+    el.addEventListener("play", () => { if (el !== pActive() && !el._tok) pSilence(el); });
+    el.addEventListener("playing", () => {
+      if (el === pActive()){ P.playing = true; P.stall = 0; pRender(); pLoop(); }
+      else if (!el._tok) pSilence(el);
+    });
     el.addEventListener("pause", () => { if (el === pActive()){ P.playing = false; pRender(); } });
     P.els.push(el);
   }
   if ("mediaSession" in navigator){
     try {
-      navigator.mediaSession.setActionHandler("play", () => pToggle());
-      navigator.mediaSession.setActionHandler("pause", () => pToggle());
+      navigator.mediaSession.setActionHandler("play", () => pResume());
+      navigator.mediaSession.setActionHandler("pause", () => pHold());
       navigator.mediaSession.setActionHandler("nexttrack", () => pSkip(1));
       navigator.mediaSession.setActionHandler("previoustrack", () => pSkip(-1));
     } catch (e) {}
   }
+  document.addEventListener("visibilitychange", pVisibility);
 }
+/* Intentional start of an element: unmuted, at the chosen speed */
+function pGo(el){
+  el._tok = 0; clearTimeout(el._warmT); el.muted = false; el.playbackRate = S.set.rate;
+  const pr = el.play(); return pr || Promise.resolve();
+}
+function pSilence(el){ el._tok = 0; clearTimeout(el._warmT); el.muted = true; if (!el.paused) el.pause(); }
 function pPrepare(el, it){
   const [s, v] = itemRef(it), r = reciter();
-  el._it = it; el._alt = false; el._folder = r.ea; el._ready = false;
+  el._it = it; el._alt = false; el._folder = r.ea; el._ready = false; el._retries = 0; el._resumeAt = 0;
   el._urls = audioUrls(s, v);
   el.src = el._urls.shift();
   el.playbackRate = S.set.rate;
@@ -1054,10 +1071,11 @@ function pNextItem(it){
 }
 function pFirstItem(s, v){ return v === 1 && s !== 1 && s !== 9 ? { s, v: 1, bism: true } : { s, v }; }
 /* Start the idle element muted for a moment, then park it at its first word. Inside the tap this unlocks it for later
-   playback on iOS; afterwards it makes Safari buffer the file, since iOS treats preload="auto" as metadata only. */
+   playback on iOS; afterwards it makes Safari buffer the file, since iOS treats preload="auto" as metadata only.
+   Never in the background: iOS would hold such a start and release it when the app is opened again. */
 let warmTok = 0;
 function pWarm(B){
-  if (B === pActive() || !B._it || !B.paused) return;
+  if (B === pActive() || !B._it || !B.paused || pHidden()) return;
   const tok = B._tok = ++warmTok;
   B.muted = true;
   const pr = B.play();
@@ -1065,31 +1083,33 @@ function pWarm(B){
     if (B._tok !== tok) return;
     B._tok = 0;
     if (B !== pActive()){ B.pause(); const b = bounds(B); try { B.currentTime = b.start; } catch (e) {} }
-    B.muted = false;
   };
-  if (pr) pr.then(() => { B._unlocked = true; setTimeout(park, 80); }, () => { if (B._tok === tok){ B._tok = 0; B.muted = false; } });
+  if (pr) pr.then(() => { B._unlocked = true; setTimeout(park, 80); }, () => { if (B._tok === tok) B._tok = 0; });
 }
 /* Prepare the idle element with the following ayah */
 function pCueOther(){
   const B = pOther(), nx = pNextItem(pActive()._it);
   clearTimeout(B._warmT);
-  if (!nx){ B._it = null; return; }
+  if (!nx){ if (!B.paused) pSilence(B); B._it = null; return; }
   if (itemKey(B._it) === itemKey(nx) && !B._failed) return;
   B._failed = false;
+  if (!B.paused) pSilence(B);
   pPrepare(B, nx);
+  if (pHidden()) return;
   if (!B._unlocked) pWarm(B);
   else B._warmT = setTimeout(() => { if (B !== pActive() && itemKey(B._it) === itemKey(nx) && B.readyState < 4) pWarm(B); }, 1200);
 }
 function pPlay(s, v, end, ctx, loop = 1, from = v){
   pInit(); if (rec) stopVoice();
-  Object.assign(P, { s, v, end, ctx, left: S.set.rep, from, loop, loopLeft: loop });
+  Object.assign(P, { s, v, end, ctx, left: S.set.rep, from, loop, loopLeft: loop, held: false, stall: 0, lastT: -1 });
   loadTimings(reciter().ea, s); loadTimings(reciter().ea, 1);
   const A = pActive(), it = pFirstItem(s, v);
+  if (!pOther().paused) pSilence(pOther());
   pPrepare(A, it);
-  const pr = A.play();
-  if (pr) pr.then(() => { A._unlocked = true; }, err => { if (err && err.name === "NotAllowedError"){ P.playing = false; pRender(); toast("Нажмите ▶, чтобы включить звук"); } });
+  pGo(A).then(() => { A._unlocked = true; }, err => { if (err && err.name === "NotAllowedError"){ P.playing = false; pRender(); toast("Нажмите ▶, чтобы включить звук"); } });
   pCueOther();
   pMeta(); pRender(); pHighlight();
+  pWatchStart();
 }
 function pMeta(){
   if ("mediaSession" in navigator && window.MediaMetadata){
@@ -1113,28 +1133,29 @@ function pAdvance(){
   try {
     const A = pActive(), it = A._it;
     if (!it){ pStop(); return; }
+    P.stall = 0; P.lastT = -1;
     if (!it.bism && (S.set.rep === 0 || P.left > 1)){
       if (S.set.rep) P.left--;
       try { A.currentTime = bounds(A).start; } catch (e) {}
-      A.play().catch(() => {}); pRender(); return;
+      pGo(A).catch(() => {}); pRender(); return;
     }
     const nx = pNextItem(it);
     if (!nx){ pStop(); return; }
     const B = pOther();
-    if (itemKey(B._it) === itemKey(nx) && !B._failed && B._unlocked){
+    /* Hand over to the other, already loaded element for a gapless start — but only while the app is on screen.
+       With the screen locked or the app in the background iOS lets only the element that is already sounding go on,
+       so then that element loads and plays the next ayah itself. */
+    if (!pHidden() && itemKey(B._it) === itemKey(nx) && !B._failed && B._unlocked){
       const b = bounds(B);
       if (b.start && Math.abs(B.currentTime - b.start) > 0.3) try { B.currentTime = b.start; } catch (e) {}
-      B._tok = 0; clearTimeout(B._warmT); B.muted = false; B.playbackRate = S.set.rate;
-      const pr = B.play();
+      const pr = pGo(B);
       A.pause();
       P.cur = 1 - P.cur;
-      /* If Safari refuses to start the second element (e.g. with the screen locked), carry on with the first one */
-      if (pr) pr.catch(err => {
-        if (!err || err.name !== "NotAllowedError" || pActive() !== B || !P.s) return;
-        P.cur = 1 - P.cur; pPrepare(A, B._it); A.play().catch(() => {}); B._it = null; pCueOther();
-      });
+      /* If Safari refuses or drops the start of the second element, carry on with the first one */
+      pr.catch(() => { if (pActive() === B && P.s && !P.held && B.paused && itemKey(B._it) === itemKey(nx)) pFallback(A, B); });
     } else {
-      pPrepare(A, nx); A.play().catch(() => {});
+      if (!B.paused) pSilence(B);
+      pPrepare(A, nx); pGo(A).catch(() => {});
     }
     if (!nx.bism){ P.v = nx.v; P.left = S.set.rep; }
     if (nx.again && P.loop) P.loopLeft--;
@@ -1142,21 +1163,78 @@ function pAdvance(){
     pMeta(); pRender(); pHighlight();
   } finally { advancing = false; }
 }
+function pFallback(A, B){
+  const it = B._it;
+  pSilence(B); B._it = null;
+  P.cur = P.els.indexOf(A);
+  pPrepare(A, it); pGo(A).catch(() => {});
+  pCueOther();
+}
+/* A file that failed or stopped loading: try the other server, then reload it and go on from the same moment */
 function pElError(el){
   if (!P.s) return;
+  if (el !== pActive()){
+    if (el._urls && el._urls.length){ el._alt = true; el.src = el._urls.shift(); return; }
+    el._failed = true; return;
+  }
+  pRetry(el);
+}
+function pRetry(el){
+  if (!P.s || !el._it) return;
   if (el._urls && el._urls.length){
     el._alt = true; el.src = el._urls.shift(); el.playbackRate = S.set.rate;
-    if (el === pActive()) el.play().catch(() => {});
+    if (!P.held) pGo(el).catch(() => {});
     return;
   }
-  if (el !== pActive()){ el._failed = true; return; }
-  toast("Не удалось загрузить аудио. Проверьте интернет или выберите другого чтеца.");
-  pStop();
+  el._retries = (el._retries || 0) + 1;
+  if (el._retries > 3){ toast("Не удалось загрузить аудио. Проверьте интернет или выберите другого чтеца."); pStop(); return; }
+  const t = el.currentTime || 0, b = bounds(el), url = (el.currentSrc || el.src || "").split("?")[0];
+  if (!url) return;
+  el._resumeAt = Math.max(t, b.start || 0);
+  el.src = el._retries > 1 ? url + "?r=" + Date.now() : url;
+  el.playbackRate = S.set.rate;
+  if (!P.held) pGo(el).catch(() => {});
+}
+/* Watchdog: if the ayah should be playing but its time has not moved for 6 seconds (a dropped connection,
+   a start that never came), reload it and continue */
+function pWatchStart(){ if (!P.watch) P.watch = setInterval(pWatch, 1000); }
+function pWatch(){
+  if (!P.s){ clearInterval(P.watch); P.watch = 0; return; }
+  const A = pActive(); if (!A) return;
+  if (P.held || (A.paused && !P.playing)){ P.stall = 0; P.lastT = -1; return; }
+  if (A.paused && P.playing){ P.stall = 0; return; }
+  if (A.currentTime !== P.lastT){ P.lastT = A.currentTime; P.stall = 0; if (A._retries && A.currentTime > (A._resumeAt || 0) + 1) A._retries = 0; return; }
+  if (++P.stall < 6) return;
+  P.stall = 0; P.lastT = -1;
+  pRetry(A);
+}
+/* Leaving the app: stop any warm-up of the idle element so iOS has nothing to release later.
+   Coming back: silence anything that is not the active ayah, then let the idle element buffer the next ayah again. */
+function pVisibility(){
+  if (!P.els.length) return;
+  const B = pOther();
+  if (pHidden()){ clearTimeout(B._warmT); if (!B.paused) pSilence(B); return; }
+  if (!B.paused) pSilence(B);
+  P.stall = 0; P.lastT = -1;
+  if (P.s && B._it && B._unlocked) B._warmT = setTimeout(() => { if (pOther() === B && B.paused && !pHidden()) pWarm(B); }, 400);
 }
 function pStop(){
   cancelAnimationFrame(P.raf);
-  for (const el of P.els){ el.pause(); el._it = null; el.removeAttribute("src"); try { el.load(); } catch (e) {} }
-  P.s = 0; P.playing = false; P.word = ""; pHighlight(); pRender();
+  for (const el of P.els){ el._tok = 0; clearTimeout(el._warmT); el.pause(); el._it = null; el.removeAttribute("src"); try { el.load(); } catch (e) {} }
+  P.s = 0; P.playing = false; P.held = false; P.word = ""; pHighlight(); pRender();
+}
+/* Pause and resume are explicit (not a toggle), so a lock-screen button can never start a second ayah */
+function pHold(){
+  if (!P.s) return;
+  P.held = true;
+  for (const el of P.els){ el._tok = 0; clearTimeout(el._warmT); if (!el.paused) el.pause(); }
+}
+function pResume(){
+  if (!P.s){ pToggle(); return; }
+  P.held = false; P.stall = 0; P.lastT = -1;
+  const B = pOther(); if (!B.paused) pSilence(B);
+  pGo(pActive()).catch(() => {});
+  pWatchStart();
 }
 function pToggle(){
   if (!P.s){
@@ -1164,14 +1242,13 @@ function pToggle(){
     else if (overlay === "reader" && R){ const v = S.last && S.last.s === R.s ? S.last.v : 1; pPlay(R.s, v, R.data.a.length, "reader"); }
     return;
   }
-  const A = pActive();
-  if (A.paused) A.play().catch(() => {}); else A.pause();
+  if (pActive().paused) pResume(); else pHold();
 }
 function pSkip(d){
   if (!P.s) return;
   const n = CNT(P.s), v = Math.max(1, Math.min(n, P.v + d));
-  P.v = v; P.left = S.set.rep; if (P.end < v) P.end = v;
-  const A = pActive(); pPrepare(A, { s: P.s, v }); A.play().catch(() => {});
+  P.v = v; P.left = S.set.rep; P.held = false; P.stall = 0; P.lastT = -1; if (P.end < v) P.end = v;
+  const A = pActive(); pPrepare(A, { s: P.s, v }); pGo(A).catch(() => {});
   pCueOther(); pMeta(); pRender(); pHighlight();
 }
 /* Follow the reciter word by word in the reader */
@@ -2061,7 +2138,10 @@ function onPagerScroll(){
 }
 function setCurPage(p){
   PG.cur = p;
-  for (const q of [p, p + 1, p - 1, p + 2]) if (q >= 1 && q <= 604) fillPage(q);
+  /* the page itself at once; its neighbours a moment later, so building them never stutters the page turn */
+  fillPage(p);
+  clearTimeout(PG.fillT);
+  PG.fillT = setTimeout(() => { if (PG && PG.cur === p) for (const q of [p + 1, p - 1, p + 2]) if (q >= 1 && q <= 604) fillPage(q); }, 450);
   $$("#pager .mp[data-ready]").forEach(el => { if (Math.abs(+el.dataset.p - p) > 4){ el.innerHTML = ""; delete el.dataset.ready; } });
   const [s, v] = PG.focus && pageOf(PG.focus.s, PG.focus.v) === p ? [PG.focus.s, PG.focus.v] : pageFirst(p);
   $("#r-title").textContent = sName(s) + " · " + s;
