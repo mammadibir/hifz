@@ -1,0 +1,200 @@
+2026-10-18 13:28:55.636 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=35] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:55.636 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=35 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:55.637 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=36] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:55.637 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=36] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:55.637 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=36 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:55.638 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=34] WebResourceLoader::didReceiveResponse: (httpStatusCode=404)
+2026-10-18 13:28:55.638 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=34 SubResourceLoader::willCancel: (type=3, code=-999)
+2026-10-18 13:28:55.648 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=188] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:55.649 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=188 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:55.649 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:55.649 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:55.649 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=188] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:55.664 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=188] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:55.664 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=188] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:55.664 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=188 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=189] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=189 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=189] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=190] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=190 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:55.668 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=190] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:55.672 Df Hifz[10476:8972] [com.apple.xpc:connection] [0x1050288b0] activating connection: mach=true listener=false peer=false name=com.apple.ScreenTimeAgent
+2026-10-18 13:28:55.675 Df Hifz[10476:8972] [com.apple.WebKit:ScreenTime] Screen Time has updated to use the system shield for any blocked URL.
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=189] WebResourceLoader::didReceiveResponse: (httpStatusCode=404)
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=189 SubResourceLoader::willCancel: (type=3, code=-999)
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=335] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=335 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:55.689 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=335] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=190] WebResourceLoader::didReceiveResponse: (httpStatusCode=404)
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=190 SubResourceLoader::willCancel: (type=3, code=-999)
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=336] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=336 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:55.690 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=336] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:55.694 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=335] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:55.696 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=335] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:55.696 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=335 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:55.709 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=336] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:55.709 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=336] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:55.709 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=336 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=4294967297 isMainFrame=1] FrameLoader::setState: main frame load completed
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]: Memory usage info dump at MainFrameLoadCompleted:
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   page_count: 1
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   backforward_cache_page_count: 0
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   document_count: 1
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   javascript_gc_heap_capacity_mb: 3
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   javascript_gc_heap_extra_memory_size_mb: 0
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   internal_mb: 37
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   compressed_mb: 0
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   phys_footprint_mb: 39
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   resident_size_mb: 179
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]:   virtual_size_mb: 419173
+2026-10-18 13:28:55.729 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: ProgressTracker::progressCompleted: frameID 4294967297, value 0.887843, tracked frames 1, originating frameID 4294967297, isMainLoad 1
+2026-10-18 13:28:55.730 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: ProgressTracker::finalProgressComplete: value 0.887843, tracked frames 0, originating frameID 4294967297, isMainLoad 1, isMainLoadProgressing 0
+2026-10-18 13:28:55.730 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=4294967297 isMainFrame=1] FrameLoader::checkLoadCompleteForThisFrame: Finished frame load
+2026-10-18 13:28:55.730 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::didFinishLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-10-18 13:28:55.731 Df Hifz[10476:8972] [com.apple.WebKit:ProcessSuspension] 0x11312c100 - NavigationState will release its process network assertion soon because the page load completed
+2026-10-18 13:28:55.753 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=344] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:55.753 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=344 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:55.753 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:55.753 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:55.753 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=344] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:56.025 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=344] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:56.026 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=344] WebResourceLoader::didReceiveData: Started receiving data
+2026-10-18 13:28:56.027 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=344] WebResourceLoader::didFinishResourceLoad: (length=14582)
+2026-10-18 13:28:56.027 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=344 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:56.028 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=345] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:56.028 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=345 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:56.028 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:56.028 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:56.028 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=345] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:56.030 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=345] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:56.030 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=345] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:56.030 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=345 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setPolicyDocumentLoader: Setting policy document loader to 4547485696 (was 0)
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::attachToFrame
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 4547485696 (was 0)
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setDocumentLoader: Setting document loader to 4547485696 (was 0)
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::transitionToCommitted: Clearing provisional document loader (m_provisionalDocumentLoader=4547485696)
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 0 (was 4547485696)
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::startLoadingMainResource: Returning empty document
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setPolicyDocumentLoader: Setting policy document loader to 0 (was 4547485696)
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=4294967297 isMainFrame=1] FrameLoader::loadURLIntoChildFrame: frame load started
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::loadURL: frame load started
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::loadWithNavigationAction: frame load started
+2026-10-18 13:28:56.044 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::loadWithDocumentLoader: frame load started
+2026-10-18 13:28:56.045 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setPolicyDocumentLoader: Setting policy document loader to 4547497984 (was 0)
+2026-10-18 13:28:56.045 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::attachToFrame
+2026-10-18 13:28:56.047 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::decidePolicyForNavigationAction: frameID=8589934593, isMainFrame=0, navigationID=0
+2026-10-18 13:28:56.048 Df Hifz[10476:8972] [com.apple.WebKit:AppSSO] 0x11307c0c0 - SOAuthorizationCoordinator::tryAuthorize
+2026-10-18 13:28:56.048 A  Hifz[10476:8972] (AppSSO) canPerformAuthorizationWithURL
+2026-10-18 13:28:56.048 A  Hifz[10476:8972] (AppSSOCore) canPerformAuthorizationWithURL
+2026-10-18 13:28:56.049 Df Hifz[10476:8972] [com.apple.authkit:nto] Fetching native takeover URLs
+2026-10-18 13:28:56.049 Df Hifz[10476:899f] [com.apple.authkit:nto] URL shouldn't be processed
+2026-10-18 13:28:56.049 Df Hifz[10476:8972] [com.apple.WebKit:AppSSO] SOAuthorizationCoordinator::tryAuthorize: The requested URL is not registered for AppSSO handling. No further action needed.
+2026-10-18 13:28:56.049 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::decidePolicyForNavigationAction: listener called: frameID=8589934593, isMainFrame=0, navigationID=16, policyAction=Use, isAppBoundDomain=0, wasNavigationIntercepted=0
+2026-10-18 13:28:56.050 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::receivedNavigationActionPolicyDecision: frameID=8589934593, isMainFrame=0, navigationID=16, policyAction=Use
+2026-10-18 13:28:56.050 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webFrameID=8589934593, webPageID=8] WebFrameLoaderClient::dispatchDecidePolicyForNavigationAction: Got policyAction Use from async IPC
+2026-10-18 13:28:56.050 Df Hifz[10476:89e0] [com.apple.WebKit:Loading] WebContent[10487] 0x10e78e5a0 - [pageID=8, frameID=8589934593] PolicyChecker::checkNavigationPolicy: continuing because this policyAction from dispatchDecidePolicyForNavigationAction is Use
+2026-10-18 13:28:56.050 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::stopAllLoaders: m_provisionalDocumentLoader=0, m_documentLoader=4547485696
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::stopLoading
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 4547497984 (was 0)
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::continueLoadAfterNavigationPolicy: Setting provisional document loader (m_provisionalDocumentLoader=4547497984)
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setPolicyDocumentLoader: Setting policy document loader to 0 (was 4547497984)
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::prepareForLoadStart: Starting frame load
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: ProgressTracker::progressStarted: frameID 8589934593, value 0.100000, tracked frames 1, originating frameID 8589934593, isMainLoad 1
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::startLoadingMainResource: Starting load
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=351] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=351 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=4, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:56.051 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=351] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:56.052 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::didStartProvisionalLoadForFrame: frameID=8589934593, isMainFrame=0
+2026-10-18 13:28:56.057 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=351] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:56.059 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=351] WebResourceLoader::didReceiveData: Started receiving data
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setDocumentLoader: Setting document loader to 4547497984 (was 4547485696)
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::detachFromFrame
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, isMainFrame=0] DocumentLoader::stopLoading
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::transitionToCommitted: Clearing provisional document loader (m_provisionalDocumentLoader=4547497984)
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 0 (was 4547497984)
+2026-10-18 13:28:56.060 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::didCommitLoadForFrame: frameID=8589934593, isMainFrame=0
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=360] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=360 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=360] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=351] WebResourceLoader::didFinishResourceLoad: (length=439)
+2026-10-18 13:28:56.060 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=351 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:56.067 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=360] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:56.067 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=360] WebResourceLoader::didReceiveResource
+2026-10-18 13:28:56.067 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=360 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:56.085 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::didFinishDocumentLoadForFrame: frameID=8589934593, isMainFrame=0
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=376] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=376 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=376] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: ProgressTracker::progressCompleted: frameID 8589934593, value 0.500000, tracked frames 1, originating frameID 8589934593, isMainLoad 1
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: ProgressTracker::finalProgressComplete: value 0.500000, tracked frames 0, originating frameID 8589934593, isMainLoad 1, isMainLoadProgressing 0
+2026-10-18 13:28:56.089 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8 frameID=8589934593 isMainFrame=0] FrameLoader::checkLoadCompleteForThisFrame: Finished frame load
+2026-10-18 13:28:56.090 Df Hifz[10476:8972] [com.apple.WebKit:Loading] 0x10602d018 - [pageProxyID=7, webPageID=8, PID=10487] WebPageProxy::didFinishLoadForFrame: frameID=8589934593, isMainFrame=0
+2026-10-18 13:28:56.226 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=376] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:56.226 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=376] WebResourceLoader::didReceiveData: Started receiving data
+2026-10-18 13:28:56.226 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8589934593, resourceID=376] WebResourceLoader::didFinishResourceLoad: (length=140)
+2026-10-18 13:28:56.226 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=8589934593, resourceID=376 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:57.087 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=503] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:57.087 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=503 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:57.087 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:57.087 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:57.087 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=503] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:57.118 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=503] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:57.118 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=503] WebResourceLoader::didReceiveData: Started receiving data
+2026-10-18 13:28:57.118 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=503] WebResourceLoader::didFinishResourceLoad: (length=19)
+2026-10-18 13:28:57.118 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=503 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:58.284 Df Hifz[10476:8972] [com.apple.WebKit:ProcessSuspension] 0x1130cc0c0 - [PID=10487, throttler=0x1130a8150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'WebPageProxy::runJavaScriptInFrameInScriptWorld'
+2026-10-18 13:28:58.284 Df Hifz[10476:89e0] [com.apple.WebKit:Process] WebContent[10487] 0x104810208 - [webPageID=8] WebPage::runJavaScriptInFrameInScriptWorld: frameID=0
+2026-10-18 13:28:58.285 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=504] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-10-18 13:28:58.285 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=504 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-10-18 13:28:58.285 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-10-18 13:28:58.285 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=8, resourceID=8] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-10-18 13:28:58.285 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=504] WebResourceLoader::WebResourceLoader
+2026-10-18 13:28:58.285 Df Hifz[10476:89e0] [com.apple.WebKit:Process] WebContent[10487] 0x104810208 - [webPageID=8] WebPage::runJavaScriptInFrameInScriptWorld: Request to run JavaScript succeeded
+2026-10-18 13:28:58.285 Df Hifz[10476:8972] [com.apple.WebKit:ProcessSuspension] 0x1130cc0c0 - [PID=10487, throttler=0x1130a8150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'WebPageProxy::runJavaScriptInFrameInScriptWorld'
+2026-10-18 13:28:58.294 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=504] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-10-18 13:28:58.294 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=504] WebResourceLoader::didReceiveData: Started receiving data
+2026-10-18 13:28:58.294 Df Hifz[10476:89e0] [com.apple.WebKit:Network] WebContent[10487]: [webPageID=8, frameID=4294967297, resourceID=504] WebResourceLoader::didFinishResourceLoad: (length=745)
+2026-10-18 13:28:58.294 Df Hifz[10476:89e0] [com.apple.WebKit:ResourceLoading] WebContent[10487]: [pageID=8, frameID=4294967297, resourceID=504 SubResourceLoader::didFinishLoading
+2026-10-18 13:28:58.733 Df Hifz[10476:8972] [com.apple.WebKit:ProcessSuspension] 0x11312c100 NavigationState is releasing background process assertion because a page load completed
+2026-10-18 13:28:58.733 Df Hifz[10476:8972] [com.apple.WebKit:ProcessSuspension] 0x1130cc240 - [PID=10487, throttler=0x1130a8150] ProcessThrottler::Activity::invalidate: Ending background activity / 'Page Load'
+2026-10-18 13:29:00.301 A  Hifz[10476:8972] (TCC) TCCAccessRequest() IPC
+2026-10-18 13:29:00.301 Df Hifz[10476:8972] [com.apple.xpc:connection] [0x105013d80] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-10-18 13:29:00.305 Df Hifz[10476:8972] [com.apple.xpc:connection] [0x105013d80] invalidated after the last release of the connection object
+2026-10-18 13:29:00.305 A  Hifz[10476:8972] (TCC) TCCAccessRequest() IPC
+2026-10-18 13:29:00.305 Df Hifz[10476:89aa] [com.apple.xpc:connection] [0x10530bf50] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-10-18 13:29:01.497 Df Hifz[10476:89a4] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002609c80; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Aio.github.mammadibir.hifz-default; status: none> was:ancestor
+2026-10-18 13:29:01.497 Df Hifz[10476:8972] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 0; scene: UIWindowScene: 0x10500fc90; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Aio.github.mammadibir.hifz-default
+2026-10-18 13:29:01.497 Df Hifz[10476:89a4] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x6000026193e0; environment: keyboardFocus; status: none> was:target
+2026-10-18 13:29:01.667 Df Hifz[10476:8972] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:io.github.mammadibir.hifz-default  persistentID: 5814E39A-55FC-4674-A717-AEA98CD532C0
+2026-10-18 13:29:01.669 Df Hifz[10476:8972] [com.apple.UIKit:UIAlertControllerStackManager] canShowAlerts Updated: <FBSSceneSettingsDiff: 0x600001709700; UIApplicationSceneSettings> {
+    subclassSettings = <BSSettingsDiff: 0x600000c40fc0> {
+        canShowAlerts = NO;
+    };
+}
+2026-10-18 13:29:01.670 Df Hifz[10476:8972] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 1, <UIWindowScene: 0x10500fc90> (5814E39A-55FC-4674-A717-AEA98CD532C0)
+2026-10-18 13:29:01.671 Df Hifz[10476:8972] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:io.github.mammadibir.hifz-default  persistentID: 5814E39A-55FC-4674-A717-AEA98CD532C0
+2026-10-18 13:29:01.671 Df Hifz[10476:8972] [com.apple.UIKit:Application] Deactivation reason added: 13; deactivation reasons: 0 -> 8192; animating application lifecycle event: 0
+2026-10-18 13:29:01.672 A  Hifz[10476:8972] (GameController) Notify ApplicationWillResignActive
+2026-10-18 13:29:01.672 Df Hifz[10476:89e0] [com.apple.WebKit:Media] WebContent[10487] MediaSessionManageriOS::applicationWillBecomeInactive(0)
+2026-10-18 13:29:01.672 Df Hifz[10476:8972] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 13; deactivation reasons: 8192
+2026-10-18 13:29:01.672 Df Hifz[10476:8972] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 8192 -> 12288; animating application lifecycle event: 0
+2026-10-18 13:29:01.703 Df Hifz[10476:8972] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:io.github.mammadibir.hifz-default  persistentID: 5814E39A-55FC-4674-A717-AEA98CD532C0
+2026-10-18 13:29:05.730 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]: PerformanceMonitor::measurePostLoadMemoryUsage: Process was using 46243648 bytes of memory after the page load.
+2026-10-18 13:29:10.730 Df Hifz[10476:89e0] [com.apple.WebKit:PerformanceLogging] WebContent[10487]: PerformanceMonitor::measurePostLoadCPUUsage: Process was using 6.5% CPU after the page load.
