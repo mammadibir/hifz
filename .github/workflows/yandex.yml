@@ -1,0 +1,45 @@
+name: Yandex Cloud
+
+# Keeps a copy of the site on Yandex Object Storage, which opens on Russian mobile internet without VPN.
+# Setup and secrets: see tools/deploy_yc.py.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      reciters:
+        description: "Папки чтецов everyayah для хранения на сайте, через запятую (пусто — Alafasy_128kbps)"
+        required: false
+        default: ""
+
+concurrency:
+  group: yandex-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet boto3
+      - name: Upload to Yandex Object Storage
+        env:
+          YC_KEY_ID: ${{ secrets.YC_KEY_ID }}
+          YC_SECRET: ${{ secrets.YC_SECRET }}
+          YC_BUCKET: ${{ vars.YC_BUCKET }}
+          YC_GATEWAY: ${{ vars.YC_GATEWAY }}
+          YC_RECITERS: ${{ github.event.inputs.reciters || vars.YC_RECITERS }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          SITE_DIR: ${{ github.workspace }}
+        run: python tools/deploy_yc.py

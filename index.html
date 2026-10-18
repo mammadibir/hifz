@@ -9,12 +9,13 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head><body>
-<script>window.APP_VERSION="1792327702";</script>
+<script>window.APP_VERSION="1792329663";</script>
 <script>window.HIFZ_FIREBASE={"apiKey": "AIzaSyAfFDMfO1v-eoOLP2Cj32GCL57G_c9Zd9g", "authDomain": "hifz-da618.firebaseapp.com", "projectId": "hifz-da618", "storageBucket": "hifz-da618.firebasestorage.app", "messagingSenderId": "729920540645", "appId": "1:729920540645:web:6a4285570939d080f9e90c"};</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=Amiri+Quran&family=Golos+Text:wght@400;500;600&display=swap">
 <style>
+/* UI fonts are served from the site itself (no Google Fonts), so the page renders on restricted networks. */
+@font-face{font-family:"Golos Text";src:url("fonts/GolosText.woff") format("woff");font-weight:400 600;font-display:swap}
+@font-face{font-family:"Alegreya";src:url("fonts/Alegreya.woff") format("woff");font-weight:500 700;font-display:swap}
+@font-face{font-family:"Amiri Quran";src:url("fonts/AmiriQuran.woff2") format("woff2");font-display:swap}
 /* Layout: one-screen app. Three tab views over a bottom tab bar; the reader and the memorization drill take over the whole screen. */
 :root{
   --paper:#F3F4F8; --surface:#FFFFFF; --ink:#151A2A; --muted:#5B6378; --line:#DADFEA;
@@ -114,6 +115,10 @@ h2.sec{margin:0;font:700 19px/1.2 var(--f-display);text-wrap:balance}
 a.btn{text-decoration:none;color:inherit}
 .btn small{display:block;font-weight:500;font-size:11.5px;opacity:.85}
 .btn-col{flex-direction:column;gap:2px}
+.move-card{margin-bottom:14px;border:1.5px solid var(--lapis)}
+.move-card b{display:block;font-size:16px;margin-bottom:4px}
+.move-card p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.45}
+.move-card .btn{width:100%}
 
 /* Search + segmented */
 .search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding-inline:12px}
@@ -557,6 +562,7 @@ input[type=range]{width:100%;accent-color:var(--lapis)}
     </header>
     <div class="scroll" id="home-scroll">
       <div class="pad">
+        <div id="move-card" hidden></div>
         <div id="today-card"></div>
         <div id="bookmarks"></div>
         <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Сура, номер или 2:255" autocomplete="off" aria-label="Поиск суры или аята"></div>
@@ -953,6 +959,29 @@ function applyFont(){
 const VOICE = HOSTED && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 const AUDIO = HOSTED;
 
+/* ---------- networks where foreign servers are blocked ----------
+   The copy of the site on Yandex Cloud carries net.json: "mirror" lists the reciters whose audio is stored on the
+   site itself, "proxy" is a relay on Yandex Cloud for the other reciters, word audio and the account servers.
+   Whether foreign servers answer is checked once, in the background. */
+const NET = { mirror: new Set(), proxy: "", direct: null, google: null, viaProxy: false };
+function reach(url, ms = 4000){
+  return new Promise(res => {
+    const ac = window.AbortController ? new AbortController() : null;
+    const t = setTimeout(() => { if (ac) ac.abort(); res(false); }, ms);
+    /* any answer counts; the body is not needed, so the download is cut off at once */
+    fetch(url, { mode: "no-cors", cache: "no-store", signal: ac ? ac.signal : undefined })
+      .then(() => { clearTimeout(t); res(true); if (ac) ac.abort(); }, () => { clearTimeout(t); res(false); });
+  });
+}
+const netReady = !HOSTED ? Promise.resolve() : fetch("net.json?t=" + Date.now(), { cache: "no-store" })
+  .then(r => r.ok ? r.json() : null).catch(() => null).then(j => {
+    if (!j) return;
+    if (Array.isArray(j.mirror)) NET.mirror = new Set(j.mirror);
+    if (typeof j.proxy === "string" && /^https:\/\//.test(j.proxy)) NET.proxy = j.proxy.replace(/\/+$/, "");
+  });
+const netProbe = netReady.then(() => NET.proxy && Promise.all([reach("https://everyayah.com/data/Alafasy_128kbps/001001.mp3"), reach("https://firestore.googleapis.com/")])
+  .then(([a, g]) => { NET.direct = a; NET.google = g; }));
+
 /* ---------- reciter audio ---------- */
 const RECITERS = [
   { id: "alafasy", name: "Мишари Алафаси", ea: "Alafasy_128kbps", isn: "128/ar.alafasy" },
@@ -976,11 +1005,17 @@ const RECITERS = [
 const REPS = [1, 2, 3, 5, 10, 0];
 const repLabel = r => r === 0 ? "∞" : "×" + r;
 const reciter = () => RECITERS.find(r => r.id === S.set.rc) || RECITERS[0];
+/* Sources in order: the copy on this site, then everyayah directly or through the relay (whichever answers),
+   then islamic.network. All but the last are the same everyayah file, so its word timings still apply. */
 function audioUrls(s, v){
-  const r = reciter(), u = [`https://everyayah.com/data/${r.ea}/${pad3(s)}${pad3(v)}.mp3`];
+  const r = reciter(), f = pad3(s) + pad3(v) + ".mp3", u = [];
+  const ea = `https://everyayah.com/data/${r.ea}/${f}`, px = NET.proxy ? `${NET.proxy}/ea/${r.ea}/${f}` : "";
+  if (NET.mirror.has(r.ea)) u.push(`audio/${r.ea}/${f}`);
+  if (px && NET.direct !== true) u.push(px, ea); else { u.push(ea); if (px) u.push(px); }
   if (r.isn) u.push(`https://cdn.islamic.network/quran/audio/${r.isn}/${gid(s, v)}.mp3`);
   return u;
 }
+const altAudio = u => /islamic\.network/.test(u || "");
 /* Gapless player: two audio elements take turns. While one plays an ayah, the other already holds the next one,
    cued past its leading silence using word timings (quran-align, CC BY 4.0), so the next ayah starts at once. */
 const TIMED = {
@@ -1174,7 +1209,7 @@ function pFallback(A, B){
 function pElError(el){
   if (!P.s) return;
   if (el !== pActive()){
-    if (el._urls && el._urls.length){ el._alt = true; el.src = el._urls.shift(); return; }
+    if (el._urls && el._urls.length){ const u = el._urls.shift(); el._alt = altAudio(u); el.src = u; return; }
     el._failed = true; return;
   }
   pRetry(el);
@@ -1182,7 +1217,10 @@ function pElError(el){
 function pRetry(el){
   if (!P.s || !el._it) return;
   if (el._urls && el._urls.length){
-    el._alt = true; el.src = el._urls.shift(); el.playbackRate = S.set.rate;
+    const u = el._urls.shift(), t = el.currentTime || 0;
+    /* the same file from another server goes on from where it stopped */
+    el._resumeAt = !altAudio(u) && !el._alt && t > 0.5 ? t : 0;
+    el._alt = altAudio(u); el.src = u; el.playbackRate = S.set.rate;
     if (!P.held) pGo(el).catch(() => {});
     return;
   }
@@ -1382,7 +1420,13 @@ let pendingJoin = null;
 function readJoinHash(){ try { const m = location.hash.match(/^#join-([A-Za-z0-9]{4,10})$/); if (m){ pendingJoin = m[1].toUpperCase(); history.replaceState(null, "", location.pathname + location.search); return true; } } catch (e) {} return false; }
 readJoinHash();
 window.addEventListener("hashchange", () => { if (readJoinHash() && Cloud.on) accountSheet(Cloud.user ? "family" : "register"); });
-function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("load " + src)); document.head.appendChild(s); }); }
+function loadScript(src, ms = 15000){
+  return new Promise((res, rej) => {
+    const s = document.createElement("script"), t = setTimeout(() => { s.onload = s.onerror = null; rej(new Error("timeout " + src)); }, ms);
+    s.src = src; s.onload = () => { clearTimeout(t); res(); }; s.onerror = () => { clearTimeout(t); s.remove(); rej(new Error("load " + src)); };
+    document.head.appendChild(s);
+  });
+}
 function cloudErr(e){
   const c = (e && e.code) || "";
   if (c === "auth/email-already-in-use") return "Такой логин уже занят. Выберите другой.";
@@ -1390,7 +1434,8 @@ function cloudErr(e){
   if (c === "auth/weak-password") return "Пароль должен быть не короче 6 символов.";
   if (c === "auth/invalid-email") return "Логин: латинские буквы, цифры, точка, дефис или подчёркивание, от 3 символов.";
   if (c === "auth/too-many-requests") return "Слишком много попыток. Подождите пару минут.";
-  if (c === "auth/network-request-failed" || c === "unavailable") return "Нет связи с сервером. Проверьте интернет.";
+  if (c === "auth/network-request-failed" || c === "unavailable") return NET.viaProxy || NET.google === true
+    ?"Нет связи с сервером. Проверьте интернет." : "Нет связи с сервером аккаунтов: без VPN он может быть недоступен. Занятия всё равно сохраняются на телефоне.";
   if (c === "family/not-found") return "Семья с таким кодом не найдена. Проверьте код.";
   if (c === "permission-denied") return "Сервер отказал в доступе. Проверьте, что правила Firestore вставлены и опубликованы.";
   return "Не получилось: " + ((e && e.message) || "неизвестная ошибка");
@@ -1409,13 +1454,21 @@ const Cloud = {
   async init(){
     if (!HOSTED || !window.HIFZ_FIREBASE) return;
     try {
-      const base = "https://www.gstatic.com/firebasejs/" + FB_VER + "/";
+      /* The login library comes from this site when it carries a copy (the Yandex Cloud copy does), otherwise from Google */
+      const base = "https://www.gstatic.com/firebasejs/" + FB_VER + "/", own = "vendor/firebase/" + FB_VER + "/";
+      const load = n => loadScript(own + n, 8000).catch(() => loadScript(base + n));
+      await netReady;
       if (!window.firebase){
-        await loadScript(base + "firebase-app-compat.js");
-        await Promise.all([loadScript(base + "firebase-auth-compat.js"), loadScript(base + "firebase-firestore-compat.js")]);
+        await load("firebase-app-compat.js");
+        await Promise.all([load("firebase-auth-compat.js"), load("firebase-firestore-compat.js")]);
       }
+      /* Where Google's servers do not answer, login and sync go through the relay on Yandex Cloud */
+      if (NET.proxy){ await netProbe; NET.viaProxy = NET.google === false; }
       firebase.initializeApp(window.HIFZ_FIREBASE);
-      this.auth = firebase.auth(); this.db = firebase.firestore();
+      this.auth = firebase.auth();
+      if (NET.viaProxy) this.auth.useEmulator(NET.proxy, { disableWarnings: true });
+      this.db = firebase.firestore();
+      if (NET.viaProxy) this.db.settings({ host: NET.proxy.replace(/^https?:\/\//, ""), ssl: true, experimentalForceLongPolling: true, merge: true });
     } catch (e) { console.warn("cloud", e); return; }
     this.on = true; renderAccountChip();
     this.auth.onAuthStateChanged(u => this.onUser(u));
@@ -1771,7 +1824,10 @@ async function renderWords(){
       return `<button class="wrow" data-act="word" data-id="${w.id}"><span class="wst ${s}" title="${VSTATE_RU[s]}"></span><span class="wru"><b>${esc(w.ru)}</b><small>${esc(w.pos)}${extra ? " · " + extra : ""}</small></span><span class="war" lang="ar">${w.ar}</span></button>`;
     }).join("") : `<div class="empty">${wordsFilter === "learning" ? "Пока нет слов в изучении. Нажмите «Учить»." : wordsFilter === "known" ? "Выученных слов пока нет." : "Ничего не нашлось."}</div>`}</div>`;
 }
-const wbwUrl = (s, v, w) => `https://audio.qurancdn.com/wbw/${pad3(s)}_${pad3(v)}_${pad3(w + 1)}.mp3`;
+const wbwUrl = (s, v, w) => {
+  const f = `${pad3(s)}_${pad3(v)}_${pad3(w + 1)}.mp3`;
+  return NET.proxy && NET.direct !== true ? `${NET.proxy}/wbw/${f}` : `https://audio.qurancdn.com/wbw/${f}`;
+};
 let wAudio = null;
 function sayWord(id){
   const w = WMAP && WMAP.get(id); if (!w || !w.ex.length) return;
@@ -2924,6 +2980,7 @@ document.addEventListener("click", e => {
   const d = a.dataset, act = d.act;
   switch (act){
     case "settings": settingsSheet(false); break;
+    case "move-site": moveSite(); break;
     case "app-update": { Cloud.flush && Cloud.flush(); saveLocal(); location.replace(location.pathname + "?v=" + ($("#update-bar").dataset.v || Date.now())); break; }
     case "word":
       if (!$("#sheet").hidden && sheetKind === "verse" && sheetVerse) sheetBack = { ...sheetVerse, top: $("#sheet-body").scrollTop };
@@ -3081,11 +3138,63 @@ async function checkUpdate(){
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkUpdate(); });
 
+/* ---------- the copy of the site that opens without VPN ----------
+   GitHub is often unreachable in Russia, so the site also lives on Yandex Cloud. Progress is kept per address, so the old
+   address offers to carry it over: it travels inside the link after "#", which is never sent to any server. */
+const NEW_HOME = "https://hifz-mammadibir.website.yandexcloud.net/";
+const NEW_CHECK = "https://hifz-mammadibir.storage.yandexcloud.net/version.json";
+function b64url(u8){ let s = ""; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+function unb64url(s){ const b = atob(s.replace(/-/g, "+").replace(/_/g, "/")), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+async function packState(){
+  const raw = new TextEncoder().encode(JSON.stringify(S));
+  if (window.CompressionStream){
+    try { return "z" + b64url(new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream("gzip"))).arrayBuffer())); } catch (e) {}
+  }
+  return "j" + b64url(raw);
+}
+async function unpackState(code){
+  const bytes = unb64url(code.slice(1));
+  const text = code[0] === "z" ? await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).text() : new TextDecoder().decode(bytes);
+  return normalizeState(JSON.parse(text));
+}
+async function renderMoveCard(){
+  const el = $("#move-card");
+  if (!HOSTED || window.HIFZ_NATIVE || !/github\.io$/.test(location.hostname)) return;
+  /* only once the new address is really up */
+  try { const r = await fetch(NEW_CHECK + "?t=" + Date.now(), { cache: "no-store" }); const j = await r.json(); if (!j || !j.v) return; } catch (e) { return; }
+  el.innerHTML = `<div class="card move-card"><b>Новый адрес — работает без VPN</b>
+    <p>Приложение теперь открывается и на мобильном интернете без VPN. Нажмите кнопку — откроется новый адрес, и ваш прогресс перенесётся туда. Потом добавьте его на экран «Домой» вместо этого.</p>
+    <button class="btn btn-primary" data-act="move-site">Перейти и перенести прогресс</button></div>`;
+  el.hidden = false;
+}
+async function moveSite(){
+  try { if (Cloud.flush) await Cloud.flush(); } catch (e) {}
+  saveLocal();
+  let code = "";
+  try { code = await packState(); } catch (e) {}
+  location.href = NEW_HOME + (code ? "#import=" + code : "");
+}
+async function importFromLink(){
+  const m = location.hash.match(/^#import=([zj][A-Za-z0-9_-]+)$/);
+  if (!m) return;
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  try {
+    const st = await unpackState(m[1]);
+    const fresh = !S.sess.length && !Object.keys(S.vp).length;
+    S = fresh ? st : mergeStates(S, st);
+    saveLocal(); applySettings(); renderAll();
+    toast("Прогресс перенесён на новый адрес");
+  } catch (e) { console.warn("import", e); toast("Не удалось перенести прогресс"); }
+}
+
 /* ---------- boot ---------- */
 loadLocal(); applySettings(); renderSyncNote(); goTab("home");
 attachPinch($("#r-scroll")); attachPinch($("#d-scroll"));
 Remote.init();
+importFromLink();
 Cloud.init();
+renderMoveCard();
+window.addEventListener("hashchange", importFromLink);
 setTimeout(checkUpdate, 1500);
 </script>
 

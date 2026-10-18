@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: hifz-relay
+  version: 1.0.0
+  description: >-
+    Relay for the Hifz app on networks where foreign servers are blocked: reciter audio (everyayah),
+    word audio (qurancdn) and the account servers (Firebase Auth and Firestore).
+paths:
+  /ea/{file+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: file
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: https://everyayah.com/data/{file}
+        headers:
+          '*': '*'
+        query:
+          '*': '*'
+        timeouts:
+          connect: 5
+          read: 60
+  /wbw/{file+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: file
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: https://audio.qurancdn.com/wbw/{file}
+        headers:
+          '*': '*'
+        query:
+          '*': '*'
+        timeouts:
+          connect: 5
+          read: 60
+  /identitytoolkit.googleapis.com/{path+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: https://identitytoolkit.googleapis.com/{path}
+        headers:
+          '*': '*'
+        query:
+          '*': '*'
+        timeouts:
+          connect: 5
+          read: 60
+  /securetoken.googleapis.com/{path+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: https://securetoken.googleapis.com/{path}
+        headers:
+          '*': '*'
+        query:
+          '*': '*'
+        timeouts:
+          connect: 5
+          read: 60
+  /google.firestore.v1.Firestore/{path+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: https://firestore.googleapis.com/google.firestore.v1.Firestore/{path}
+        headers:
+          '*': '*'
+        query:
+          '*': '*'
+        timeouts:
+          connect: 5
+          read: 300
+  /v1/{path+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: https://firestore.googleapis.com/v1/{path}
+        headers:
+          '*': '*'
+        query:
+          '*': '*'
+        timeouts:
+          connect: 5
+          read: 60
